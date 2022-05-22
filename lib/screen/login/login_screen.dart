@@ -6,7 +6,14 @@ class LoginScreen extends StatelessWidget {
   const LoginScreen({Key? key}) : super(key: key);
 
   Future<void> _login(LoginProvider provider) async {
-    AppBloc.loginCubit.snsLogin(provider);
+    bool isRegisterd = await AppBloc.loginCubit.snsLogin(provider);
+
+    // 메인화면으로 이동
+    if (isRegisterd) {
+    }
+
+    // 회원가입 (약관동의 화면으로 이동)
+    else {}
   }
 
   @override
@@ -24,14 +31,12 @@ class LoginScreen extends StatelessWidget {
             Expanded(
               child: Center(
                 child: InkWell(
-                  onTap: () async {
-                    //TODO ios에서도 가능하게 해야함
-                  },
+                  onTap: () => _login(LoginProvider.kakao),
                   child: Container(
                     height: 60,
                     width: 250,
                     color: Colors.yellow,
-                    child: Text('카카오톡으로 로그인'),
+                    child: const Text('카카오톡으로 로그인'),
                   ),
                 ),
               ),
