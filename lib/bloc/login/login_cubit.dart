@@ -1,6 +1,5 @@
 import 'package:bloc/bloc.dart';
 import 'package:letsworkout/bloc/app_bloc.dart';
-import 'package:letsworkout/config/preference.dart';
 import 'package:letsworkout/enum/login_provider.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart' as kakao;
 import 'package:letsworkout/model/user.dart';
@@ -12,6 +11,12 @@ class LoginCubit extends Cubit<int> {
   final UserRepository _repository = UserRepository();
 
   Future<bool> snsLogin(LoginProvider provider) async {
+    if (provider == LoginProvider.test) {
+      AppBloc.userCubit
+          .setUser(User(email: 'test@test.co.kr', provider: provider.name));
+      return false;
+    }
+
     String? email = await _snsAuth(provider);
     User? user = await _getUserByEmail(email);
     if (user == null) {
@@ -19,7 +24,7 @@ class LoginCubit extends Cubit<int> {
     }
 
     // 유저정보 저장
-    Preferences.setUser(user);
+    AppBloc.userCubit.setUser(user);
     return true;
   }
 
@@ -43,6 +48,8 @@ class LoginCubit extends Cubit<int> {
           AppBloc.appCubit.appSnackBar('카카오톡이 설치되어 있지 않습니다.');
         }
         break;
+      case LoginProvider.test:
+        break;
     }
 
     return email;
@@ -54,7 +61,33 @@ class LoginCubit extends Cubit<int> {
     }
 
     // user데이터가 있는지 통신
-    User? user = await _repository.getUser(email);
+    User? user = await _repository.getUserByEmail(email);
     return user;
+  }
+
+  Future<bool> registUser({required String tag}) async {
+    User? user = AppBloc.userCubit.user;
+    if (user == null) {
+      AppBloc.appCubit.appSnackBar("처음부터 다시 시도해 주십시오.");
+      return false;
+    }
+
+    user = user.copyWith(tag: tag);
+    if (await _repository.registUser(user)) {
+      await AppBloc.userCubit.setUser(user);
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  Future<bool> autoLogin(User requestUser) async {
+    User? user = await _repository.getUser(requestUser);
+    if (user == null) {
+      return false;
+    }
+
+    AppBloc.userCubit.setUser(user);
+    return true;
   }
 }

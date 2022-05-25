@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:letsworkout/bloc/app_bloc.dart';
+import 'package:letsworkout/config/route.dart';
 import 'package:letsworkout/enum/login_provider.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
 
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
   Future<void> _login(LoginProvider provider) async {
     bool isRegisterd = await AppBloc.loginCubit.snsLogin(provider);
 
@@ -13,7 +19,9 @@ class LoginScreen extends StatelessWidget {
     }
 
     // 회원가입 (약관동의 화면으로 이동)
-    else {}
+    else {
+      Navigator.pushNamed(context, Routes.agreementScreen);
+    }
   }
 
   @override
@@ -37,6 +45,19 @@ class LoginScreen extends StatelessWidget {
                     width: 250,
                     color: Colors.yellow,
                     child: const Text('카카오톡으로 로그인'),
+                  ),
+                ),
+              ),
+            ),
+            Expanded(
+              child: Center(
+                child: InkWell(
+                  onTap: () => _login(LoginProvider.test),
+                  child: Container(
+                    height: 60,
+                    width: 250,
+                    color: Colors.yellow,
+                    child: const Text('테스트 로그인'),
                   ),
                 ),
               ),

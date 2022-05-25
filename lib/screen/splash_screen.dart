@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:letsworkout/bloc/app_bloc.dart';
 import 'package:letsworkout/config/preference.dart';
 import 'package:letsworkout/config/route.dart';
+import 'package:letsworkout/model/user.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -14,7 +16,6 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    // kakaoSDK 디버그 키 해시
 
     // TODO 버전 체크
     // TODO 권한체크
@@ -29,16 +30,20 @@ class _SplashScreenState extends State<SplashScreen> {
     String? userString = prefs!.getString("user");
 
     //저장된 유저가 없으므로 로그인으로 이동
-    if (userString == null || userString == "null") {
+    if (userString == null || userString == "null" || userString.isEmpty) {
       Navigator.pushNamed(
         context,
         Routes.loginScreen,
-        // ((route) => false),
       );
     }
 
     //저장된 유저로 자동 로그인
-    else {}
+    else {
+      User? user = await AppBloc.userCubit.loadInitialData();
+      if (await AppBloc.loginCubit.autoLogin(user!)) {
+        Navigator.pushNamed(context, Routes.homeScreen);
+      }
+    }
   }
 
   @override
