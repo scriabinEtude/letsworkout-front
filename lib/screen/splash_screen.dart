@@ -31,7 +31,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
     //저장된 유저가 없으므로 로그인으로 이동
     if (userString == null || userString == "null" || userString.isEmpty) {
-      Navigator.pushNamed(
+      Navigator.pushReplacementNamed(
         context,
         Routes.loginScreen,
       );
@@ -41,7 +41,7 @@ class _SplashScreenState extends State<SplashScreen> {
     else {
       User? user = await AppBloc.userCubit.loadInitialData();
       if (await AppBloc.loginCubit.autoLogin(user!)) {
-        Navigator.pushNamed(context, Routes.homeScreen);
+        Navigator.pushReplacementNamed(context, Routes.homeScreen);
       }
     }
   }

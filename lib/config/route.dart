@@ -3,15 +3,25 @@ import 'package:letsworkout/screen/home_screen.dart';
 import 'package:letsworkout/screen/login/agreement_screen.dart';
 import 'package:letsworkout/screen/login/login_screen.dart';
 import 'package:letsworkout/screen/login/register_tag_screen.dart';
+import 'package:letsworkout/screen/splash_screen.dart';
+import 'package:letsworkout/screen/workout/workout_start_screen.dart';
 
 class Routes {
+  static const String splashScreen = "/";
   static const String loginScreen = "/login";
   static const String agreementScreen = "/login/join/agreement";
   static const String registerTagScreen = "/login/join/tag";
   static const String homeScreen = "/home";
+  static const String workoutStartScreen = "/workout/start";
 
   Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
+      case splashScreen:
+        return MaterialPageRoute(
+            settings: const RouteSettings(name: splashScreen),
+            builder: (BuildContext context) {
+              return const SplashScreen();
+            });
       case loginScreen:
         return MaterialPageRoute(
             settings: const RouteSettings(name: loginScreen),
@@ -35,6 +45,12 @@ class Routes {
             settings: const RouteSettings(name: homeScreen),
             builder: (BuildContext context) {
               return const HomeScreen();
+            });
+      case workoutStartScreen:
+        return MaterialPageRoute(
+            settings: const RouteSettings(name: workoutStartScreen),
+            builder: (BuildContext context) {
+              return const WorkoutStartScreen();
             });
       default:
         return MaterialPageRoute(

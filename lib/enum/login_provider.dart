@@ -1,1 +1,1 @@
-enum LoginProvider { kakao, test }
+enum LoginProvider { kakao }

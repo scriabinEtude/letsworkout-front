@@ -8,6 +8,7 @@ import 'package:letsworkout/bloc/app_bloc.dart';
 import 'package:letsworkout/config/application.dart';
 import 'package:letsworkout/config/route.dart';
 import 'package:letsworkout/screen/splash_screen.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'dart:developer' as developer;
 
 class AppBlocObserver extends BlocObserver {
@@ -46,11 +47,10 @@ class AppBlocObserver extends BlocObserver {
 
 void main() {
   KakaoSdk.init(nativeAppKey: Application.kakaoNativeAppKey);
-
-  BlocOverrides.runZoned(
-    () => runApp(const MyApp()),
-    blocObserver: AppBlocObserver(),
-  );
+  initializeDateFormatting().then((_) => BlocOverrides.runZoned(
+        () => runApp(const MyApp()),
+        blocObserver: AppBlocObserver(),
+      ));
 }
 
 class MyApp extends StatefulWidget {
@@ -82,6 +82,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
           theme: ThemeData(
             splashColor: Colors.transparent,
             highlightColor: Colors.transparent,
+            hoverColor: Colors.transparent,
           ),
           onGenerateRoute: route.generateRoute,
           debugShowCheckedModeBanner: false,

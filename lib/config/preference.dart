@@ -1,4 +1,8 @@
+import 'package:intl/intl.dart';
+import 'package:letsworkout/bloc/app_bloc.dart';
+import 'package:letsworkout/enum/workout_type.dart';
 import 'package:letsworkout/model/user.dart';
+import 'package:letsworkout/model/workout.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 
@@ -10,16 +14,96 @@ class Preferences {
     return instance;
   }
 
-  static Future<void> setUser(User user) async {
-    await instance!.setString("user", jsonEncode(user.toJson()));
+  //*** common */
+  static Future<bool> remove(String key) async {
+    return await instance!.remove(key);
   }
 
-  static Future<User?> getUser() async {
-    String? userString = instance!.getString("user");
-    if (userString == null) {
+  static T? getObject<T>(String key) {
+    String? objStr = instance!.getString(key);
+    if (objStr == null || objStr == "null" || objStr.isEmpty) {
       return null;
     }
-    return User.fromJson(jsonDecode(userString));
+
+    try {
+      return jsonDecode(objStr);
+    } catch (e) {
+      AppBloc.appCubit.appSnackBar('object decode error');
+      return null;
+    }
+  }
+
+  static Future<bool> setObject(String key, Object? object) async {
+    if (object == null) {
+      return await instance!.remove(key);
+    }
+
+    try {
+      return await instance!.setString(key, jsonEncode(object));
+    } catch (e) {
+      AppBloc.appCubit.appSnackBar('preference set object');
+      return false;
+    }
+  }
+
+  //*** USER */
+  static Future<void> userInit() async {
+    await remove("user");
+  }
+
+  static Future<void> userSet(User user) async {
+    await setObject("user", user);
+  }
+
+  static User? userGet() {
+    var user = getObject('user');
+    if (user == null) return null;
+    return User.fromJson(user);
+  }
+
+  //*** WORKOUT */
+  static Future<void> workoutRemove() async {
+    await remove('workout');
+  }
+
+  static Future<Workout?> workoutStart() async {
+    User? me = userGet();
+    if (me == null) {
+      AppBloc.appCubit.appSnackBar('로그인을 먼저 해주세요');
+      return null;
+    }
+
+    Workout workout = Workout(
+      userId: me.id,
+      workoutType: WorkoutType.working.index,
+      startTime: DateFormat('yyyy-MM-dd kk:mm:ss').format(
+        DateTime.now(),
+      ),
+    );
+
+    await setObject('workout', workout);
+    return workout;
+  }
+
+  static Future<Workout?> workoutEnd() async {
+    Workout? workout = workoutGet()?.copyWith(
+        workoutType: WorkoutType.end.index,
+        endTime: DateFormat('yyyy-MM-dd kk:mm:ss').format(
+          DateTime.now(),
+        ));
+    await workoutRemove();
+    return workout;
+  }
+
+  static Workout? workoutGet() {
+    var workout = getObject('workout');
+    if (workout == null) return null;
+    return Workout.fromJson(workout);
+  }
+
+  static Future<Workout> workoutSet(Workout workout) async {
+    await setObject('workout', workout);
+    return workout;
   }
 
   ///Singleton factory

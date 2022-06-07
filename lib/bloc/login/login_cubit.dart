@@ -11,12 +11,6 @@ class LoginCubit extends Cubit<int> {
   final UserRepository _repository = UserRepository();
 
   Future<bool> snsLogin(LoginProvider provider) async {
-    if (provider == LoginProvider.test) {
-      AppBloc.userCubit
-          .setUser(User(email: 'test@test.co.kr', provider: provider.name));
-      return false;
-    }
-
     String? email = await _snsAuth(provider);
     User? user = await _getUserByEmail(email);
     if (user == null) {
@@ -47,8 +41,6 @@ class LoginCubit extends Cubit<int> {
         } else {
           AppBloc.appCubit.appSnackBar('카카오톡이 설치되어 있지 않습니다.');
         }
-        break;
-      case LoginProvider.test:
         break;
     }
 

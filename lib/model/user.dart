@@ -5,6 +5,7 @@ class User {
     this.provider,
     this.tag,
     this.name,
+    this.createdAt,
   });
 
   final int? id;
@@ -12,6 +13,7 @@ class User {
   final String? provider;
   final String? tag;
   final String? name;
+  final String? createdAt;
 
   User copyWith({
     int? id,
@@ -19,6 +21,7 @@ class User {
     String? provider,
     String? tag,
     String? name,
+    String? createdAt,
   }) =>
       User(
         id: id ?? this.id,
@@ -26,6 +29,7 @@ class User {
         provider: provider ?? this.provider,
         tag: tag ?? this.tag,
         name: name ?? this.name,
+        createdAt: createdAt ?? this.createdAt,
       );
 
   factory User.fromJson(Map<String, dynamic> json) => User(
@@ -34,6 +38,7 @@ class User {
         provider: json["provider"],
         tag: json["tag"],
         name: json["name"],
+        createdAt: json["createdAt"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -42,5 +47,6 @@ class User {
         "provider": provider,
         "tag": tag,
         "name": name,
+        "createdAt" : createdAt,
       };
 }
