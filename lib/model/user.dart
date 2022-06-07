@@ -47,6 +47,6 @@ class User {
         "provider": provider,
         "tag": tag,
         "name": name,
-        "createdAt" : createdAt,
+        "createdAt": createdAt,
       };
 }

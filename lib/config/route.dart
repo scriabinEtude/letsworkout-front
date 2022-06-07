@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:letsworkout/screen/home_screen.dart';
-import 'package:letsworkout/screen/login/agreement_screen.dart';
+import 'package:letsworkout/screen/login/register/agreement_screen.dart';
 import 'package:letsworkout/screen/login/login_screen.dart';
-import 'package:letsworkout/screen/login/register_tag_screen.dart';
+import 'package:letsworkout/screen/login/register/regist_name_screen.dart';
+import 'package:letsworkout/screen/login/register/regist_tag_screen.dart';
 import 'package:letsworkout/screen/splash_screen.dart';
 import 'package:letsworkout/screen/workout/workout_start_screen.dart';
 
 class Routes {
   static const String splashScreen = "/";
   static const String loginScreen = "/login";
-  static const String agreementScreen = "/login/join/agreement";
-  static const String registerTagScreen = "/login/join/tag";
+  static const String agreementScreen = "/login/regist/agreement";
+  static const String registNameScreen = "login/regist/name";
+  static const String registTagScreen = "/login/regist/tag";
   static const String homeScreen = "/home";
   static const String workoutStartScreen = "/workout/start";
 
@@ -34,11 +36,18 @@ class Routes {
             builder: (BuildContext context) {
               return const AgreementScreen();
             });
-      case registerTagScreen:
+
+      case registNameScreen:
         return MaterialPageRoute(
-            settings: const RouteSettings(name: registerTagScreen),
+            settings: const RouteSettings(name: registNameScreen),
             builder: (BuildContext context) {
-              return const RegisterTagScreen();
+              return const RegistNameScreen();
+            });
+      case registTagScreen:
+        return MaterialPageRoute(
+            settings: const RouteSettings(name: registTagScreen),
+            builder: (BuildContext context) {
+              return const RegistTagScreen();
             });
       case homeScreen:
         return MaterialPageRoute(

@@ -32,10 +32,11 @@ class _AgreementScreenState extends State<AgreementScreen> {
         backgroundColor: const Color(0xffffffff),
         foregroundColor: const Color(0xff000000),
         centerTitle: true,
-        title: const Text('약관동의'),
+        title: const Text('회원가입'),
       ),
       body: Column(
         children: [
+          Text('한결아 운동하자!\n같이 득근해보아요!'),
           agreement(index: 0),
           agreement(index: 1),
           agreement(index: 2),
@@ -44,7 +45,7 @@ class _AgreementScreenState extends State<AgreementScreen> {
             child: OutlinedButton(
               onPressed: () {
                 if (_validation) {
-                  Navigator.pushNamed(context, Routes.registerTagScreen);
+                  Navigator.pushNamed(context, Routes.registNameScreen);
                 }
               },
               child: const Center(

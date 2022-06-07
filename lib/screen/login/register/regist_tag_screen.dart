@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:letsworkout/bloc/app_bloc.dart';
 import 'package:letsworkout/config/route.dart';
 
-class RegisterTagScreen extends StatefulWidget {
-  const RegisterTagScreen({Key? key}) : super(key: key);
+class RegistTagScreen extends StatefulWidget {
+  const RegistTagScreen({Key? key}) : super(key: key);
 
   @override
-  State<RegisterTagScreen> createState() => _RegisterTagScreenState();
+  State<RegistTagScreen> createState() => _RegistTagScreenState();
 }
 
-class _RegisterTagScreenState extends State<RegisterTagScreen> {
+class _RegistTagScreenState extends State<RegistTagScreen> {
   final TextEditingController _tagController = TextEditingController();
   bool _validation = false;
   bool _loading = false;
