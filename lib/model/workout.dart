@@ -1,7 +1,7 @@
 class Workout {
   Workout({
     this.id,
-    this.userId,
+    required this.userId,
     this.workoutType,
     required this.startTime,
     this.endTime,

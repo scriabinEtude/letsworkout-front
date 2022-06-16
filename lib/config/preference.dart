@@ -3,11 +3,13 @@ import 'package:letsworkout/bloc/app_bloc.dart';
 import 'package:letsworkout/enum/workout_type.dart';
 import 'package:letsworkout/model/user.dart';
 import 'package:letsworkout/model/workout.dart';
+import 'package:letsworkout/repository/workout_repository.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 
 class Preferences {
   static SharedPreferences? instance;
+  static final WorkoutRepository workoutRepository = WorkoutRepository();
 
   static Future<SharedPreferences?> setPreferences() async {
     instance = await SharedPreferences.getInstance();
@@ -81,6 +83,11 @@ class Preferences {
       ),
     );
 
+    int? id = await workoutRepository.postWorkout(workout);
+    if (id == null) return null;
+
+    workout = workout.copyWith(id: id);
+    await workoutRepository.userActivate(me.id!);
     await setObject('workout', workout);
     return workout;
   }
@@ -91,6 +98,12 @@ class Preferences {
         endTime: DateFormat('yyyy-MM-dd kk:mm:ss').format(
           DateTime.now(),
         ));
+
+    if (workout != null) {
+      await workoutRepository.userDeactivate(workout.userId!);
+      await workoutRepository.endWorkout(workout);
+    }
+
     await workoutRemove();
     return workout;
   }
@@ -102,6 +115,7 @@ class Preferences {
   }
 
   static Future<Workout> workoutSet(Workout workout) async {
+    await workoutRepository.patchWorkout(workout);
     await setObject('workout', workout);
     return workout;
   }

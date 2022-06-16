@@ -22,7 +22,7 @@ class _HomeScreenState extends State<HomeScreen> {
         backgroundColor: Colors.white,
         appBar: AppBar(
           title: Text(
-            '${AppBloc.userCubit.user!.name ?? AppBloc.userCubit.user!.tag} 운동하자!',
+            '${AppBloc.userCubit.user!.name ?? AppBloc.userCubit.user!.tag}아 운동하자!',
           ),
           centerTitle: true,
           elevation: 0,

@@ -32,13 +32,13 @@ class _LoginScreenState extends State<LoginScreen> {
   Future<void> _testLogin() async {
     // 유저 저장하고 메인화면으로 이동
     User testUser = User(
-        id: -1,
+        id: 2,
         email: 'letsworkout@gmail.co.kr',
-        name: '임한결',
+        name: '한결',
         tag: 'scriabinEtude',
         provider: 'kakao',
         createdAt: "2022-05-05 13:02:32");
-    AppBloc.userCubit.setUser(testUser);
+    await AppBloc.userCubit.setUser(testUser);
     Navigator.pushReplacementNamed(context, Routes.homeScreen);
   }
 
@@ -67,19 +67,19 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
             ),
-            // Expanded(
-            //   child: Center(
-            //     child: InkWell(
-            //       onTap: () => _testLogin(),
-            //       child: Container(
-            //         height: 60,
-            //         width: 250,
-            //         color: Colors.yellow,
-            //         child: const Text('테스트 로그인'),
-            //       ),
-            //     ),
-            //   ),
-            // ),
+            Expanded(
+              child: Center(
+                child: InkWell(
+                  onTap: () => _testLogin(),
+                  child: Container(
+                    height: 60,
+                    width: 250,
+                    color: Colors.yellow,
+                    child: const Text('테스트 로그인'),
+                  ),
+                ),
+              ),
+            ),
           ],
         ),
       ),

@@ -50,11 +50,17 @@ class LoginCubit extends Cubit<User> {
             await kakao.UserApi.instance.loginWithKakaoTalk();
 
             kakao.User user = await kakao.UserApi.instance.me();
-
             email = user.kakaoAccount!.email!;
           } catch (e) {
             try {
-              await kakao.UserApi.instance.loginWithKakaoAccount();
+              kakao.OAuthToken token =
+                  await kakao.UserApi.instance.loginWithKakaoAccount();
+              kakao.AccessTokenInfo tokenInfo =
+                  await kakao.UserApi.instance.accessTokenInfo();
+              print(kakao.UserApi.instance);
+
+              kakao.User user = await kakao.UserApi.instance.me();
+              email = user.kakaoAccount!.email!;
             } catch (e) {
               // 사용자가 도중에 취소한 경우
               AppBloc.appCubit.appSnackBar('로그인 시도를 취소하였습니다.');

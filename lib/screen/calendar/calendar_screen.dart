@@ -40,6 +40,9 @@ class _CalendarScreenState extends State<CalendarScreen> {
               _focusedDay = focusedDay;
             });
           },
+          eventLoader: (DateTime day) {
+            return [];
+          },
         ),
       ],
     );
@@ -57,27 +60,6 @@ class _CalendarScreenState extends State<CalendarScreen> {
           Text(
             '${_focusedDay.month}월',
             style: const TextStyle(fontSize: 18),
-          ),
-          Row(
-            children: [
-              InkWell(
-                onTap: () {},
-                child: Container(
-                  width: 100,
-                  color: Colors.amber,
-                  child: Center(child: Text('운동시작!')),
-                ),
-              ),
-              const SizedBox(width: 20),
-              InkWell(
-                onTap: () {},
-                child: Container(
-                  width: 100,
-                  color: Colors.blue,
-                  child: Center(child: Text('식단 등록')),
-                ),
-              ),
-            ],
           ),
         ],
       ),
