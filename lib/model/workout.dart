@@ -1,5 +1,7 @@
 class Workout {
   Workout({
+    this.feedId,
+    this.actType,
     this.id,
     required this.userId,
     this.workoutType,
@@ -8,6 +10,8 @@ class Workout {
     this.content,
   });
 
+  final int? feedId;
+  final int? actType;
   final int? id;
   final int? userId;
   final int? workoutType;
@@ -16,6 +20,8 @@ class Workout {
   final String? content;
 
   Workout copyWith({
+    int? feedId,
+    int? actType,
     int? id,
     int? userId,
     int? workoutType,
@@ -24,6 +30,8 @@ class Workout {
     String? content,
   }) =>
       Workout(
+        feedId: feedId ?? this.feedId,
+        actType: actType ?? this.actType,
         id: id ?? this.id,
         userId: userId ?? this.userId,
         workoutType: workoutType ?? this.workoutType,
@@ -34,19 +42,23 @@ class Workout {
 
   factory Workout.fromJson(Map<String, dynamic> json) => Workout(
         id: json["id"],
-        userId: json["userId"],
-        workoutType: json['workoutType'],
-        startTime: json["startTime"],
-        endTime: json["endTime"],
+        actType: json['act_type'],
+        userId: json["user_id"],
+        feedId: json['feed_id'],
+        workoutType: json['workout_type'],
+        startTime: json["start_time"],
+        endTime: json["end_time"],
         content: json["content"],
       );
 
   Map<String, dynamic> toJson() => {
         "id": id,
-        "userId": userId,
-        'workoutType': workoutType,
-        "startTime": startTime,
-        "endTime": endTime,
+        'act_type': actType,
+        "user_id": userId,
+        "feed_id": feedId,
+        'workout_type': workoutType,
+        "start_time": startTime,
+        "end_time": endTime,
         "content": content,
       };
 }

@@ -1,14 +1,14 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:letsworkout/bloc/app/app_cubit.dart';
-import 'package:letsworkout/bloc/feed/feed_cubit.dart';
 import 'package:letsworkout/bloc/login/login_cubit.dart';
+import 'package:letsworkout/bloc/search/search_cubit.dart';
 import 'package:letsworkout/bloc/user/user_cubit.dart';
 
 class AppBloc {
   static final appCubit = AppCubit();
   static final loginCubit = LoginCubit();
   static final userCubit = UserCubit();
-  static final feedCubit = FeedCubit();
+  static final searchCubit = SearchCubit();
 
   static final List<BlocProvider> providers = [
     BlocProvider<AppCubit>(
@@ -20,8 +20,8 @@ class AppBloc {
     BlocProvider<UserCubit>(
       create: (context) => userCubit,
     ),
-    BlocProvider<FeedCubit>(
-      create: (context) => feedCubit,
+    BlocProvider<SearchCubit>(
+      create: (context) => searchCubit,
     ),
   ];
 
@@ -29,7 +29,7 @@ class AppBloc {
     appCubit.close();
     loginCubit.close();
     userCubit.close();
-    feedCubit.close();
+    searchCubit.close();
   }
 
   ///Singleton factory

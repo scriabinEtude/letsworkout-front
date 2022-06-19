@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:letsworkout/screen/calendar/calendar_detail_screen.dart';
+import 'package:letsworkout/screen/calendar/calendar_detail_screen_args.dart';
 import 'package:letsworkout/screen/home_screen.dart';
 import 'package:letsworkout/screen/login/register/agreement_screen.dart';
 import 'package:letsworkout/screen/login/login_screen.dart';
@@ -15,6 +17,7 @@ class Routes {
   static const String registTagScreen = "/login/regist/tag";
   static const String homeScreen = "/home";
   static const String workoutStartScreen = "/workout/start";
+  static const String calendarDetailScreen = "/calendar/detail";
 
   Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -60,6 +63,17 @@ class Routes {
             settings: const RouteSettings(name: workoutStartScreen),
             builder: (BuildContext context) {
               return const WorkoutStartScreen();
+            });
+      case calendarDetailScreen:
+        final CalendarDetailScreenArgs args =
+            settings.arguments as CalendarDetailScreenArgs;
+        return MaterialPageRoute(
+            settings: const RouteSettings(name: calendarDetailScreen),
+            builder: (BuildContext context) {
+              return CalendarDetailScreen(
+                calendarCubit: args.calendarCubit,
+                date: args.date,
+              );
             });
       default:
         return MaterialPageRoute(

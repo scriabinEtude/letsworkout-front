@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:letsworkout/bloc/app_bloc.dart';
-import 'package:letsworkout/bloc/feed/feed_cubit.dart';
-import 'package:letsworkout/bloc/feed/feed_state.dart';
 import 'package:letsworkout/config/route.dart';
-import 'package:letsworkout/enum/feed_type.dart';
+import 'package:letsworkout/enum/act_type.dart';
 import 'package:letsworkout/model/feed.dart';
 
 class FeedScreen extends StatefulWidget {
@@ -51,24 +49,12 @@ class _FeedScreenState extends State<FeedScreen> {
             ),
           ],
         ),
-        const SizedBox(height: 20),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20.0),
-          child: BlocBuilder<FeedCubit, FeedState>(
-              bloc: AppBloc.feedCubit,
-              builder: (context, state) {
-                return Column(
-                    children: AppBloc.feedCubit.state.feeds
-                        .map((feed) => feedWidget(feed))
-                        .toList());
-              }),
-        ),
       ],
     );
   }
 
   Widget feedWidget(Feed feed) {
-    Color feedColor = FeedType.values[feed.feedType!].feedColor;
+    Color feedColor = ActType.values[feed.actType!].feedColor;
 
     return Container(
       margin: const EdgeInsets.only(bottom: 10),

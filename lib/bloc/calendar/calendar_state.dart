@@ -1,20 +1,30 @@
-import 'package:letsworkout/enum/feed_type.dart';
+import 'package:letsworkout/enum/loading_state.dart';
+import 'package:letsworkout/model/feed.dart';
+import 'package:letsworkout/model/user.dart';
 
 class CalendarState {
-  final bool loading;
-  final Map<String, List<FeedType>> events;
+  final LoadingState loading;
+  final User user;
+  final Map<String, List<Feed>> feeds;
+  final List<dynamic> feedOneDay;
 
   CalendarState({
-    this.loading = false,
-    required this.events,
+    this.loading = LoadingState.init,
+    required this.user,
+    required this.feeds,
+    required this.feedOneDay,
   });
 
-  CalendarState copyWith(
-    bool? loading,
-    Map<String, List<FeedType>>? events,
-  ) =>
+  CalendarState copyWith({
+    LoadingState? loading,
+    User? user,
+    Map<String, List<Feed>>? feeds,
+    List<dynamic>? feedOneDay,
+  }) =>
       CalendarState(
         loading: loading ?? this.loading,
-        events: events ?? this.events,
+        user: user ?? this.user,
+        feeds: feeds ?? this.feeds,
+        feedOneDay: feedOneDay ?? this.feedOneDay,
       );
 }

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-enum FeedType {
+enum ActType {
   workout(Color(0xFFCCF3FF)),
   diet(Color(0xFFFFF3DD));
 
   final Color feedColor;
 
-  const FeedType(this.feedColor);
+  const ActType(this.feedColor);
 }

@@ -38,7 +38,7 @@ class User {
         provider: json["provider"],
         tag: json["tag"],
         name: json["name"],
-        createdAt: json["createdAt"],
+        createdAt: json["created_at"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -47,6 +47,9 @@ class User {
         "provider": provider,
         "tag": tag,
         "name": name,
-        "createdAt": createdAt,
+        "created_at": createdAt,
       };
+
+  static List<User> fromJsonList(List list) =>
+      list.map((user) => User.fromJson(user)).toList();
 }
