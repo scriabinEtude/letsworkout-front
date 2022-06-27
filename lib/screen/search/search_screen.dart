@@ -3,7 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:letsworkout/bloc/app_bloc.dart';
 import 'package:letsworkout/bloc/search/search_cubit.dart';
 import 'package:letsworkout/bloc/search/search_state.dart';
+import 'package:letsworkout/config/route.dart';
 import 'package:letsworkout/model/user.dart';
+import 'package:letsworkout/screen/calendar/calendar_screen_args.dart';
 
 class SearchScreen extends StatefulWidget {
   const SearchScreen({Key? key}) : super(key: key);
@@ -39,10 +41,17 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   Widget searchUserWidget(User user) {
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 10),
-      height: 100,
-      color: Colors.amber,
+    return InkWell(
+      onTap: () {
+        Navigator.pushNamed(context, Routes.calendarScreen,
+            arguments: CalendarScreenArgs(user: user));
+      },
+      child: Container(
+        margin: const EdgeInsets.symmetric(vertical: 10),
+        height: 100,
+        color: Colors.amber,
+        child: Text('${user.name} ${user.tag}'),
+      ),
     );
   }
 }

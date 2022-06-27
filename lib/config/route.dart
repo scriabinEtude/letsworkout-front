@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:letsworkout/screen/calendar/calendar_detail_screen.dart';
 import 'package:letsworkout/screen/calendar/calendar_detail_screen_args.dart';
+import 'package:letsworkout/screen/calendar/calendar_screen.dart';
+import 'package:letsworkout/screen/calendar/calendar_screen_args.dart';
+import 'package:letsworkout/screen/follow/follow_list_screen.dart';
+import 'package:letsworkout/screen/follow/follow_list_screen_args.dart';
 import 'package:letsworkout/screen/home_screen.dart';
 import 'package:letsworkout/screen/login/register/agreement_screen.dart';
 import 'package:letsworkout/screen/login/login_screen.dart';
@@ -17,7 +21,9 @@ class Routes {
   static const String registTagScreen = "/login/regist/tag";
   static const String homeScreen = "/home";
   static const String workoutStartScreen = "/workout/start";
+  static const String calendarScreen = "/calendar";
   static const String calendarDetailScreen = "/calendar/detail";
+  static const String followListScreen = "/follow/list";
 
   Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -64,6 +70,16 @@ class Routes {
             builder: (BuildContext context) {
               return const WorkoutStartScreen();
             });
+      case calendarScreen:
+        final CalendarScreenArgs args =
+            settings.arguments as CalendarScreenArgs;
+        return MaterialPageRoute(
+            settings: const RouteSettings(name: calendarScreen),
+            builder: (BuildContext context) {
+              return CalendarScreen(
+                user: args.user,
+              );
+            });
       case calendarDetailScreen:
         final CalendarDetailScreenArgs args =
             settings.arguments as CalendarDetailScreenArgs;
@@ -73,6 +89,16 @@ class Routes {
               return CalendarDetailScreen(
                 calendarCubit: args.calendarCubit,
                 date: args.date,
+              );
+            });
+      case followListScreen:
+        final FollowListScreenArgs args =
+            settings.arguments as FollowListScreenArgs;
+        return MaterialPageRoute(
+            settings: const RouteSettings(name: followListScreen),
+            builder: (BuildContext context) {
+              return FollowListScreen(
+                followCubit: args.followCubit,
               );
             });
       default:

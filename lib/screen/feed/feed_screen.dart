@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:letsworkout/bloc/app_bloc.dart';
 import 'package:letsworkout/config/route.dart';
 import 'package:letsworkout/enum/act_type.dart';
 import 'package:letsworkout/model/feed.dart';
+import 'package:letsworkout/screen/widgets.dart';
 
 class FeedScreen extends StatefulWidget {
   const FeedScreen({Key? key}) : super(key: key);
@@ -15,41 +14,45 @@ class FeedScreen extends StatefulWidget {
 class _FeedScreenState extends State<FeedScreen> {
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      children: [
-        const SizedBox(height: 20),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            InkWell(
-              onTap: () =>
-                  Navigator.pushNamed(context, Routes.workoutStartScreen),
-              child: Container(
-                width: 150,
-                height: 50,
-                decoration: BoxDecoration(
-                    color: Colors.lightBlue[400]!.withOpacity(0.5),
-                    borderRadius: const BorderRadius.all(Radius.circular(20))),
-                child: const Center(child: Text('운동하기')),
-              ),
-            ),
-            InkWell(
-              onTap: () {},
-              child: Container(
-                width: 150,
-                height: 50,
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.amber[400]!, width: 1),
-                  borderRadius: const BorderRadius.all(
-                    Radius.circular(20),
-                  ),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 19),
+      child: ListView(
+        children: [
+          const SizedBox(height: 20),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              InkWell(
+                onTap: () =>
+                    Navigator.pushNamed(context, Routes.workoutStartScreen),
+                child: Container(
+                  width: 150,
+                  height: 50,
+                  decoration: BoxDecoration(
+                      color: Colors.lightBlue[400]!.withOpacity(0.5),
+                      borderRadius:
+                          const BorderRadius.all(Radius.circular(20))),
+                  child: const Center(child: Text('운동하기')),
                 ),
-                child: const Center(child: Text('식단 등록')),
               ),
-            ),
-          ],
-        ),
-      ],
+              InkWell(
+                onTap: () {},
+                child: Container(
+                  width: 150,
+                  height: 50,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.amber[400]!, width: 1),
+                    borderRadius: const BorderRadius.all(
+                      Radius.circular(20),
+                    ),
+                  ),
+                  child: const Center(child: Text('식단 등록')),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 
