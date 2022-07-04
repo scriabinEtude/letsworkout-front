@@ -13,6 +13,12 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:letsworkout/main.dart';
 
 void main() {
+  test('regexp', () {
+    String text =
+        "12d788934rc!*(3@&EROF3K:,235>F<?;s3vkz'x'cv2356()+-=0=./246,?><)  zws3fg2)";
+    print(text.replaceAll(RegExp(r'[^0-9]'), ""));
+  });
+
   test('error test', () {
     var encoded = jsonEncode('');
     print(encoded);

@@ -78,7 +78,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         designSize: const Size(428, 926), //pro max
         minTextAdapt: true,
         builder: (_) => MaterialApp(
-          title: 'Flutter Demo',
+          title: '한결아 운동하자!',
           theme: ThemeData(
             splashColor: Colors.transparent,
             highlightColor: Colors.transparent,

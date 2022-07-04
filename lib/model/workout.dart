@@ -5,9 +5,10 @@ class Workout {
     this.id,
     required this.userId,
     this.workoutType,
-    required this.startTime,
+    required this.time,
     this.endTime,
-    this.content,
+    this.description,
+    this.images,
   });
 
   final int? feedId;
@@ -15,9 +16,10 @@ class Workout {
   final int? id;
   final int? userId;
   final int? workoutType;
-  final String startTime;
+  final String time;
   final String? endTime;
-  final String? content;
+  final String? description;
+  final List<String>? images;
 
   Workout copyWith({
     int? feedId,
@@ -25,9 +27,10 @@ class Workout {
     int? id,
     int? userId,
     int? workoutType,
-    String? startTime,
+    String? time,
     String? endTime,
-    String? content,
+    String? description,
+    List<String>? images,
   }) =>
       Workout(
         feedId: feedId ?? this.feedId,
@@ -35,9 +38,10 @@ class Workout {
         id: id ?? this.id,
         userId: userId ?? this.userId,
         workoutType: workoutType ?? this.workoutType,
-        startTime: startTime ?? this.startTime,
+        time: time ?? this.time,
         endTime: endTime ?? this.endTime,
-        content: content ?? this.content,
+        description: description ?? this.description,
+        images: images ?? this.images,
       );
 
   factory Workout.fromJson(Map<String, dynamic> json) => Workout(
@@ -46,9 +50,10 @@ class Workout {
         userId: json["user_id"],
         feedId: json['feed_id'],
         workoutType: json['workout_type'],
-        startTime: json["start_time"],
+        time: json["time"],
         endTime: json["end_time"],
-        content: json["content"],
+        description: json["description"],
+        images: List<String>.from(json['images']),
       );
 
   Map<String, dynamic> toJson() => {
@@ -57,8 +62,9 @@ class Workout {
         "user_id": userId,
         "feed_id": feedId,
         'workout_type': workoutType,
-        "start_time": startTime,
+        "time": time,
         "end_time": endTime,
-        "content": content,
+        "description": description,
+        "images": images,
       };
 }

@@ -1,8 +1,10 @@
 import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:letsworkout/bloc/app_bloc.dart';
 import 'package:letsworkout/bloc/calendar/calendar_cubit.dart';
 import 'package:letsworkout/bloc/calendar/calendar_state.dart';
+import 'package:letsworkout/enum/act_type.dart';
 import 'package:letsworkout/util/date_util.dart';
 
 class CalendarDetailScreen extends StatefulWidget {
@@ -48,29 +50,44 @@ class _CalendarDetailScreenState extends State<CalendarDetailScreen> {
   }
 
   Widget feedWidget(dynamic feed) {
+    ActType type = ActType.values[feed.actType];
+
     return Container(
-        height: 100,
         child: Column(
-          children: [
-            Text('${feed.startTime} ${feed.endTime} ${feed.content}'),
-            ElevatedButton(
-              onPressed: () async {
-                OkCancelResult result = await showOkCancelAlertDialog(
-                  context: context,
-                  message: '기록을 삭제하시겠습니까?',
-                  okLabel: '삭제',
-                  cancelLabel: '취소',
-                );
-                if (result == OkCancelResult.ok) {
-                  await widget.calendarCubit.deleteFeed(feed, widget.date);
-                }
-              },
-              style: ElevatedButton.styleFrom(
-                primary: Colors.red,
-              ),
-              child: const Text('삭제'),
+      children: [
+        if (feed.images?.isNotEmpty == true)
+          SizedBox(
+            height: 200,
+            child: ListView(
+              scrollDirection: Axis.horizontal,
+              children: (feed.images as List<String>)
+                  .map((image) => Image.network(
+                        image,
+                      ))
+                  .toList(),
             ),
-          ],
-        ));
+          ),
+        Text(type.title),
+        Text('${feed.time} ${feed.description}'),
+        if (AppBloc.userCubit.user!.id! == feed.userId)
+          ElevatedButton(
+            onPressed: () async {
+              OkCancelResult result = await showOkCancelAlertDialog(
+                context: context,
+                message: '기록을 삭제하시겠습니까?',
+                okLabel: '삭제',
+                cancelLabel: '취소',
+              );
+              if (result == OkCancelResult.ok) {
+                await widget.calendarCubit.deleteFeed(feed, widget.date);
+              }
+            },
+            style: ElevatedButton.styleFrom(
+              primary: Colors.red,
+            ),
+            child: const Text('삭제'),
+          ),
+      ],
+    ));
   }
 }

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:letsworkout/config/route.dart';
 import 'package:letsworkout/enum/act_type.dart';
 import 'package:letsworkout/model/feed.dart';
-import 'package:letsworkout/screen/widgets.dart';
 
 class FeedScreen extends StatefulWidget {
   const FeedScreen({Key? key}) : super(key: key);
@@ -36,7 +35,8 @@ class _FeedScreenState extends State<FeedScreen> {
                 ),
               ),
               InkWell(
-                onTap: () {},
+                onTap: () =>
+                    Navigator.pushNamed(context, Routes.dietWriteScreen),
                 child: Container(
                   width: 150,
                   height: 50,

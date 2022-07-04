@@ -6,11 +6,13 @@ import 'package:letsworkout/bloc/calendar/calendar_state.dart';
 import 'package:letsworkout/bloc/follow/follow_cubit.dart';
 import 'package:letsworkout/bloc/follow/follow_state.dart';
 import 'package:letsworkout/config/route.dart';
+import 'package:letsworkout/enum/loading_state.dart';
 import 'package:letsworkout/model/feed.dart';
 import 'package:letsworkout/model/user.dart';
 import 'package:letsworkout/screen/calendar/calendar_detail_screen_args.dart';
 import 'package:letsworkout/screen/follow/follow_list_screen_args.dart';
 import 'package:letsworkout/util/date_util.dart';
+import 'package:letsworkout/widget/avatar.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class CalendarScreen extends StatefulWidget {
@@ -153,11 +155,9 @@ class _CalendarScreenState extends State<CalendarScreen> {
       children: [
         Row(
           children: [
-            Container(
-              height: 70,
-              width: 70,
-              color: Colors.amber,
-              child: const Text('avatar'),
+            Avatar(
+              size: 40,
+              image: widget.user.profileImage,
             ),
             Expanded(
               child: InkWell(
@@ -188,7 +188,8 @@ class _CalendarScreenState extends State<CalendarScreen> {
             )
           ],
         ),
-        if (state.user.id != AppBloc.userCubit.user!.id)
+        if (state.user.id != AppBloc.userCubit.user!.id &&
+            state.loading == LoadingState.done)
           Row(
             children: [
               InkWell(

@@ -4,6 +4,7 @@ import 'package:letsworkout/enum/workout_type.dart';
 import 'package:letsworkout/model/user.dart';
 import 'package:letsworkout/model/workout.dart';
 import 'package:letsworkout/repository/workout_repository.dart';
+import 'package:letsworkout/util/date_util.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 
@@ -78,9 +79,7 @@ class Preferences {
     Workout workout = Workout(
       userId: me.id,
       workoutType: WorkoutType.working.index,
-      startTime: DateFormat('yyyy-MM-dd kk:mm:ss').format(
-        DateTime.now(),
-      ),
+      time: mysqlDateTimeFormat(DateTime.now()),
     );
 
     int? id = await workoutRepository.postWorkout(workout);
@@ -94,10 +93,9 @@ class Preferences {
 
   static Future<Workout?> workoutEnd() async {
     Workout? workout = workoutGet()?.copyWith(
-        workoutType: WorkoutType.end.index,
-        endTime: DateFormat('yyyy-MM-dd kk:mm:ss').format(
-          DateTime.now(),
-        ));
+      workoutType: WorkoutType.end.index,
+      endTime: mysqlDateTimeFormat(DateTime.now()),
+    );
 
     if (workout != null) {
       await workoutRepository.userDeactivate(workout.userId!);

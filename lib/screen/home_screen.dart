@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:letsworkout/bloc/app_bloc.dart';
+import 'package:letsworkout/bloc/user/user_cubit.dart';
+import 'package:letsworkout/bloc/user/user_state.dart';
+import 'package:letsworkout/config/route.dart';
 import 'package:letsworkout/screen/calendar/calendar_screen.dart';
 import 'package:letsworkout/screen/feed/feed_screen.dart';
 import 'package:letsworkout/screen/search/search_screen.dart';
@@ -45,6 +49,11 @@ class _HomeScreenState extends State<HomeScreen> {
                   color: Colors.blue,
                 ),
                 child: Text('Drawer Header'),
+              ),
+              ListTile(
+                title: const Text('프로필 변경'),
+                onTap: () =>
+                    Navigator.popAndPushNamed(context, Routes.profileScreen),
               ),
               ListTile(
                 title: const Text('로그아웃'),
@@ -129,8 +138,13 @@ class _HomeScreenState extends State<HomeScreen> {
       );
     } else {
       return AppBar(
-        title: Text(
-          '${AppBloc.userCubit.user!.name ?? AppBloc.userCubit.user!.tag}아 운동하자!',
+        title: BlocBuilder<UserCubit, UserState>(
+          bloc: AppBloc.userCubit,
+          builder: (context, state) {
+            return Text(
+              '${state.user!.name ?? state.user!.tag}아 운동하자!',
+            );
+          },
         ),
         centerTitle: true,
         elevation: 0,

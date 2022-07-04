@@ -23,7 +23,7 @@ class _WorkoutStartScreenState extends State<WorkoutStartScreen> {
     // 운동중이었다면 상태 가져와서 세팅
     // 운동중 상태는 앱내 저장함
     workout = Preferences.workoutGet();
-    _textController.text = workout?.content ?? "";
+    _textController.text = workout?.description ?? "";
     super.initState();
 
     // 운동이 끝난 상태면 초기화
@@ -45,7 +45,7 @@ class _WorkoutStartScreenState extends State<WorkoutStartScreen> {
     // 운동상태 저장
     if (workout != null) {
       Preferences.workoutSet(
-        workout!.copyWith(content: _textController.text),
+        workout!.copyWith(description: _textController.text),
       );
     }
     _textController.dispose();
@@ -117,8 +117,7 @@ class _WorkoutStartScreenState extends State<WorkoutStartScreen> {
     DateTime endTime = workout!.endTime != null
         ? DateTime.parse(workout!.endTime!)
         : DateTime.now();
-    Duration difference =
-        endTime.difference(DateTime.parse(workout!.startTime));
+    Duration difference = endTime.difference(DateTime.parse(workout!.time));
     int hour = difference.inSeconds ~/ (60 * 60);
     int min = difference.inSeconds ~/ 60 % 60;
     int sec = difference.inSeconds % 60;
@@ -161,7 +160,7 @@ class _WorkoutStartScreenState extends State<WorkoutStartScreen> {
       onTap = () async {
         // 운동정보 저장
         await Preferences.workoutSet(
-          workout!.copyWith(content: _textController.text),
+          workout!.copyWith(description: _textController.text),
         );
         workout = await Preferences.workoutEnd();
         _textController.text = "";

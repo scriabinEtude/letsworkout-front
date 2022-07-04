@@ -3,6 +3,7 @@ import 'package:letsworkout/screen/calendar/calendar_detail_screen.dart';
 import 'package:letsworkout/screen/calendar/calendar_detail_screen_args.dart';
 import 'package:letsworkout/screen/calendar/calendar_screen.dart';
 import 'package:letsworkout/screen/calendar/calendar_screen_args.dart';
+import 'package:letsworkout/screen/diet/diet_write_screen.dart';
 import 'package:letsworkout/screen/follow/follow_list_screen.dart';
 import 'package:letsworkout/screen/follow/follow_list_screen_args.dart';
 import 'package:letsworkout/screen/home_screen.dart';
@@ -10,6 +11,7 @@ import 'package:letsworkout/screen/login/register/agreement_screen.dart';
 import 'package:letsworkout/screen/login/login_screen.dart';
 import 'package:letsworkout/screen/login/register/regist_name_screen.dart';
 import 'package:letsworkout/screen/login/register/regist_tag_screen.dart';
+import 'package:letsworkout/screen/profile/profile_screen.dart';
 import 'package:letsworkout/screen/splash_screen.dart';
 import 'package:letsworkout/screen/workout/workout_start_screen.dart';
 
@@ -24,6 +26,8 @@ class Routes {
   static const String calendarScreen = "/calendar";
   static const String calendarDetailScreen = "/calendar/detail";
   static const String followListScreen = "/follow/list";
+  static const String profileScreen = "/profile";
+  static const String dietWriteScreen = "/diet/write";
 
   Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -100,6 +104,20 @@ class Routes {
               return FollowListScreen(
                 followCubit: args.followCubit,
               );
+            });
+
+      case profileScreen:
+        return MaterialPageRoute(
+            settings: const RouteSettings(name: profileScreen),
+            builder: (BuildContext context) {
+              return const ProfileScreen();
+            });
+
+      case dietWriteScreen:
+        return MaterialPageRoute(
+            settings: const RouteSettings(name: dietWriteScreen),
+            builder: (BuildContext context) {
+              return const DietWriteScreen();
             });
       default:
         return MaterialPageRoute(
