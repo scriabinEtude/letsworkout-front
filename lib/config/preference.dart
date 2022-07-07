@@ -4,6 +4,7 @@ import 'package:letsworkout/enum/workout_type.dart';
 import 'package:letsworkout/model/user.dart';
 import 'package:letsworkout/model/workout.dart';
 import 'package:letsworkout/repository/workout_repository.dart';
+import 'package:letsworkout/util/cubit_util.dart';
 import 'package:letsworkout/util/date_util.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
@@ -31,7 +32,7 @@ class Preferences {
     try {
       return jsonDecode(objStr);
     } catch (e) {
-      AppBloc.appCubit.appSnackBar('object decode error');
+      snack('object decode error');
       return null;
     }
   }
@@ -44,7 +45,7 @@ class Preferences {
     try {
       return await instance!.setString(key, jsonEncode(object));
     } catch (e) {
-      AppBloc.appCubit.appSnackBar('preference set object');
+      snack('preference set object');
       return false;
     }
   }
@@ -72,7 +73,7 @@ class Preferences {
   static Future<Workout?> workoutStart() async {
     User? me = userGet();
     if (me == null) {
-      AppBloc.appCubit.appSnackBar('로그인을 먼저 해주세요');
+      snack('로그인을 먼저 해주세요');
       return null;
     }
 

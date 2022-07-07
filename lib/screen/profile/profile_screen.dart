@@ -5,6 +5,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:letsworkout/bloc/app_bloc.dart';
 import 'package:letsworkout/widget/avatar.dart';
 import 'package:letsworkout/widget/bottomsheet.dart';
+import 'package:letsworkout/widget/scaffold.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -34,8 +35,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         appBar: AppBar(
           title: const Text('프로필'),
           centerTitle: true,
-          actions: [
-            InkWell(
+          actions: scaffoldSingleAction(
               onTap: () async {
                 bool success = await AppBloc.userCubit.updateUser(
                   name: _nameController.text,
@@ -44,10 +44,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 );
                 if (success) Navigator.pop(context);
               },
-              child: const Center(child: Text('저장')),
-            ),
-            const SizedBox(width: 20),
-          ],
+              child: const Text('저장')),
         ),
         body: Column(
           children: [

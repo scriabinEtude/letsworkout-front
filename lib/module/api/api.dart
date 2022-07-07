@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
@@ -7,9 +8,7 @@ import 'package:letsworkout/module/api/pretty_dio_logger.dart';
 
 List<Interceptor> interceptors = [
   ApiErrorInterceptor(),
-  PrettyDioLogger(
-    requestBody: true,
-  ),
+  PrettyDioLogger(requestBody: true, logPrint: (obj) => log(obj as String)),
 ];
 
 BaseOptions baseOptions = BaseOptions(

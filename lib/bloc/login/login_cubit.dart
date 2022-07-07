@@ -4,6 +4,7 @@ import 'package:letsworkout/enum/login_provider.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart' as kakao;
 import 'package:letsworkout/model/user.dart';
 import 'package:letsworkout/repository/user_repository.dart';
+import 'package:letsworkout/util/cubit_util.dart';
 
 //***
 //
@@ -63,12 +64,12 @@ class LoginCubit extends Cubit<User> {
               email = user.kakaoAccount!.email!;
             } catch (e) {
               // 사용자가 도중에 취소한 경우
-              AppBloc.appCubit.appSnackBar('로그인 시도를 취소하였습니다.');
+              snack('로그인 시도를 취소하였습니다.');
               throw Exception('로그인 시도 취소');
             }
           }
         } else {
-          AppBloc.appCubit.appSnackBar('카카오톡이 설치되어 있지 않습니다.');
+          snack('카카오톡이 설치되어 있지 않습니다.');
         }
         break;
     }
@@ -90,7 +91,7 @@ class LoginCubit extends Cubit<User> {
     try {
       User? user = AppBloc.userCubit.user;
       if (user == null) {
-        AppBloc.appCubit.appSnackBar("처음부터 다시 시도해 주십시오.");
+        snack("처음부터 다시 시도해 주십시오.");
         return false;
       }
 
@@ -98,7 +99,7 @@ class LoginCubit extends Cubit<User> {
       bool? isExistTag = await _repository.isExistTag(user.tag!);
 
       if (isExistTag == false) {
-        AppBloc.appCubit.appSnackBar("이미 존재하는 태그이름입니다.\n다른 이름을 사용하세요.");
+        snack("이미 존재하는 태그이름입니다.\n다른 이름을 사용하세요.");
         return false;
       } else if (isExistTag == true) {
         user = await _repository.registUser(user);

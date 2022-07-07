@@ -61,6 +61,13 @@ class _HomeScreenState extends State<HomeScreen> {
                   AppBloc.userCubit.logout(context);
                 },
               ),
+              ListTile(
+                title: const Text('고객 문의 & 기능건의'),
+                onTap: () async {
+                  Navigator.popAndPushNamed(
+                      context, Routes.customerQuestionWriteScreen);
+                },
+              ),
             ],
           ),
         ),

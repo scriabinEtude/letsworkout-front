@@ -6,6 +6,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:letsworkout/bloc/cubit/diet_cubit.dart';
 import 'package:letsworkout/util/string_util.dart';
+import 'package:letsworkout/widget/scaffold.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 class DietWriteScreen extends StatefulWidget {
@@ -46,8 +47,7 @@ class _DietWriteScreenState extends State<DietWriteScreen> {
         appBar: AppBar(
           title: const Text('식단 등록'),
           centerTitle: true,
-          actions: [
-            InkWell(
+          actions: scaffoldSingleAction(
               onTap: () async {
                 bool success = await _dietCubit.createDiet(
                   time: _time,
@@ -60,10 +60,7 @@ class _DietWriteScreenState extends State<DietWriteScreen> {
                 );
                 if (success) Navigator.pop(context);
               },
-              child: const Center(child: Text('저장')),
-            ),
-            const SizedBox(width: 20),
-          ],
+              child: const Text('저장')),
         ),
         body: ListView(
           children: [
