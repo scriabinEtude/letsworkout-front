@@ -3,6 +3,7 @@ import 'package:letsworkout/screen/calendar/calendar_detail_screen.dart';
 import 'package:letsworkout/screen/calendar/calendar_detail_screen_args.dart';
 import 'package:letsworkout/screen/calendar/calendar_screen.dart';
 import 'package:letsworkout/screen/calendar/calendar_screen_args.dart';
+import 'package:letsworkout/screen/customer/customer_question_view_screen.dart';
 import 'package:letsworkout/screen/customer/customer_question_wirte_screen.dart';
 import 'package:letsworkout/screen/diet/diet_write_screen.dart';
 import 'package:letsworkout/screen/follow/follow_list_screen.dart';
@@ -30,6 +31,7 @@ class Routes {
   static const String profileScreen = "/profile";
   static const String dietWriteScreen = "/diet/write";
   static const String customerQuestionWriteScreen = "/customer/question/write";
+  static const String customerQuestionViewScreen = "/customer/question/view";
 
   Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -127,6 +129,12 @@ class Routes {
             settings: const RouteSettings(name: customerQuestionWriteScreen),
             builder: (BuildContext context) {
               return const CustomerQuestionWirteScreen();
+            });
+      case customerQuestionViewScreen:
+        return MaterialPageRoute(
+            settings: const RouteSettings(name: customerQuestionViewScreen),
+            builder: (BuildContext context) {
+              return const CustomerQuestionViewScreen();
             });
 
       default:

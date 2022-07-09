@@ -21,4 +21,21 @@ class CustomerRepository {
       return false;
     }
   }
+
+  Future<List<CustomerQuestion>?> getCustomerQuestions() async {
+    try {
+      Response result = await api.get(
+        _getUrl('/question'),
+      );
+
+      if (result.statusCode == 200) {
+        return CustomerQuestion.fromJsonList(result.data);
+      } else {
+        return null;
+      }
+    } catch (e) {
+      print(e);
+      return null;
+    }
+  }
 }

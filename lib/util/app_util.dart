@@ -1,32 +1,80 @@
 import 'dart:io';
 
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'package:letsworkout/model/platform_state.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
-Future<void> initPlatformState() async {
+Future<String?> getFcmToken() async {
+  FirebaseMessaging messaging = FirebaseMessaging.instance;
+
+  // IOS
+  NotificationSettings settings = await messaging.requestPermission(
+    alert: true,
+    announcement: false,
+    badge: true,
+    carPlay: false,
+    criticalAlert: false,
+    provisional: false,
+    sound: true,
+  );
+
+  return await FirebaseMessaging.instance.getToken();
+}
+
+Future<PlatformState> getPlatformState() async {
+  PackageInfo packageInfo = await PackageInfo.fromPlatform();
+  String appVersion = packageInfo.version;
+
   final DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
 
   var deviceData = <String, dynamic>{};
 
   try {
-    if (kIsWeb) {
-      deviceData = _readWebBrowserInfo(await deviceInfoPlugin.webBrowserInfo);
-    } else {
-      if (Platform.isAndroid) {
-        deviceData = _readAndroidBuildData(await deviceInfoPlugin.androidInfo);
-      } else if (Platform.isIOS) {
-        deviceData = _readIosDeviceInfo(await deviceInfoPlugin.iosInfo);
-      } else if (Platform.isLinux) {
-        deviceData = _readLinuxDeviceInfo(await deviceInfoPlugin.linuxInfo);
-      } else if (Platform.isMacOS) {
-        deviceData = _readMacOsDeviceInfo(await deviceInfoPlugin.macOsInfo);
-      } else if (Platform.isWindows) {
-        deviceData = _readWindowsDeviceInfo(await deviceInfoPlugin.windowsInfo);
-      }
+    // if (kIsWeb) {
+    //   deviceData = _readWebBrowserInfo(await deviceInfoPlugin.webBrowserInfo);
+    // } else {
+    if (Platform.isAndroid) {
+      deviceData = _readAndroidBuildData(await deviceInfoPlugin.androidInfo);
+
+      return PlatformState(
+        os: 'Android ${deviceData['version.release']} (SDK ${deviceData['version.sdkInt']})',
+        device: '${deviceData['manufacturer']} ${deviceData['model']}',
+        appVersion: appVersion,
+      );
+    } else if (Platform.isIOS) {
+      deviceData = _readIosDeviceInfo(await deviceInfoPlugin.iosInfo);
+      return PlatformState(
+        os: '${deviceData['systemName']} ${deviceData['systemVersion']}',
+        device: '${deviceData['model']}',
+        appVersion: appVersion,
+      );
+    }
+    // else if (Platform.isLinux) {
+    //   deviceData = _readLinuxDeviceInfo(await deviceInfoPlugin.linuxInfo);
+    // } else if (Platform.isMacOS) {
+    //   deviceData = _readMacOsDeviceInfo(await deviceInfoPlugin.macOsInfo);
+    // } else if (Platform.isWindows) {
+    //   deviceData = _readWindowsDeviceInfo(await deviceInfoPlugin.windowsInfo);
+    // }
+    // }
+
+    else {
+      return PlatformState(
+        os: 'other',
+        device: 'other',
+        appVersion: appVersion,
+      );
     }
   } on PlatformException {
     deviceData = <String, dynamic>{'Error:': 'Failed to get platform version.'};
+    return PlatformState(
+      os: 'error',
+      device: 'error',
+      appVersion: appVersion,
+    );
   }
 }
 

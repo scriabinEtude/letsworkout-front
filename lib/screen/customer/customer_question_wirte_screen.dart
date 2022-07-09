@@ -33,7 +33,7 @@ class _CustomerQuestionWirteScreenState
               } else if (_textController.text.length < 10) {
                 snack("10자 이상으로 작성해주세요 \n자세하게 말씀해주시면 더욱 좋습니다!");
               } else {
-                bool success = await _cubit.sendCustomerReportToEmail(
+                bool success = await _cubit.insertCustomerQuestion(
                   title: _titleContoller.text,
                   body: _textController.text,
                 );

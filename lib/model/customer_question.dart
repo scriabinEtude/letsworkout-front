@@ -7,7 +7,6 @@ class CustomerQuestion {
     this.device,
     this.os,
     this.appVersion,
-    this.buildNumber,
   });
 
   final int? id;
@@ -17,7 +16,6 @@ class CustomerQuestion {
   final String? device;
   final String? os;
   final String? appVersion;
-  final String? buildNumber;
 
   CustomerQuestion copyWith({
     int? id,
@@ -27,7 +25,6 @@ class CustomerQuestion {
     String? device,
     String? os,
     String? appVersion,
-    String? buildNumber,
   }) =>
       CustomerQuestion(
         id: id ?? this.id,
@@ -37,29 +34,29 @@ class CustomerQuestion {
         device: device ?? this.device,
         os: os ?? this.os,
         appVersion: appVersion ?? this.appVersion,
-        buildNumber: buildNumber ?? this.buildNumber,
       );
 
   factory CustomerQuestion.fromJson(Map<String, dynamic> json) =>
       CustomerQuestion(
         id: json["id"],
-        userId: json["userId"],
+        userId: json["user_id"],
         title: json["title"],
         body: json["body"],
         device: json["device"],
         os: json["os"],
         appVersion: json["app_version"],
-        buildNumber: json["build_number"],
       );
 
   Map<String, dynamic> toJson() => {
         "id": id,
-        "userId": userId,
+        "user_id": userId,
         "title": title,
         "body": body,
         "device": device,
         "os": os,
         "app_version": appVersion,
-        "build_number": buildNumber,
       };
+
+  static List<CustomerQuestion> fromJsonList(List list) =>
+      list.map((e) => CustomerQuestion.fromJson(e)).toList();
 }

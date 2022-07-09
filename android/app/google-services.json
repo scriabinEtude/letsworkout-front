@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "999249610241",
+    "project_id": "letsworkout-b2b7f",
+    "storage_bucket": "letsworkout-b2b7f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:999249610241:android:d034c7ea0e818acf33a200",
+        "android_client_info": {
+          "package_name": "com.app.letsworkout"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "999249610241-72aqnq1f73c0fmbhu6hqb88802tutoi8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCVb8uzRNTA57Etq1mxrGnnvJwZgaL87k0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "999249610241-72aqnq1f73c0fmbhu6hqb88802tutoi8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -46,7 +46,12 @@ class AppBlocObserver extends BlocObserver {
 }
 
 void main() {
+  // KAKAO
   KakaoSdk.init(nativeAppKey: Application.kakaoNativeAppKey);
+
+  // package_info_plus
+  WidgetsFlutterBinding.ensureInitialized();
+
   initializeDateFormatting().then((_) => BlocOverrides.runZoned(
         () => runApp(const MyApp()),
         blocObserver: AppBlocObserver(),

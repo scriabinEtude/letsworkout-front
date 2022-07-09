@@ -1,12 +1,16 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:letsworkout/bloc/app_bloc.dart';
 import 'package:letsworkout/bloc/user/user_cubit.dart';
 import 'package:letsworkout/bloc/user/user_state.dart';
 import 'package:letsworkout/config/route.dart';
+import 'package:letsworkout/enum/user_type.dart';
 import 'package:letsworkout/screen/calendar/calendar_screen.dart';
 import 'package:letsworkout/screen/feed/feed_screen.dart';
 import 'package:letsworkout/screen/search/search_screen.dart';
+import 'package:letsworkout/util/app_util.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -19,6 +23,11 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final TextEditingController _friendSearchController = TextEditingController();
   int _index = 0;
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   void dispose() {
@@ -66,6 +75,29 @@ class _HomeScreenState extends State<HomeScreen> {
                 onTap: () async {
                   Navigator.popAndPushNamed(
                       context, Routes.customerQuestionWriteScreen);
+                },
+              ),
+              // 관리자만 열람 가능한 페이지
+              if (AppBloc.userCubit.user?.userType == UserType.admin.index)
+                ListTile(
+                  title: const Text('건의함'),
+                  onTap: () async {
+                    Navigator.pushNamed(
+                        context, Routes.customerQuestionViewScreen);
+                  },
+                ),
+              ListTile(
+                title: const Text('테스트 기능 동작'),
+                onTap: () async {
+                  print(await Permission.notification.request().isDenied);
+                  print(await Permission.notification
+                      .request()
+                      .isPermanentlyDenied);
+                  print(await Permission.notification.request().isLimited);
+                  print(await Permission.notification.request().isRestricted);
+                  print(await Permission.notification.request().isGranted);
+                  // await FirebaseMessaging.instance.requestPermission();
+                  // getFcmToken();
                 },
               ),
             ],

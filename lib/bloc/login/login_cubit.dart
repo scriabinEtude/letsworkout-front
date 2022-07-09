@@ -4,6 +4,7 @@ import 'package:letsworkout/enum/login_provider.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart' as kakao;
 import 'package:letsworkout/model/user.dart';
 import 'package:letsworkout/repository/user_repository.dart';
+import 'package:letsworkout/util/app_util.dart';
 import 'package:letsworkout/util/cubit_util.dart';
 
 //***
@@ -95,7 +96,10 @@ class LoginCubit extends Cubit<User> {
         return false;
       }
 
-      user = user.copyWith(tag: tag);
+      user = user.copyWith(
+        tag: tag,
+        fcmToken: await getFcmToken(),
+      );
       bool? isExistTag = await _repository.isExistTag(user.tag!);
 
       if (isExistTag == false) {
@@ -114,7 +118,9 @@ class LoginCubit extends Cubit<User> {
   }
 
   Future<bool> autoLogin(User requestUser) async {
-    User? user = await _repository.getUserId(requestUser.id!);
+    User? user = await _repository.login(requestUser.copyWith(
+      fcmToken: await getFcmToken(),
+    ));
     if (user == null) {
       return false;
     }

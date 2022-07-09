@@ -1,3 +1,5 @@
+import 'package:letsworkout/util/object_util.dart';
+
 class Workout {
   Workout({
     this.feedId,
@@ -53,7 +55,7 @@ class Workout {
         time: json["time"],
         endTime: json["end_time"],
         description: json["description"],
-        images: List<String>.from(json['images']),
+        images: listFromIterable<String>(json['images']),
       );
 
   Map<String, dynamic> toJson() => {

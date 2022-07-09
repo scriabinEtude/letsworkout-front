@@ -7,6 +7,21 @@ class UserRepository {
     return '/user$url';
   }
 
+  Future<User?> login(User user) async {
+    try {
+      Response result = await api.post(
+        _getUrl('/login'),
+        data: user.toJson(),
+      );
+
+      if (result.data == "") return null;
+      return User.fromJson(result.data);
+    } catch (e) {
+      print(e);
+      return null;
+    }
+  }
+
   Future<User?> getUserId(int id) async {
     try {
       Response result = await api.get(_getUrl('/id'), queryParameters: {
