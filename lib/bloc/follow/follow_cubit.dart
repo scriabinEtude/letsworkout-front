@@ -54,6 +54,11 @@ class FollowCubit extends Cubit<FollowState> {
 
   Future follow() async {
     try {
+
+      // 주제 구독
+
+
+      // 
       setLoading(LoadingState.loading);
       bool success = await _friendRepository.follow(
         myId: AppBloc.userCubit.user!.id!,
