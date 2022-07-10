@@ -7,26 +7,6 @@ class WorkoutRepository {
     return '/workout$url';
   }
 
-  Future<bool> userActivate(int id) async {
-    try {
-      Response result = await api.post(_getUrl('/user/$id'));
-      return result.statusCode == 200;
-    } catch (e) {
-      print(e);
-      return false;
-    }
-  }
-
-  Future<bool> userDeactivate(int id) async {
-    try {
-      Response result = await api.delete(_getUrl('/user/$id'));
-      return result.statusCode == 200;
-    } catch (e) {
-      print(e);
-      return false;
-    }
-  }
-
   Future<int?> postWorkout(Workout workout) async {
     try {
       Response result = await api.post(_getUrl('/'), data: workout.toJson());

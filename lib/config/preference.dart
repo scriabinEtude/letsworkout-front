@@ -87,7 +87,6 @@ class Preferences {
     if (id == null) return null;
 
     workout = workout.copyWith(id: id);
-    await workoutRepository.userActivate(me.id!);
     await setObject('workout', workout);
     return workout;
   }
@@ -99,7 +98,6 @@ class Preferences {
     );
 
     if (workout != null) {
-      await workoutRepository.userDeactivate(workout.userId!);
       await workoutRepository.endWorkout(workout);
     }
 
