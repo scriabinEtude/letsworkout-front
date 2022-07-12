@@ -83,7 +83,7 @@ class Preferences {
       time: mysqlDateTimeFormat(DateTime.now()),
     );
 
-    int? id = await workoutRepository.postWorkout(workout);
+    int? id = await workoutRepository.postWorkout(workout, me);
     if (id == null) return null;
 
     workout = workout.copyWith(id: id);
@@ -92,13 +92,15 @@ class Preferences {
   }
 
   static Future<Workout?> workoutEnd() async {
+    User me = userGet()!;
+
     Workout? workout = workoutGet()?.copyWith(
       workoutType: WorkoutType.end.index,
       endTime: mysqlDateTimeFormat(DateTime.now()),
     );
 
     if (workout != null) {
-      await workoutRepository.endWorkout(workout);
+      await workoutRepository.endWorkout(workout, me);
     }
 
     await workoutRemove();

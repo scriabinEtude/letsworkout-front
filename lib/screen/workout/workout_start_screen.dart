@@ -122,8 +122,8 @@ class _WorkoutStartScreenState extends State<WorkoutStartScreen> {
     int min = difference.inSeconds ~/ 60 % 60;
     int sec = difference.inSeconds % 60;
 
-    time += hour > 0 ? hour.toString().padLeft(2, "0") : "";
-    time += min.toString().padLeft(2, "0") + ":";
+    time += hour > 0 ? "${hour.toString().padLeft(2, "0")}:" : "";
+    time += "${min.toString().padLeft(2, "0")}:";
     time += sec.toString().padLeft(2, "0");
     return time;
   }

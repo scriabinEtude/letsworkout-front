@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:letsworkout/model/user.dart';
 import 'package:letsworkout/model/workout.dart';
 import 'package:letsworkout/module/api/api.dart';
 
@@ -7,9 +8,12 @@ class WorkoutRepository {
     return '/workout$url';
   }
 
-  Future<int?> postWorkout(Workout workout) async {
+  Future<int?> postWorkout(Workout workout, User user) async {
     try {
-      Response result = await api.post(_getUrl('/'), data: workout.toJson());
+      Response result = await api.post(_getUrl('/'), data: {
+        'workout': workout.toJson(),
+        'user': user.toJson(),
+      });
 
       if (result.statusCode != 200) return null;
       return result.data['id'];
@@ -19,9 +23,12 @@ class WorkoutRepository {
     }
   }
 
-  Future<bool> endWorkout(Workout workout) async {
+  Future<bool> endWorkout(Workout workout, User user) async {
     try {
-      Response result = await api.put(_getUrl('/'), data: workout.toJson());
+      Response result = await api.put(_getUrl('/'), data: {
+        'workout': workout.toJson(),
+        'user': user.toJson(),
+      });
       return result.statusCode == 200;
     } catch (e) {
       print(e);

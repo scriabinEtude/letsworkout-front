@@ -1,4 +1,3 @@
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:letsworkout/bloc/app_bloc.dart';
@@ -6,10 +5,10 @@ import 'package:letsworkout/bloc/user/user_cubit.dart';
 import 'package:letsworkout/bloc/user/user_state.dart';
 import 'package:letsworkout/config/route.dart';
 import 'package:letsworkout/enum/user_type.dart';
+import 'package:letsworkout/model/user.dart';
 import 'package:letsworkout/screen/calendar/calendar_screen.dart';
 import 'package:letsworkout/screen/feed/feed_screen.dart';
 import 'package:letsworkout/screen/search/search_screen.dart';
-import 'package:letsworkout/util/app_util.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 
@@ -127,13 +126,14 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
         body: Builder(builder: (context) {
+          User user = AppBloc.userCubit.user!;
           switch (_index) {
             case 0:
-              return const FeedScreen();
+              return FeedScreen(user: user);
             case 1:
               return const SearchScreen();
             case 2:
-              return CalendarScreen(user: AppBloc.userCubit.user!);
+              return CalendarScreen(user: user);
             default:
               return Container();
           }

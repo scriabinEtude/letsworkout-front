@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:letsworkout/enum/act_type.dart';
 import 'package:letsworkout/model/diet.dart';
 import 'package:letsworkout/model/feed.dart';
+import 'package:letsworkout/model/feed_active.dart';
 import 'package:letsworkout/model/workout.dart';
 import 'package:letsworkout/module/api/api.dart';
 
@@ -66,6 +67,22 @@ class FeedRepository {
     } catch (e) {
       print(e);
       return false;
+    }
+  }
+
+  Future<List<FeedActive>> getFeedActives({
+    required int userId,
+  }) async {
+    try {
+      Response result = await api.get(_getUrl('/active'), queryParameters: {
+        'user_id': userId,
+      });
+      return result.statusCode == 200
+          ? FeedActive.fromJsonList(result.data)
+          : [];
+    } catch (e) {
+      print(e);
+      return [];
     }
   }
 }
