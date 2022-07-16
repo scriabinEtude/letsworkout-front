@@ -4,8 +4,6 @@ import 'package:letsworkout/bloc/app_bloc.dart';
 import 'package:letsworkout/bloc/feed/feed_cubit.dart';
 import 'package:letsworkout/bloc/feed/feed_state.dart';
 import 'package:letsworkout/config/route.dart';
-import 'package:letsworkout/enum/act_type.dart';
-import 'package:letsworkout/model/feed.dart';
 import 'package:letsworkout/model/feed_active.dart';
 import 'package:letsworkout/model/user.dart';
 
@@ -21,15 +19,12 @@ class FeedScreen extends StatefulWidget {
 }
 
 class _FeedScreenState extends State<FeedScreen> {
-  late final FeedCubit _feedCubit;
-
   @override
   void initState() {
-    _feedCubit = FeedCubit(user: widget.user);
     super.initState();
 
     // 실시간 운동중인 feed 불러오기
-    _feedCubit.getFeedActives();
+    AppBloc.feedCubit.getFeedActives();
   }
 
   @override
@@ -73,7 +68,7 @@ class _FeedScreenState extends State<FeedScreen> {
             ],
           ),
           BlocBuilder<FeedCubit, FeedState>(
-            bloc: _feedCubit,
+            bloc: AppBloc.feedCubit,
             builder: (context, state) {
               return Column(
                 children:
@@ -87,21 +82,24 @@ class _FeedScreenState extends State<FeedScreen> {
   }
 
   Widget feedWidget(FeedActive feed) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 10),
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-      decoration: BoxDecoration(
-        color: Colors.amber[100],
-        borderRadius: const BorderRadius.all(
-          Radius.circular(20),
+    return InkWell(
+      onTap: () {},
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 10),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+        decoration: BoxDecoration(
+          color: Colors.amber[100],
+          borderRadius: const BorderRadius.all(
+            Radius.circular(20),
+          ),
         ),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: const [
-          Text('임한결 @scriabinEtude 운동시작! 14:00'),
-          Text('>'),
-        ],
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text('${feed.name} @${feed.tag} 운동 시작!'),
+            const Text('>'),
+          ],
+        ),
       ),
     );
   }

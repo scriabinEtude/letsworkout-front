@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:letsworkout/bloc/app_bloc.dart';
+import 'package:letsworkout/config/fcm_actions.dart';
 import 'package:letsworkout/config/preference.dart';
 import 'package:letsworkout/config/route.dart';
 import 'package:letsworkout/firebase_options.dart';
@@ -34,7 +35,8 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Future<SharedPreferences?> permissionInit(SharedPreferences? prefs) async {
-    if (await Permission.notification.request().isGranted) {}
+    await Permission.notification.request();
+
     return prefs;
   }
 
@@ -67,6 +69,39 @@ class _SplashScreenState extends State<SplashScreen> {
         badge: true,
         sound: true,
       );
+
+      // 메세지 수신
+      FirebaseMessaging.onMessage.listen((event) async {
+        // 안드로이드 Local notification
+        await flutterLocalNotificationsPlugin.initialize(
+            const InitializationSettings(
+                android: AndroidInitializationSettings('@mipmap/ic_launcher'),
+                iOS: IOSInitializationSettings()),
+            onSelectNotification: (String? payload) async {});
+
+        FirebaseMessaging.onMessage.listen((RemoteMessage rm) {
+          RemoteNotification? notification = rm.notification;
+          AndroidNotification? android = rm.notification?.android;
+
+          if (notification != null && android != null) {
+            flutterLocalNotificationsPlugin.show(
+              0,
+              notification.title,
+              notification.body,
+              const NotificationDetails(
+                android: AndroidNotificationDetails(
+                  'letsworkout', // AndroidNotificationChannel()에서 생성한 ID
+                  'High Importance Notifications',
+                  // other properties...
+                ),
+              ),
+            );
+          }
+        });
+
+        // 메세지 분기 처리
+        fcmAction(event);
+      });
     }
 
     return prefs;
