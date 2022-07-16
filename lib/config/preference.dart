@@ -1,5 +1,6 @@
 import 'package:intl/intl.dart';
 import 'package:letsworkout/bloc/app_bloc.dart';
+import 'package:letsworkout/enum/bucket_path.dart';
 import 'package:letsworkout/enum/workout_type.dart';
 import 'package:letsworkout/model/user.dart';
 import 'package:letsworkout/model/workout.dart';
@@ -114,6 +115,7 @@ class Preferences {
   }
 
   static Future<Workout> workoutSet(Workout workout) async {
+    await workout.images?.uploadInsertFiles(BucketPath.workout);
     await workoutRepository.patchWorkout(workout);
     await setObject('workout', workout);
     return workout;

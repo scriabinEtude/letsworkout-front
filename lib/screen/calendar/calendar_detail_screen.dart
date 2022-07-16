@@ -1,10 +1,12 @@
 import 'package:adaptive_dialog/adaptive_dialog.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:letsworkout/bloc/app_bloc.dart';
 import 'package:letsworkout/bloc/calendar/calendar_cubit.dart';
 import 'package:letsworkout/bloc/calendar/calendar_state.dart';
 import 'package:letsworkout/enum/act_type.dart';
+import 'package:letsworkout/model/file_actions.dart';
 import 'package:letsworkout/util/date_util.dart';
 
 class CalendarDetailScreen extends StatefulWidget {
@@ -58,9 +60,12 @@ class _CalendarDetailScreenState extends State<CalendarDetailScreen> {
         if (feed.images?.isNotEmpty == true)
           SizedBox(
             height: 200,
-            child: ListView(
-              scrollDirection: Axis.horizontal,
-              children: (feed.images as List<String>)
+            child: CarouselSlider(
+              options: CarouselOptions(
+                enableInfiniteScroll: false,
+              ),
+              items: (feed.images as FileActions)
+                  .listNetworkUrls
                   .map((image) => Image.network(
                         image,
                       ))

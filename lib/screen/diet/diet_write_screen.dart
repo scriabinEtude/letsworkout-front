@@ -2,10 +2,12 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:letsworkout/bloc/cubit/diet_cubit.dart';
+import 'package:letsworkout/model/file_action.dart';
+import 'package:letsworkout/model/file_actions.dart';
 import 'package:letsworkout/util/string_util.dart';
+import 'package:letsworkout/widget/photo_cards.dart';
 import 'package:letsworkout/widget/scaffold.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
@@ -17,7 +19,7 @@ class DietWriteScreen extends StatefulWidget {
 }
 
 class _DietWriteScreenState extends State<DietWriteScreen> {
-  DietCubit _dietCubit = DietCubit();
+  final DietCubit _dietCubit = DietCubit();
 
   DateTime _time = DateTime.now();
   final TextEditingController _descriptionController = TextEditingController();
@@ -26,7 +28,7 @@ class _DietWriteScreenState extends State<DietWriteScreen> {
   final TextEditingController _proteinController = TextEditingController();
   final TextEditingController _fatController = TextEditingController();
 
-  final List<File> _images = [];
+  final FileActions _images = FileActions([]);
 
   @override
   void dispose() {
@@ -56,7 +58,7 @@ class _DietWriteScreenState extends State<DietWriteScreen> {
                   carbohydrate: parseOnlyNumber(_carboController.text),
                   protein: parseOnlyNumber(_proteinController.text),
                   fat: parseOnlyNumber(_fatController.text),
-                  imageFiles: _images,
+                  images: _images,
                 );
                 if (success) Navigator.pop(context);
               },
@@ -64,7 +66,10 @@ class _DietWriteScreenState extends State<DietWriteScreen> {
         ),
         body: ListView(
           children: [
-            photoCards(),
+            PhotoCards(
+              images: _images,
+              onActions: () => setState(() {}),
+            ),
             timeWidget(),
             descriptionWidget(),
             calorieWidget(),
@@ -72,69 +77,6 @@ class _DietWriteScreenState extends State<DietWriteScreen> {
           ],
         ),
       ),
-    );
-  }
-
-  Widget photoCards() {
-    return SizedBox(
-      height: MediaQuery.of(context).size.width,
-      child: ListView(
-        scrollDirection: Axis.horizontal,
-        children: [
-          ..._images.map(
-            (image) => photoCard(image),
-          ),
-          addPhotoCard(),
-        ],
-      ),
-    );
-  }
-
-  Widget photoCard(File image) {
-    return Stack(
-      children: [
-        Image.file(
-          image,
-          width: MediaQuery.of(context).size.width,
-          height: MediaQuery.of(context).size.width,
-        ),
-        Positioned(
-          right: 20,
-          top: 20,
-          child: InkWell(
-            onTap: () {
-              _images.remove(image);
-              setState(() {});
-            },
-            child: const Icon(Icons.cancel),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget addPhotoCard() {
-    return InkWell(
-      onTap: () async {
-        ImagePicker picker = ImagePicker();
-        List<XFile>? files = await picker.pickMultiImage();
-        if (files == null) return;
-
-        files.forEach((file) {
-          _images.add(File(file.path));
-        });
-        setState(() {});
-      },
-      child: Container(
-          color: Colors.amber,
-          height: MediaQuery.of(context).size.width,
-          width: MediaQuery.of(context).size.width,
-          child: const Center(
-            child: Icon(
-              size: 60,
-              Icons.camera_alt_outlined,
-            ),
-          )),
     );
   }
 

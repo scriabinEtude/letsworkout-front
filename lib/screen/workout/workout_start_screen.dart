@@ -1,10 +1,12 @@
 import 'dart:async';
-
 import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:letsworkout/config/preference.dart';
 import 'package:letsworkout/enum/workout_type.dart';
+import 'package:letsworkout/model/file_actions.dart';
 import 'package:letsworkout/model/workout.dart';
+import 'package:letsworkout/widget/photo_cards.dart';
+import 'package:letsworkout/widget/test_button.dart';
 
 class WorkoutStartScreen extends StatefulWidget {
   const WorkoutStartScreen({Key? key}) : super(key: key);
@@ -17,6 +19,7 @@ class _WorkoutStartScreenState extends State<WorkoutStartScreen> {
   final TextEditingController _textController = TextEditingController();
   Workout? workout;
   Timer? timer;
+  late final FileActions images;
 
   @override
   void initState() {
@@ -24,6 +27,7 @@ class _WorkoutStartScreenState extends State<WorkoutStartScreen> {
     // 운동중 상태는 앱내 저장함
     workout = Preferences.workoutGet();
     _textController.text = workout?.description ?? "";
+    images = workout?.images?.init() ?? FileActions([]);
     super.initState();
 
     // 운동이 끝난 상태면 초기화
@@ -45,7 +49,10 @@ class _WorkoutStartScreenState extends State<WorkoutStartScreen> {
     // 운동상태 저장
     if (workout != null) {
       Preferences.workoutSet(
-        workout!.copyWith(description: _textController.text),
+        workout!.copyWith(
+          description: _textController.text,
+          images: images,
+        ),
       );
     }
     _textController.dispose();
@@ -70,38 +77,21 @@ class _WorkoutStartScreenState extends State<WorkoutStartScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Column(
               children: [
+                TestButton(
+                  onTap: () {
+                    final wk = Preferences.workoutGet();
+                    print(wk?.toJson());
+                  },
+                ),
                 const SizedBox(height: 20),
                 workoutStartEndButtonWidget(),
                 workoutTimerWidget(),
+                PhotoCards(
+                  images: images,
+                  onActions: () => setState(() {}),
+                ),
                 const SizedBox(height: 20),
-                Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 24, vertical: 20),
-                    decoration: const BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(16)),
-                        color: Color(0xfff7f7f7)),
-                    child: TextField(
-                      // 시작전과 운동중일 때 작성 가능
-                      enabled: workout == null ||
-                          workout!.workoutType == WorkoutType.working.index,
-                      maxLength: 1000,
-                      controller: _textController,
-                      maxLines: null,
-                      style: const TextStyle(
-                          color: Color.fromARGB(255, 0, 0, 0),
-                          fontWeight: FontWeight.w400,
-                          fontFamily: "NotoSansKR",
-                          fontStyle: FontStyle.normal,
-                          fontSize: 16.0),
-                      keyboardType: TextInputType.multiline,
-                      decoration: const InputDecoration(
-                          isDense: true,
-                          contentPadding: EdgeInsets.zero,
-                          border:
-                              OutlineInputBorder(borderSide: BorderSide.none),
-                          hintText: '운동 내용을 입력해주세요.',
-                          hintStyle: TextStyle(color: Color(0xffb2b2b2))),
-                    )),
+                workoutTextField(),
               ],
             ),
           )),
@@ -160,7 +150,10 @@ class _WorkoutStartScreenState extends State<WorkoutStartScreen> {
       onTap = () async {
         // 운동정보 저장
         await Preferences.workoutSet(
-          workout!.copyWith(description: _textController.text),
+          workout!.copyWith(
+            description: _textController.text,
+            images: images,
+          ),
         );
         workout = await Preferences.workoutEnd();
         _textController.text = "";
@@ -199,5 +192,34 @@ class _WorkoutStartScreenState extends State<WorkoutStartScreen> {
         ),
       ),
     );
+  }
+
+  Widget workoutTextField() {
+    return Container(
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+        decoration: const BoxDecoration(
+            borderRadius: BorderRadius.all(Radius.circular(16)),
+            color: Color(0xfff7f7f7)),
+        child: TextField(
+          // 시작전과 운동중일 때 작성 가능
+          enabled: workout == null ||
+              workout!.workoutType == WorkoutType.working.index,
+          maxLength: 1000,
+          controller: _textController,
+          maxLines: null,
+          style: const TextStyle(
+              color: Color.fromARGB(255, 0, 0, 0),
+              fontWeight: FontWeight.w400,
+              fontFamily: "NotoSansKR",
+              fontStyle: FontStyle.normal,
+              fontSize: 16.0),
+          keyboardType: TextInputType.multiline,
+          decoration: const InputDecoration(
+              isDense: true,
+              contentPadding: EdgeInsets.zero,
+              border: OutlineInputBorder(borderSide: BorderSide.none),
+              hintText: '운동 내용을 입력해주세요.',
+              hintStyle: TextStyle(color: Color(0xffb2b2b2))),
+        ));
   }
 }

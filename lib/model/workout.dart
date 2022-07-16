@@ -1,4 +1,4 @@
-import 'package:letsworkout/util/object_util.dart';
+import 'package:letsworkout/model/file_actions.dart';
 
 class Workout {
   Workout({
@@ -21,7 +21,7 @@ class Workout {
   final String time;
   final String? endTime;
   final String? description;
-  final List<String>? images;
+  final FileActions? images;
 
   Workout copyWith({
     int? feedId,
@@ -32,7 +32,7 @@ class Workout {
     String? time,
     String? endTime,
     String? description,
-    List<String>? images,
+    FileActions? images,
   }) =>
       Workout(
         feedId: feedId ?? this.feedId,
@@ -47,16 +47,15 @@ class Workout {
       );
 
   factory Workout.fromJson(Map<String, dynamic> json) => Workout(
-        id: json["id"],
-        actType: json['act_type'],
-        userId: json["user_id"],
-        feedId: json['feed_id'],
-        workoutType: json['workout_type'],
-        time: json["time"],
-        endTime: json["end_time"],
-        description: json["description"],
-        images: listFromIterable<String>(json['images']),
-      );
+      id: json["id"],
+      actType: json['act_type'],
+      userId: json["user_id"],
+      feedId: json['feed_id'],
+      workoutType: json['workout_type'],
+      time: json["time"],
+      endTime: json["end_time"],
+      description: json["description"],
+      images: FileActions.fromJsonList(json['images']));
 
   Map<String, dynamic> toJson() => {
         "id": id,
@@ -67,6 +66,6 @@ class Workout {
         "time": time,
         "end_time": endTime,
         "description": description,
-        "images": images,
+        "images": images?.toJson(),
       };
 }

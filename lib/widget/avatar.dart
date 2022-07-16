@@ -1,7 +1,5 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:letsworkout/util/file_util.dart';
 
 class Avatar extends StatelessWidget {
   const Avatar({
@@ -14,20 +12,9 @@ class Avatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    ImageProvider<Object>? provider;
-
-    if (image is String) {
-      provider = Image.network(image).image;
-    } else if (image is File) {
-      provider = Image.file(image).image;
-    } else if (image is XFile) {
-      provider = Image.file(File((image as XFile).path)).image;
-    }
-
     return CircleAvatar(
       radius: size,
-      backgroundImage: provider,
+      backgroundImage: getImageProvider(image),
     );
-    ;
   }
 }

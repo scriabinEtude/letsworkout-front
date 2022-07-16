@@ -2,17 +2,18 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:letsworkout/enum/bucket_path.dart';
 import 'package:letsworkout/model/signed_url.dart';
 import 'package:letsworkout/module/api/api.dart';
-import 'package:letsworkout/util/other_util.dart';
+import 'package:letsworkout/util/file_util.dart';
 
 class AppRepository {
-  String _getUrl(String url) {
+  static String _getUrl(String url) {
     return '/app$url';
   }
 
-  Future<SignedUrl?> getSignedUrl({
-    required String path,
+  static Future<SignedUrl?> getSignedUrl({
+    required BucketPath bucketPath,
     required String filename,
     required dynamic image,
   }) async {
@@ -22,7 +23,7 @@ class AppRepository {
       Response result = await api.get(
         _getUrl('/signedurl'),
         queryParameters: {
-          'path': '$path/$filename.$ext',
+          'path': '${bucketPath.path}/$filename.$ext',
           'ext': ext,
         },
       );
@@ -34,8 +35,12 @@ class AppRepository {
     }
   }
 
-  Future<List<SignedUrl>?> getSignedUrls({
-    required String path,
+  ///```
+  ///
+  /// @param path 버킷주소가 될 경로
+  ///```
+  static Future<List<SignedUrl>?> getSignedUrls({
+    required BucketPath bucketPath,
     required List<dynamic> images,
   }) async {
     try {
@@ -44,7 +49,7 @@ class AppRepository {
       Response result = await api.get(
         _getUrl('/signedurls'),
         queryParameters: {
-          'path': path,
+          'path': bucketPath.path,
           'exts': exts,
         },
       );
@@ -58,7 +63,8 @@ class AppRepository {
     }
   }
 
-  Future<bool> s3upload({required SignedUrl url, required dynamic file}) async {
+  static Future<bool> s3upload(
+      {required SignedUrl url, required dynamic file}) async {
     try {
       File image = file is XFile ? File(file.path) : file;
 

@@ -4,6 +4,7 @@ import 'package:letsworkout/bloc/user/user_state.dart';
 import 'package:letsworkout/config/constant.dart';
 import 'package:letsworkout/config/preference.dart';
 import 'package:letsworkout/config/route.dart';
+import 'package:letsworkout/enum/bucket_path.dart';
 import 'package:letsworkout/enum/loading_state.dart';
 import 'package:letsworkout/model/signed_url.dart';
 import 'package:letsworkout/model/user.dart';
@@ -14,7 +15,6 @@ class UserCubit extends Cubit<UserState> {
   UserCubit() : super(UserState());
 
   final UserRepository _userRepository = UserRepository();
-  final AppRepository _appRepository = AppRepository();
 
   void setLoading(LoadingState loading) {
     emit(state.copyWith(loading: loading));
@@ -60,8 +60,8 @@ class UserCubit extends Cubit<UserState> {
 
       // 새로운 이미지 동록
       else {
-        SignedUrl? signedUrl = await _appRepository.getSignedUrl(
-          path: imagePath_userProfile,
+        SignedUrl? signedUrl = await AppRepository.getSignedUrl(
+          bucketPath: BucketPath.userProfile,
           filename: '${state.user!.id}',
           image: image,
         );
@@ -69,7 +69,7 @@ class UserCubit extends Cubit<UserState> {
         if (signedUrl == null) return false;
 
         // 업로드
-        bool success = await _appRepository.s3upload(
+        bool success = await AppRepository.s3upload(
           url: signedUrl,
           file: image,
         );

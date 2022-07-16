@@ -17,4 +17,15 @@ class SignedUrl {
 
   static List<SignedUrl> fromJsonList(List list) =>
       list.map((json) => SignedUrl.fromJson(json)).toList();
+
+  Map<String, dynamic> toJson() => {
+        'sigend_url': signedUrl,
+        'url': url,
+        'ext': ext,
+      };
+
+  @override
+  String toString() {
+    return toJson().toString();
+  }
 }

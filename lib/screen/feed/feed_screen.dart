@@ -3,9 +3,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:letsworkout/bloc/app_bloc.dart';
 import 'package:letsworkout/bloc/feed/feed_cubit.dart';
 import 'package:letsworkout/bloc/feed/feed_state.dart';
+import 'package:letsworkout/config/preference.dart';
 import 'package:letsworkout/config/route.dart';
 import 'package:letsworkout/model/feed_active.dart';
 import 'package:letsworkout/model/user.dart';
+import 'package:letsworkout/widget/test_button.dart';
 
 class FeedScreen extends StatefulWidget {
   const FeedScreen({
@@ -33,6 +35,12 @@ class _FeedScreenState extends State<FeedScreen> {
       padding: const EdgeInsets.symmetric(horizontal: 19),
       child: ListView(
         children: [
+          TestButton(
+            onTap: () {
+              final wk = Preferences.workoutGet();
+              print(wk?.toJson());
+            },
+          ),
           const SizedBox(height: 20),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,

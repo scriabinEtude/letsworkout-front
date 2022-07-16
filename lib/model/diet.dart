@@ -1,3 +1,5 @@
+import 'package:letsworkout/model/file_actions.dart';
+
 class Diet {
   Diet({
     this.id,
@@ -23,7 +25,7 @@ class Diet {
   final int? carbohydrate;
   final int? protein;
   final int? fat;
-  final List<String>? images;
+  final FileActions? images;
 
   Diet copyWith({
     int? id,
@@ -36,7 +38,7 @@ class Diet {
     int? carbohydrate,
     int? protein,
     int? fat,
-    List<String>? images,
+    FileActions? images,
   }) =>
       Diet(
         id: id ?? this.id,
@@ -63,7 +65,7 @@ class Diet {
         carbohydrate: json["carbohydrate"],
         protein: json["protein"],
         fat: json["fat"],
-        images: List<String>.from(json["images"]),
+        images: FileActions.fromJsonList(json['images']),
       );
 
   Map<String, dynamic> toJson() => {
