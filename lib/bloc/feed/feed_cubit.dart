@@ -48,4 +48,14 @@ class FeedCubit extends Cubit<FeedState> {
       setLoading(LoadingState.done);
     }
   }
+
+  Future like(int feedId) async {
+    await _feedRepository.like(
+        feedId: feedId, userId: AppBloc.userCubit.user!.id!);
+  }
+
+  Future unLike(int feedId) async {
+    await _feedRepository.unLike(
+        feedId: feedId, userId: AppBloc.userCubit.user!.id!);
+  }
 }

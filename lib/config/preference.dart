@@ -68,57 +68,23 @@ class Preferences {
 
   //*** WORKOUT */
   static Future<void> workoutRemove() async {
-    await remove('workout');
+    await remove('workout_time');
+    await remove('workout_id');
   }
 
-  static Future<Workout?> workoutStart() async {
-    User? me = userGet();
-    if (me == null) {
-      snack('로그인을 먼저 해주세요');
-      return null;
-    }
-
-    Workout workout = Workout(
-      userId: me.id,
-      workoutType: WorkoutType.working.index,
-      time: mysqlDateTimeFormat(DateTime.now()),
+  static Workout workoutGet() {
+    return Workout(
+      id: getObject('workout_id'),
+      workoutType: getObject('workout_id') == null
+          ? WorkoutType.none.index
+          : WorkoutType.working.index,
+      time: getObject('workout_time'),
     );
-
-    int? id = await workoutRepository.postWorkout(workout, me);
-    if (id == null) return null;
-
-    workout = workout.copyWith(id: id);
-    await setObject('workout', workout);
-    return workout;
   }
 
-  static Future<Workout?> workoutEnd() async {
-    User me = userGet()!;
-
-    Workout? workout = workoutGet()?.copyWith(
-      workoutType: WorkoutType.end.index,
-      endTime: mysqlDateTimeFormat(DateTime.now()),
-    );
-
-    if (workout != null) {
-      await workoutRepository.endWorkout(workout, me);
-    }
-
-    await workoutRemove();
-    return workout;
-  }
-
-  static Workout? workoutGet() {
-    var workout = getObject('workout');
-    if (workout == null) return null;
-    return Workout.fromJson(workout);
-  }
-
-  static Future<Workout> workoutSet(Workout workout) async {
-    await workout.images?.uploadInsertFiles(BucketPath.workout);
-    await workoutRepository.patchWorkout(workout);
-    await setObject('workout', workout);
-    return workout;
+  static Future workoutSet(Workout workout) async {
+    setObject('workout_time', workout.time);
+    setObject('workout_id', workout.id);
   }
 
   ///Singleton factory

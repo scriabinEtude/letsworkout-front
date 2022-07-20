@@ -29,6 +29,9 @@ class FileActions {
 
   FileActions init() {
     for (FileAction action in _actions) {
+      if (action.type == FileActionType.delete) {
+        _actions.remove(action);
+      }
       action.type = FileActionType.none;
     }
 
@@ -38,8 +41,10 @@ class FileActions {
   bool get isEmpty => _actions.isEmpty;
   bool get isNotEmpty => _actions.isNotEmpty;
 
-  List<FileAction> get listShowable =>
-      _actions.where((action) => action.type != FileActionType.delete).toList();
+  List<FileAction> get listShowable => _actions
+      .where((action) =>
+          action.type != FileActionType.delete && action.file != null)
+      .toList();
 
   List<String> get listNetworkUrls =>
       _actions.map<String>((action) => action.file).toList();

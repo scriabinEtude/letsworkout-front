@@ -67,6 +67,7 @@ class _DietWriteScreenState extends State<DietWriteScreen> {
         body: ListView(
           children: [
             PhotoCards(
+              isViewMode: false,
               images: _images,
               onActions: () => setState(() {}),
             ),

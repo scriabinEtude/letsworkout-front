@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -13,16 +14,14 @@ String getImageExt(dynamic image) {
   }
 }
 
-ImageProvider<Object>? getImageProvider(dynamic image) {
-  ImageProvider<Object>? provider;
-
+ImageProvider<Object> getImageProvider(dynamic image) {
   if (image is String) {
-    provider = Image.network(image).image;
+    return CachedNetworkImageProvider(image);
   } else if (image is File) {
-    provider = Image.file(image).image;
+    return Image.file(image).image;
   } else if (image is XFile) {
-    provider = Image.file(File(image.path)).image;
+    return Image.file(File(image.path)).image;
+  } else {
+    return Image.asset('/assets/images/oops.png').image;
   }
-
-  return provider;
 }

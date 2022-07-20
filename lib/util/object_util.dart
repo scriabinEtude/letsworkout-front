@@ -25,3 +25,14 @@ Map<String, dynamic> convertFcmMapToDynamic(Map<String, dynamic> stringMap) {
     }
   });
 }
+
+/// ```
+///
+/// binary to boolean
+/// 0 -> false
+/// 1 -> true
+/// null -> false
+/// ```
+bool btb(int? binary) {
+  return (binary ?? 0) == 1;
+}

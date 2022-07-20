@@ -26,6 +26,7 @@ class FileAction {
   Map<String, dynamic> toJson() {
     return {
       'id': id,
+      'file': file,
       'type': type.name,
       'signed_url': signedUrl?.toJson(),
     };

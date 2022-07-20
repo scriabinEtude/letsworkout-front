@@ -1,3 +1,4 @@
+import 'package:letsworkout/enum/workout_type.dart';
 import 'package:letsworkout/model/file_actions.dart';
 
 class Workout {
@@ -5,9 +6,9 @@ class Workout {
     this.feedId,
     this.actType,
     this.id,
-    required this.userId,
-    this.workoutType,
-    required this.time,
+    this.userId,
+    required this.workoutType,
+    this.time,
     this.endTime,
     this.description,
     this.images,
@@ -17,11 +18,15 @@ class Workout {
   final int? actType;
   final int? id;
   final int? userId;
-  final int? workoutType;
-  final String time;
+  final int workoutType;
+  final String? time;
   final String? endTime;
   final String? description;
   final FileActions? images;
+
+  factory Workout.init() => Workout(
+        workoutType: WorkoutType.none.index,
+      );
 
   Workout copyWith({
     int? feedId,

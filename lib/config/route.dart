@@ -6,6 +6,8 @@ import 'package:letsworkout/screen/calendar/calendar_screen_args.dart';
 import 'package:letsworkout/screen/customer/customer_question_view_screen.dart';
 import 'package:letsworkout/screen/customer/customer_question_wirte_screen.dart';
 import 'package:letsworkout/screen/diet/diet_write_screen.dart';
+import 'package:letsworkout/screen/feed/feed_detail_screen.dart';
+import 'package:letsworkout/screen/feed/feed_detail_screen_args.dart';
 import 'package:letsworkout/screen/follow/follow_list_screen.dart';
 import 'package:letsworkout/screen/follow/follow_list_screen_args.dart';
 import 'package:letsworkout/screen/home_screen.dart';
@@ -18,18 +20,34 @@ import 'package:letsworkout/screen/splash_screen.dart';
 import 'package:letsworkout/screen/workout/workout_start_screen.dart';
 
 class Routes {
+  // home
   static const String splashScreen = "/";
+  static const String homeScreen = "/home";
+
+  //login
   static const String loginScreen = "/login";
   static const String agreementScreen = "/login/regist/agreement";
   static const String registNameScreen = "login/regist/name";
   static const String registTagScreen = "/login/regist/tag";
-  static const String homeScreen = "/home";
+
+  // user
+  static const String profileScreen = "/profile";
+
+  // workout
   static const String workoutStartScreen = "/workout/start";
+
+  // diet
+  static const String dietWriteScreen = "/diet/write";
+
+  // feed
+  static const String feedDetailScreen = "/feed/detail";
+
+  // calendar
   static const String calendarScreen = "/calendar";
   static const String calendarDetailScreen = "/calendar/detail";
   static const String followListScreen = "/follow/list";
-  static const String profileScreen = "/profile";
-  static const String dietWriteScreen = "/diet/write";
+
+  // customer
   static const String customerQuestionWriteScreen = "/customer/question/write";
   static const String customerQuestionViewScreen = "/customer/question/view";
 
@@ -122,6 +140,16 @@ class Routes {
             settings: const RouteSettings(name: dietWriteScreen),
             builder: (BuildContext context) {
               return const DietWriteScreen();
+            });
+
+      case feedDetailScreen:
+        FeedDetailScreenArgs args = settings.arguments as FeedDetailScreenArgs;
+        return MaterialPageRoute(
+            settings: const RouteSettings(name: feedDetailScreen),
+            builder: (BuildContext context) {
+              return FeedDetailScreen(
+                feedActive: args.feedActive,
+              );
             });
 
       case customerQuestionWriteScreen:

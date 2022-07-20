@@ -1,11 +1,12 @@
 import 'dart:async';
-import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:letsworkout/bloc/app_bloc.dart';
 import 'package:letsworkout/config/preference.dart';
 import 'package:letsworkout/enum/workout_type.dart';
 import 'package:letsworkout/model/file_actions.dart';
 import 'package:letsworkout/model/workout.dart';
 import 'package:letsworkout/widget/photo_cards.dart';
+import 'package:letsworkout/widget/scaffold.dart';
 import 'package:letsworkout/widget/test_button.dart';
 
 class WorkoutStartScreen extends StatefulWidget {
@@ -19,24 +20,15 @@ class _WorkoutStartScreenState extends State<WorkoutStartScreen> {
   final TextEditingController _textController = TextEditingController();
   Workout? workout;
   Timer? timer;
-  late final FileActions images;
+  FileActions images = FileActions([]);
 
   @override
   void initState() {
     // 운동중이었다면 상태 가져와서 세팅
     // 운동중 상태는 앱내 저장함
-    workout = Preferences.workoutGet();
-    _textController.text = workout?.description ?? "";
-    images = workout?.images?.init() ?? FileActions([]);
-    super.initState();
+    initData();
 
-    // 운동이 끝난 상태면 초기화
-    if (workout != null && workout!.workoutType == WorkoutType.end.index) {
-      Preferences.workoutRemove().then((_) {
-        workout = null;
-        setState(() {});
-      });
-    }
+    super.initState();
 
     // 1초마다 갱신하는 타이머 동작
     timer = Timer.periodic(const Duration(seconds: 1), (timer) {
@@ -44,15 +36,24 @@ class _WorkoutStartScreenState extends State<WorkoutStartScreen> {
     });
   }
 
+  Future initData() async {
+    setData(await AppBloc.workoutCubit.loadData());
+  }
+
+  void setData(Workout? newWorkout) {
+    workout = newWorkout;
+    _textController.text = workout?.description ?? "";
+    images = workout?.images ?? FileActions([]);
+    setState(() {});
+  }
+
   @override
   void dispose() {
     // 운동상태 저장
     if (workout != null) {
-      Preferences.workoutSet(
-        workout!.copyWith(
-          description: _textController.text,
-          images: images,
-        ),
+      AppBloc.workoutCubit.workoutSaveLocal(
+        description: _textController.text,
+        fileActions: images,
       );
     }
     _textController.dispose();
@@ -72,23 +73,26 @@ class _WorkoutStartScreenState extends State<WorkoutStartScreen> {
             elevation: 0,
             backgroundColor: Colors.white,
             foregroundColor: Colors.black,
+            actions: scaffoldSingleAction(
+                onTap: () async {
+                  setData(await AppBloc.workoutCubit.workoutSave(
+                    description: _textController.text,
+                    fileActions: images,
+                  ));
+                },
+                child: const Text('저장')),
           ),
           body: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Column(
               children: [
-                TestButton(
-                  onTap: () {
-                    final wk = Preferences.workoutGet();
-                    print(wk?.toJson());
-                  },
-                ),
                 const SizedBox(height: 20),
                 workoutStartEndButtonWidget(),
                 workoutTimerWidget(),
                 PhotoCards(
                   images: images,
                   onActions: () => setState(() {}),
+                  isViewMode: false,
                 ),
                 const SizedBox(height: 20),
                 workoutTextField(),
@@ -99,7 +103,7 @@ class _WorkoutStartScreenState extends State<WorkoutStartScreen> {
   }
 
   String workoutTimer() {
-    if (workout == null) {
+    if (workout == null || workout!.workoutType != WorkoutType.working.index) {
       return "00:00";
     }
 
@@ -107,7 +111,7 @@ class _WorkoutStartScreenState extends State<WorkoutStartScreen> {
     DateTime endTime = workout!.endTime != null
         ? DateTime.parse(workout!.endTime!)
         : DateTime.now();
-    Duration difference = endTime.difference(DateTime.parse(workout!.time));
+    Duration difference = endTime.difference(DateTime.parse(workout!.time!));
     int hour = difference.inSeconds ~/ (60 * 60);
     int min = difference.inSeconds ~/ 60 % 60;
     int sec = difference.inSeconds % 60;
@@ -135,50 +139,25 @@ class _WorkoutStartScreenState extends State<WorkoutStartScreen> {
     void Function() onTap;
 
     // 운동 시작 안 했을 때
-    if (workout == null) {
+    if (AppBloc.workoutCubit.isNotWorkoutStart) {
       title = "운동 시작!";
       buttonColor = Colors.lightBlue[400]!.withOpacity(0.5);
       onTap = () async {
-        workout = await Preferences.workoutStart();
-        setState(() {});
+        setData(await AppBloc.workoutCubit.workoutStart());
       };
     }
     // 운동 시작 했을 때
-    else if (workout!.workoutType == WorkoutType.working.index) {
+    else {
       title = "운동 끝내기";
       buttonColor = Colors.amber[100]!;
       onTap = () async {
         // 운동정보 저장
-        await Preferences.workoutSet(
-          workout!.copyWith(
-            description: _textController.text,
-            images: images,
-          ),
-        );
-        workout = await Preferences.workoutEnd();
-        _textController.text = "";
-        setState(() {});
+        setData(await AppBloc.workoutCubit.workoutEnd(
+          description: _textController.text,
+          fileActions: images,
+        ));
       };
     }
-    // 운동을 종료했을 때
-    else {
-      title = "운동 종료";
-      buttonColor = Colors.grey[400]!;
-      onTap = () async {
-        final resultAlert = await showOkCancelAlertDialog(
-          context: context,
-          message: '운동을 다시 시작하시겠습니까?',
-          okLabel: "확인",
-          cancelLabel: "취소",
-        );
-        if (resultAlert == OkCancelResult.ok) {
-          await Preferences.workoutRemove();
-          workout = Preferences.workoutGet();
-          setState(() {});
-        }
-      };
-    }
-
     return InkWell(
       onTap: onTap,
       child: Container(

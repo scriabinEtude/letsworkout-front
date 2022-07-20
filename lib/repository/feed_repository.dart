@@ -85,4 +85,32 @@ class FeedRepository {
       return [];
     }
   }
+
+  Future like({
+    required int feedId,
+    required int userId,
+  }) async {
+    try {
+      await api.post(_getUrl('/like'), data: {
+        'user_id': userId,
+        'feed_id': feedId,
+      });
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future unLike({
+    required int feedId,
+    required int userId,
+  }) async {
+    try {
+      await api.delete(_getUrl('/like'), data: {
+        'user_id': userId,
+        'feed_id': feedId,
+      });
+    } catch (e) {
+      print(e);
+    }
+  }
 }
