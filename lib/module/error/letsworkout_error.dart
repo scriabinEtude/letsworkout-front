@@ -5,8 +5,10 @@
 @pragma("vm:entry-point")
 class LetsworkoutError extends Error {
   final String? message;
+  dynamic e;
+
   @pragma("vm:entry-point")
-  LetsworkoutError(String this.message);
+  LetsworkoutError(String this.message, [dynamic e]);
   @override
-  String toString() => "LetsworkoutError: $message";
+  String toString() => "LetsworkoutError: $message ${e?.toString()}";
 }

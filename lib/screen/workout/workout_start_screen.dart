@@ -1,13 +1,11 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:letsworkout/bloc/app_bloc.dart';
-import 'package:letsworkout/config/preference.dart';
 import 'package:letsworkout/enum/workout_type.dart';
 import 'package:letsworkout/model/file_actions.dart';
 import 'package:letsworkout/model/workout.dart';
 import 'package:letsworkout/widget/photo_cards.dart';
 import 'package:letsworkout/widget/scaffold.dart';
-import 'package:letsworkout/widget/test_button.dart';
 
 class WorkoutStartScreen extends StatefulWidget {
   const WorkoutStartScreen({Key? key}) : super(key: key);
@@ -93,6 +91,8 @@ class _WorkoutStartScreenState extends State<WorkoutStartScreen> {
                   images: images,
                   onActions: () => setState(() {}),
                   isViewMode: false,
+                  height: 500,
+                  width: MediaQuery.of(context).size.width - (20 * 2),
                 ),
                 const SizedBox(height: 20),
                 workoutTextField(),

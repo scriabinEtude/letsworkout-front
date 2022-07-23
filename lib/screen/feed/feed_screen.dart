@@ -6,13 +6,11 @@ import 'package:letsworkout/bloc/feed/feed_cubit.dart';
 import 'package:letsworkout/bloc/feed/feed_state.dart';
 import 'package:letsworkout/bloc/workout/workout_cubit.dart';
 import 'package:letsworkout/bloc/workout/workout_state.dart';
-import 'package:letsworkout/config/preference.dart';
 import 'package:letsworkout/config/route.dart';
 import 'package:letsworkout/enum/workout_type.dart';
 import 'package:letsworkout/model/feed_active.dart';
 import 'package:letsworkout/model/user.dart';
 import 'package:letsworkout/screen/feed/feed_detail_screen_args.dart';
-import 'package:letsworkout/widget/test_button.dart';
 
 class FeedScreen extends StatefulWidget {
   const FeedScreen({
@@ -29,6 +27,9 @@ class _FeedScreenState extends State<FeedScreen> {
   @override
   void initState() {
     super.initState();
+
+    // 운동중 상태 업데이트
+    AppBloc.workoutCubit.loadData();
 
     // 실시간 운동중인 feed 불러오기
     AppBloc.feedCubit.getFeedActives();
@@ -132,24 +133,44 @@ class _FeedScreenState extends State<FeedScreen> {
           children: [
             SizedBox(
               height: 80,
-              child: SingleChildScrollView(
+              child: ListView(
                 scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: feed.images?.listNetworkUrls
-                          .map((url) => CachedNetworkImage(
-                                imageUrl: url,
-                                width: 80,
-                                height: 80,
-                              ))
-                          .toList() ??
-                      [],
-                ),
+                children: feed.images!.listNetworkUrls
+                    .map((image) => Container(
+                          margin: const EdgeInsets.only(right: 5),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(15),
+                            child: CachedNetworkImage(
+                              imageUrl: image,
+                              height: 80,
+                              width: 80,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ))
+                    .toList(),
               ),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text('${feed.name} @${feed.tag} 운동 시작!'),
+                if ((feed.likes ?? 0) > 0)
+                  Row(children: [
+                    const Icon(
+                      Icons.favorite,
+                      size: 20,
+                    ),
+                    Text("${feed.likes!}"),
+                  ]),
+                if ((feed.comments ?? 0) > 0)
+                  Row(children: [
+                    const Icon(
+                      Icons.comment,
+                      size: 20,
+                    ),
+                    Text("${feed.comments!}"),
+                  ]),
                 const Text('>'),
               ],
             ),

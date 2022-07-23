@@ -29,6 +29,8 @@ Map<String, dynamic> convertFcmMapToDynamic(Map<String, dynamic> stringMap) {
 /// ```
 ///
 /// binary to boolean
+/// 숫자를 참거짓으로 바꿔줌
+///
 /// 0 -> false
 /// 1 -> true
 /// null -> false

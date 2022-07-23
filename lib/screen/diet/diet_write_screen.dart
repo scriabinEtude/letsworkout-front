@@ -70,6 +70,8 @@ class _DietWriteScreenState extends State<DietWriteScreen> {
               isViewMode: false,
               images: _images,
               onActions: () => setState(() {}),
+              width: MediaQuery.of(context).size.width,
+              height: 500,
             ),
             timeWidget(),
             descriptionWidget(),

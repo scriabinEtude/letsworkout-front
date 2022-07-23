@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:letsworkout/model/file_action.dart';
@@ -20,42 +19,35 @@ class PhotoCards extends StatelessWidget {
   const PhotoCards({
     Key? key,
     required this.images,
-    required this.onActions,
     required this.isViewMode,
-    this.size,
+    required this.width,
+    required this.height,
+    this.onActions,
+    this.pageController,
+    this.boxfit = BoxFit.cover,
   }) : super(key: key);
   final FileActions images;
-  final void Function() onActions;
-  final double? size;
+  final double width;
+  final double height;
+  final BoxFit boxfit;
   final bool isViewMode;
+  final void Function()? onActions;
+  final PageController? pageController;
 
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      child: SizedBox(
-        height: 400,
-        child: PageView(
-          allowImplicitScrolling: true,
-          physics: AlwaysScrollableScrollPhysics(),
-          children: [
-            ...images.listShowable.map(
-              (image) => photoCard(context, image),
-            ),
-            if (!isViewMode) addPhotoCard(context),
-          ],
-        ),
+      controller: pageController,
+      scrollDirection: Axis.horizontal,
+      physics: const PageScrollPhysics(),
+      child: Row(
+        children: [
+          ...images.listShowable.map(
+            (image) => photoCard(context, image),
+          ),
+          if (!isViewMode) addPhotoCard(context),
+        ],
       ),
-      // child: CarouselSlider(
-      //   options: CarouselOptions(
-      //     enableInfiniteScroll: false,
-      //   ),
-      //   items: [
-      //     ...images.listShowable.map(
-      //       (image) => photoCard(context, image),
-      //     ),
-      //     if (!isViewMode) addPhotoCard(context),
-      //   ],
-      // ),
     );
   }
 
@@ -64,8 +56,9 @@ class PhotoCards extends StatelessWidget {
       children: [
         Image(
           image: getImageProvider(image.file),
-          width: MediaQuery.of(context).size.width,
-          height: MediaQuery.of(context).size.width,
+          width: width,
+          height: height,
+          fit: BoxFit.cover,
         ),
         if (!isViewMode)
           Positioned(
@@ -74,7 +67,9 @@ class PhotoCards extends StatelessWidget {
             child: InkWell(
               onTap: () {
                 images.delete(image);
-                onActions();
+                if (onActions != null) {
+                  onActions!();
+                }
               },
               child: const Icon(Icons.cancel),
             ),
@@ -88,16 +83,20 @@ class PhotoCards extends StatelessWidget {
       onTap: () async {
         ImagePicker picker = ImagePicker();
         List<XFile>? files = await picker.pickMultiImage(
-          imageQuality: 20,
+          imageQuality: 50,
         );
         if (files == null) return;
 
         for (XFile file in files) {
           images.add(File(file.path));
         }
-        onActions();
+
+        if (onActions != null) {
+          onActions!();
+        }
       },
       child: Container(
+          width: width,
           color: Colors.amber,
           child: const Center(
             child: Icon(

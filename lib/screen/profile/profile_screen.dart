@@ -92,8 +92,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       Navigator.pop(context);
                       ImagePicker picker = ImagePicker();
 
-                      XFile? file =
-                          await picker.pickImage(source: ImageSource.gallery);
+                      XFile? file = await picker.pickImage(
+                        source: ImageSource.gallery,
+                        imageQuality: 15,
+                      );
 
                       if (file != null) {
                         setState(() {

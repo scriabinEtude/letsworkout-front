@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:letsworkout/enum/act_type.dart';
+import 'package:letsworkout/model/comment.dart';
 import 'package:letsworkout/model/diet.dart';
 import 'package:letsworkout/model/feed.dart';
 import 'package:letsworkout/model/feed_active.dart';
@@ -90,27 +91,75 @@ class FeedRepository {
     required int feedId,
     required int userId,
   }) async {
-    try {
-      await api.post(_getUrl('/like'), data: {
-        'user_id': userId,
-        'feed_id': feedId,
-      });
-    } catch (e) {
-      print(e);
-    }
+    await api.post(_getUrl('/like'), data: {
+      'user_id': userId,
+      'feed_id': feedId,
+    });
   }
 
   Future unLike({
     required int feedId,
     required int userId,
   }) async {
-    try {
-      await api.delete(_getUrl('/like'), data: {
-        'user_id': userId,
-        'feed_id': feedId,
-      });
-    } catch (e) {
-      print(e);
-    }
+    await api.delete(_getUrl('/like'), data: {
+      'user_id': userId,
+      'feed_id': feedId,
+    });
+  }
+
+  Future comment({
+    required int userId,
+    required int feedId,
+    required int depth,
+    required int? parentId,
+    required String comment,
+  }) async {
+    await api.post(_getUrl('/comment'), data: {
+      'user_id': userId,
+      'feed_id': feedId,
+      'depth': depth,
+      'parent_id': parentId,
+      'comment': comment,
+    });
+  }
+
+  Future commentDelete({
+    required int commentId,
+  }) async {
+    await api.delete(_getUrl('/comment'), data: {
+      'id': commentId,
+    });
+  }
+
+  Future<List<Comment>> getComments({
+    required int feedId,
+    required int userId,
+  }) async {
+    Response result = await api.get(_getUrl('/comments'), queryParameters: {
+      'feed_id': feedId,
+      'user_id': userId,
+    });
+
+    return Comment.fromJsonList(result.data);
+  }
+
+  Future commentLike({
+    required int commentId,
+    required int userId,
+  }) async {
+    await api.post(_getUrl('/comment/like'), data: {
+      'user_id': userId,
+      'comment_id': commentId,
+    });
+  }
+
+  Future commentUnLike({
+    required int commentId,
+    required int userId,
+  }) async {
+    await api.delete(_getUrl('/comment/like'), data: {
+      'user_id': userId,
+      'comment_id': commentId,
+    });
   }
 }

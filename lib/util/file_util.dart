@@ -22,6 +22,6 @@ ImageProvider<Object> getImageProvider(dynamic image) {
   } else if (image is XFile) {
     return Image.file(File(image.path)).image;
   } else {
-    return Image.asset('/assets/images/oops.png').image;
+    return Image.asset('assets/images/oops.png').image;
   }
 }

@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:letsworkout/enum/bucket_path.dart';
 import 'package:letsworkout/enum/file_action_type.dart';
 import 'package:letsworkout/model/file_action.dart';
@@ -48,6 +49,10 @@ class FileActions {
 
   List<String> get listNetworkUrls =>
       _actions.map<String>((action) => action.file).toList();
+
+  List<CachedNetworkImage> get listCachedNetworkImage => listNetworkUrls
+      .map<CachedNetworkImage>((url) => CachedNetworkImage(imageUrl: url))
+      .toList();
 
   List<FileAction> get listInsertTypeActions =>
       _actions.where((action) => action.type == FileActionType.insert).toList();
