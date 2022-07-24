@@ -1,91 +1,80 @@
+import 'package:letsworkout/model/user.dart';
 import 'package:letsworkout/util/object_util.dart';
 
 class Comment {
   Comment({
     this.feedCommentId,
-    this.userId,
     this.feedId,
     this.depth,
     this.parentId,
     this.likes,
     this.state,
     this.comment,
-    this.createdAt,
-    this.userImage,
-    this.userName,
     this.isLiked,
+    this.user,
+    this.createdAt,
   });
 
   final int? feedCommentId;
-  final int? userId;
   final int? feedId;
   final int? depth;
   final int? parentId;
   int? likes;
   final int? state;
   final String? comment;
-  final String? createdAt;
-  final String? userImage;
-  final String? userName;
   bool? isLiked;
+  final User? user;
+  final String? createdAt;
 
   Comment copyWith({
     int? feedCommentId,
-    int? userId,
     int? feedId,
     int? depth,
     int? parentId,
     int? likes,
     int? state,
     String? comment,
-    String? createdAt,
-    String? userImage,
-    String? userName,
     bool? isLiked,
+    User? user,
+    String? createdAt,
   }) =>
       Comment(
         feedCommentId: feedCommentId ?? this.feedCommentId,
-        userId: userId ?? this.userId,
         feedId: feedId ?? this.feedId,
         depth: depth ?? this.depth,
         parentId: parentId ?? this.parentId,
         likes: likes ?? this.likes,
         state: state ?? this.state,
         comment: comment ?? this.comment,
-        createdAt: createdAt ?? this.createdAt,
-        userImage: userImage ?? this.userImage,
-        userName: userName ?? this.userName,
         isLiked: isLiked ?? this.isLiked,
+        user: user ?? this.user,
+        createdAt: createdAt ?? this.createdAt,
       );
 
   factory Comment.fromJson(Map<String, dynamic> json) => Comment(
         feedCommentId: json["feed_comment_id"],
-        userId: json["user_id"],
         feedId: json["feed_id"],
         depth: json["depth"],
         parentId: json["parent_id"],
         likes: json["likes"],
         state: json["state"],
         comment: json["comment"],
-        createdAt: json["created_at"],
-        userImage: json["user_image"],
-        userName: json["user_name"],
         isLiked: btb(json["is_liked"]),
+        user: User.fromJson(json['user']),
+        createdAt: json["created_at"],
       );
 
   Map<String, dynamic> toJson() => {
         "feed_comment_id": feedCommentId,
-        "user_id": userId,
         "feed_id": feedId,
         "depth": depth,
         "parent_id": parentId,
         "likes": likes,
         "state": state,
         "comment": comment,
-        "created_at": createdAt,
-        "user_image": userImage,
-        "user_name": userName,
         "is_liked": isLiked,
+        'user': user?.toJson(),
+        "created_at": createdAt,
       };
 
   static List<Comment> fromJsonList(List list) =>

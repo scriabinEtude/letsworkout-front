@@ -9,12 +9,13 @@ List<T> listFromIterable<T>(Iterable<dynamic>? objects) {
   return objects != null ? List<T>.from(objects) : [];
 }
 
-///```
+/// **@Deprecated**
+/// * 백엔드에서 Json형 String방식으로 보내고 프론트에서 JsonDecode로 받으면 쓸 필요가 없는 메서드이다.
 ///
 /// Fcm으로 data를 받으면 모두 string값으로 전달된다.
 /// 모든 필드가 string이면 모델 변환시 맞지 않을 수 있기 때문에
 /// 그중 int형으로 변환 가능한것은 int로 변환하여 준다.
-///```
+@Deprecated('백엔드에서 Json형 String방식으로 보내고 프론트에서 JsonDecode로 받으면 쓸 필요가 없는 메서드이다.')
 Map<String, dynamic> convertFcmMapToDynamic(Map<String, dynamic> stringMap) {
   return stringMap.map((key, value) {
     if (value == null) {

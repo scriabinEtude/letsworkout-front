@@ -6,8 +6,8 @@ import 'package:letsworkout/model/comment.dart';
 import 'package:letsworkout/model/feed.dart';
 import 'package:letsworkout/repository/feed_repository.dart';
 
-class FeedCubit<T extends Feed> extends Cubit<FeedState> {
-  FeedCubit({T? feed})
+class FeedCubit extends Cubit<FeedState> {
+  FeedCubit({Feed? feed})
       : super(
           FeedState(
             feeds: [],
@@ -21,7 +21,7 @@ class FeedCubit<T extends Feed> extends Cubit<FeedState> {
     emit(state.copyWith(loading: loading));
   }
 
-  void addFeed(T feed) async {
+  void addFeed(Feed feed) async {
     emit(state.copyWith(
       feeds: [
         feed,
@@ -119,11 +119,14 @@ class FeedCubit<T extends Feed> extends Cubit<FeedState> {
     try {
       setLoading(LoadingState.loading);
       await _feedRepository.comment(
-        userId: AppBloc.userCubit.user!.userId!,
-        feedId: state.feed!.feedId!,
-        depth: depth,
-        parentId: parentId,
-        comment: comment,
+        comment: Comment(
+          feedId: state.feed!.feedId!,
+          depth: depth,
+          parentId: parentId,
+          comment: comment,
+          user: AppBloc.userCubit.user!,
+        ),
+        feedFcmToken: state.feed!.user!.fcmToken!,
       );
 
       await commentGet(feedId: state.feed!.feedId!);
@@ -134,14 +137,12 @@ class FeedCubit<T extends Feed> extends Cubit<FeedState> {
     }
   }
 
-  Future commentDelete({
-    required Comment comment,
-  }) async {
+  Future commentDelete({required Comment comment}) async {
     try {
       setLoading(LoadingState.loading);
       await _feedRepository.commentDelete(
-        commentId: comment.feedCommentId!,
-        feedId: comment.feedId!,
+        comment: comment,
+        feedFcmToken: state.feed!.user!.fcmToken!,
       );
 
       await commentGet(

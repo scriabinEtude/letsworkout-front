@@ -57,14 +57,6 @@ class Feed {
         createdAt: createdAt,
       );
 
-  factory Feed.fromFcmData(Map<String, dynamic> data) {
-    data['user'] = nullCheck(
-      data['user'],
-      convertFcmMapToDynamic(jsonDecode(data['user'])),
-    );
-    return Feed.fromJson(data);
-  }
-
   factory Feed.fromJson(Map<String, dynamic> json) {
     try {
       switch (ActType.values[json['act_type']]) {

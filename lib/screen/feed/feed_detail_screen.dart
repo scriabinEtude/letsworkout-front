@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:letsworkout/bloc/app_bloc.dart';
 import 'package:letsworkout/bloc/feed/feed_cubit.dart';
 import 'package:letsworkout/bloc/feed/feed_state.dart';
-import 'package:letsworkout/enum/act_type.dart';
 import 'package:letsworkout/enum/comment_state.dart';
 import 'package:letsworkout/model/comment.dart';
 import 'package:letsworkout/model/diet.dart';
@@ -146,12 +145,12 @@ class _FeedDetailScreenState extends State<FeedDetailScreen>
     return Container(
       child: Row(
         children: [
-          Avatar(image: c.userImage, size: 30),
+          Avatar(image: c.user!.profileImage, size: 30),
           Column(
             children: [
               Row(
                 children: [
-                  Text(c.userName ?? ""),
+                  Text(c.user!.name ?? ""),
                   if (state == CommentState.deleted)
                     const Text('삭제된 댓글입니다.')
                   else
@@ -164,7 +163,7 @@ class _FeedDetailScreenState extends State<FeedDetailScreen>
                     Text("좋아요${c.likes}개   "),
                     Text('신고'),
                     Text('수정'),
-                    if (c.userId == meId)
+                    if (c.user!.userId == meId)
                       InkWell(
                           onTap: () async {
                             if (await showOkCancelAlertDialog(

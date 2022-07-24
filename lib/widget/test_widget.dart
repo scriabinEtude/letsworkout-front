@@ -1,5 +1,21 @@
 import 'package:flutter/material.dart';
 
+class TestAlertWarningBorderContainer extends StatelessWidget {
+  const TestAlertWarningBorderContainer({
+    Key? key,
+    required this.text,
+  }) : super(key: key);
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    return TestBorderContainer(
+      color: Colors.red,
+      child: TestValuePrintContainer(value: text),
+    );
+  }
+}
+
 class TestValuePrintContainer extends StatelessWidget {
   const TestValuePrintContainer({Key? key, required this.value})
       : super(key: key);
@@ -19,15 +35,20 @@ class TestValuePrintContainer extends StatelessWidget {
 }
 
 class TestBorderContainer extends StatelessWidget {
-  const TestBorderContainer({Key? key, required this.child}) : super(key: key);
+  const TestBorderContainer({
+    Key? key,
+    this.color,
+    required this.child,
+  }) : super(key: key);
   final Widget child;
+  final Color? color;
 
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
         border: Border.all(
-          color: Colors.black,
+          color: color ?? Colors.black,
           width: 3,
         ),
       ),

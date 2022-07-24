@@ -1,9 +1,18 @@
 // ignore_for_file: constant_identifier_names
 
 enum FcmCode {
-  FCM_CODE_WORKOUT(100, "100"),
-  FCM_CODE_WORKOUT_DONE(101, "101"),
-  FCM_CODE_WORKOUT_DELETE(102, "102");
+  // workout 1000
+  FCM_CODE_WORKOUT(1000, "1000"),
+  FCM_CODE_WORKOUT_DONE(1001, "1001"),
+  FCM_CODE_WORKOUT_DELETE(1002, "1002"),
+
+  // feed comment 1100
+  FCM_CODE_FEED_COMMENT(1100, "1100"),
+  FCM_CODE_FEED_COMMENT_DELETE(1101, "1101"),
+
+// feed like 1200
+  FCM_CODE_FEED_LIKE(1200, "1200"),
+  FCM_CODE_FEED_LIKE_DELETE(1201, "1201");
 
   final int code;
   final String codeString;

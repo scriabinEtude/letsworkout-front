@@ -5,13 +5,17 @@ import 'package:letsworkout/config/preference.dart';
 import 'package:letsworkout/enum/bucket_path.dart';
 import 'package:letsworkout/enum/loading_state.dart';
 import 'package:letsworkout/enum/workout_type.dart';
+import 'package:letsworkout/model/comment.dart';
 import 'package:letsworkout/model/file_actions.dart';
 import 'package:letsworkout/model/workout.dart';
 import 'package:letsworkout/repository/workout_repository.dart';
 import 'package:letsworkout/util/date_util.dart';
 
 class WorkoutCubit extends Cubit<WorkoutState> {
-  WorkoutCubit() : super(WorkoutState());
+  WorkoutCubit()
+      : super(WorkoutState(
+          comments: [],
+        ));
 
   final _workoutRepository = WorkoutRepository();
 
@@ -156,5 +160,16 @@ class WorkoutCubit extends Cubit<WorkoutState> {
     } finally {
       setLoading(LoadingState.done);
     }
+  }
+
+  void addComment(Comment comment) {
+    state.comments.add(comment);
+    emit(state.copyWith());
+  }
+
+  void removeComment(Comment willRemove) {
+    state.comments.removeWhere(
+        (comment) => comment.feedCommentId == willRemove.feedCommentId);
+    emit(state.copyWith());
   }
 }

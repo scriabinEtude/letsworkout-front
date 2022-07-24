@@ -52,6 +52,9 @@ class _FeedScreenState extends State<FeedScreen> {
               dietButton(),
             ],
           ),
+          TestAlertWarningBorderContainer(
+              text:
+                  'active feed에 댓글달면 workout_screen에 실시간 댓글 달리기와 삭제, comment 위젯 모듈화'),
           BlocBuilder<FeedCubit, FeedState>(
             bloc: AppBloc.feedCubit,
             builder: (context, state) {

@@ -3,6 +3,7 @@ import 'package:letsworkout/enum/act_type.dart';
 import 'package:letsworkout/model/comment.dart';
 import 'package:letsworkout/model/diet.dart';
 import 'package:letsworkout/model/feed.dart';
+import 'package:letsworkout/model/user.dart';
 import 'package:letsworkout/model/workout.dart';
 import 'package:letsworkout/module/api/api.dart';
 import 'package:letsworkout/module/error/letsworkout_error.dart';
@@ -106,28 +107,22 @@ class FeedRepository {
   }
 
   Future comment({
-    required int userId,
-    required int feedId,
-    required int depth,
-    required int? parentId,
-    required String comment,
+    required String feedFcmToken,
+    required Comment comment,
   }) async {
     await api.post(_getUrl('/comment'), data: {
-      'user_id': userId,
-      'feed_id': feedId,
-      'depth': depth,
-      'parent_id': parentId,
-      'comment': comment,
+      'comment': comment.toJson(),
+      'feed_fcm_token': feedFcmToken,
     });
   }
 
   Future commentDelete({
-    required int commentId,
-    required int feedId,
+    required String feedFcmToken,
+    required Comment comment,
   }) async {
     await api.delete(_getUrl('/comment'), data: {
-      'comment_id': commentId,
-      'feed_id': feedId,
+      'comment': comment.toJson(),
+      'feed_fcm_token': feedFcmToken,
     });
   }
 
