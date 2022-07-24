@@ -70,11 +70,13 @@ class Preferences {
   static Future<void> workoutRemove() async {
     await remove('workout_time');
     await remove('workout_id');
+    await remove('feed_id');
   }
 
   static Workout workoutGet() {
     return Workout(
-      id: getObject('workout_id'),
+      workoutId: getObject('workout_id'),
+      feedId: getObject('feed_id'),
       workoutType: getObject('workout_id') == null
           ? WorkoutType.none.index
           : WorkoutType.working.index,
@@ -84,7 +86,8 @@ class Preferences {
 
   static Future workoutSet(Workout workout) async {
     setObject('workout_time', workout.time);
-    setObject('workout_id', workout.id);
+    setObject('workout_id', workout.workoutId);
+    setObject('feed_id', workout.feedId);
   }
 
   ///Singleton factory

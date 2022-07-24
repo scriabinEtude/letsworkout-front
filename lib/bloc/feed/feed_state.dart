@@ -1,30 +1,30 @@
 import 'package:letsworkout/enum/loading_state.dart';
 import 'package:letsworkout/model/comment.dart';
-import 'package:letsworkout/model/feed_active.dart';
+import 'package:letsworkout/model/feed.dart';
 
 class FeedState {
   final LoadingState loading;
-  final List<FeedActive> feedActives;
-  final FeedActive? feedActive;
+  final List<Feed> feeds;
+  final Feed? feed;
   final List<Comment> comments;
 
   FeedState({
     this.loading = LoadingState.init,
-    required this.feedActives,
-    this.feedActive,
+    required this.feeds,
+    this.feed,
     required this.comments,
   });
 
   FeedState copyWith({
     LoadingState? loading,
-    List<FeedActive>? feedActives,
-    FeedActive? feedActive,
+    List<Feed>? feeds,
+    Feed? feed,
     List<Comment>? comments,
   }) =>
       FeedState(
         loading: loading ?? this.loading,
-        feedActives: feedActives ?? this.feedActives,
-        feedActive: feedActive ?? this.feedActive,
+        feeds: feeds ?? this.feeds,
+        feed: feed ?? this.feed,
         comments: comments ?? this.comments,
       );
 }

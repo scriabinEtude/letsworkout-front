@@ -9,27 +9,32 @@ class WorkoutRepository {
     return '/workout$url';
   }
 
-  Future<Workout> getWorkout(int workoutId) async {
+  Future<Workout> getWorkout({
+    required int workoutId,
+    required int feedId,
+  }) async {
     try {
-      Response result = await api.get(_getUrl('/'), queryParameters: {
-        'id': workoutId,
-      });
+      Response result = await api.get(_getUrl('/'),
+          queryParameters: {'workout_id': workoutId, 'feed_id': feedId});
 
       return Workout.fromJson(result.data);
     } catch (e) {
       print(e);
-      throw LetsworkoutError('해당 아이디의 workout이 없습니다 : $workoutId');
+      throw LetsworkoutError('repo getWorkout : $workoutId $feedId', e);
     }
   }
 
-  Future<int> postWorkout(Workout workout, User user) async {
+  Future<Map<String, dynamic>> postWorkout(Workout workout, User user) async {
     try {
       Response result = await api.post(_getUrl('/'), data: {
         'workout': workout.toJson(),
         'user': user.toJson(),
       });
 
-      return result.data['id'];
+      return {
+        'workout_id': result.data['workout_id'],
+        'feed_id': result.data['feed_id'],
+      };
     } catch (e) {
       print(e);
       throw LetsworkoutError('workout_id를 받아오지 못했습니다.');

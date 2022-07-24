@@ -97,6 +97,7 @@ class PhotoCards extends StatelessWidget {
       },
       child: Container(
           width: width,
+          height: height,
           color: Colors.amber,
           child: const Center(
             child: Icon(

@@ -1,6 +1,6 @@
 class User {
   User({
-    this.id,
+    this.userId,
     this.userType,
     this.email,
     this.provider,
@@ -11,7 +11,7 @@ class User {
     this.createdAt,
   });
 
-  final int? id;
+  final int? userId;
   final int? userType;
   final String? email;
   final String? provider;
@@ -22,7 +22,7 @@ class User {
   final String? createdAt;
 
   User copyWith({
-    int? id,
+    int? userId,
     int? userType,
     String? email,
     String? provider,
@@ -33,7 +33,7 @@ class User {
     String? createdAt,
   }) =>
       User(
-        id: id ?? this.id,
+        userId: userId ?? this.userId,
         userType: userType ?? this.userType,
         email: email ?? this.email,
         provider: provider ?? this.provider,
@@ -44,20 +44,24 @@ class User {
         createdAt: createdAt ?? this.createdAt,
       );
 
-  factory User.fromJson(Map<String, dynamic> json) => User(
-        id: json["id"],
-        userType: json["user_type"],
-        email: json["email"],
-        provider: json["provider"],
-        tag: json["tag"],
-        name: json["name"],
-        profileImage: json['profile_image'],
-        fcmToken: json['fcm_token'],
-        createdAt: json["created_at"],
-      );
+  static User? fromJson(Map<String, dynamic>? json) {
+    if (json == null) return null;
+
+    return User(
+      userId: json["user_id"],
+      userType: json["user_type"],
+      email: json["email"],
+      provider: json["provider"],
+      tag: json["tag"],
+      name: json["name"],
+      profileImage: json['profile_image'],
+      fcmToken: json['fcm_token'],
+      createdAt: json["created_at"],
+    );
+  }
 
   Map<String, dynamic> toJson() => {
-        "id": id,
+        "user_id": userId,
         "user_type": userType,
         "email": email,
         "provider": provider,
@@ -69,7 +73,7 @@ class User {
       };
 
   static List<User> fromJsonList(List list) =>
-      list.map((user) => User.fromJson(user)).toList();
+      list.map((user) => User.fromJson(user)!).toList();
 
   User deleteProfileImage() {
     profileImage = null;

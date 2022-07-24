@@ -26,15 +26,27 @@ Map<String, dynamic> convertFcmMapToDynamic(Map<String, dynamic> stringMap) {
   });
 }
 
-/// ```
+///
 ///
 /// binary to boolean
 /// 숫자를 참거짓으로 바꿔줌
 ///
-/// 0 -> false
-/// 1 -> true
-/// null -> false
-/// ```
+/// **ex)**
+/// * 0 -> false
+/// * 1 -> true
+/// * null -> false
+///
 bool btb(int? binary) {
   return (binary ?? 0) == 1;
+}
+
+/// null 체크하여 null이 아니면 [result]를 반환한다.
+/// [result]가 없으면 null체크한 객체를 반환
+///
+/// **params**
+/// * [willChecked] 널체크할 객체
+/// * [result] null이 아니면 반환할 객체
+///
+T? nullCheck<T>(dynamic willChecked, [T? result]) {
+  return willChecked == null ? null : result ?? willChecked;
 }

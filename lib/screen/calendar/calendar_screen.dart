@@ -68,7 +68,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: widget.user.id! == AppBloc.userCubit.user!.id!
+      appBar: widget.user.userId! == AppBloc.userCubit.user!.userId!
           ? null
           : AppBar(
               title: Text(widget.user.name!),
@@ -188,7 +188,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
             )
           ],
         ),
-        if (state.user.id != AppBloc.userCubit.user!.id &&
+        if (state.user.userId != AppBloc.userCubit.user!.userId &&
             state.loading == LoadingState.done)
           Row(
             children: [

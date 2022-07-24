@@ -35,7 +35,7 @@ class DietCubit extends Cubit<DietState> {
       }
 
       bool success = await _dietRepository.insertDiet(Diet(
-        userId: AppBloc.userCubit.user!.id!,
+        userId: AppBloc.userCubit.user!.userId!,
         time: mysqlDateTimeFormat(time),
         description: description,
         calorie: calorie,

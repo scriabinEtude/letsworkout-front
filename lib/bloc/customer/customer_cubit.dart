@@ -28,7 +28,7 @@ class CustomerCubit extends Cubit<CustomerState> {
 
       bool success = await _customerRepository.insertCustomerQuestion(
           customerQuestion: CustomerQuestion(
-        userId: AppBloc.userCubit.user!.id,
+        userId: AppBloc.userCubit.user!.userId,
         title: title,
         body: body,
         device: platformState.device,

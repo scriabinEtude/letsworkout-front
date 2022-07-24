@@ -23,7 +23,7 @@ class FollowCubit extends Cubit<FollowState> {
     try {
       setLoading(LoadingState.loading);
       Map result =
-          await _friendRepository.getFollowCount(userId: state.user.id!);
+          await _friendRepository.getFollowCount(userId: state.user.userId!);
 
       emit(state.copyWith(
         loading: LoadingState.done,
@@ -39,7 +39,8 @@ class FollowCubit extends Cubit<FollowState> {
   Future loadFollows() async {
     try {
       setLoading(LoadingState.loading);
-      Map result = await _friendRepository.getFollows(userId: state.user.id!);
+      Map result =
+          await _friendRepository.getFollows(userId: state.user.userId!);
 
       emit(state.copyWith(
         loading: LoadingState.done,
@@ -54,15 +55,13 @@ class FollowCubit extends Cubit<FollowState> {
 
   Future follow() async {
     try {
-
       // 주제 구독
 
-
-      // 
+      //
       setLoading(LoadingState.loading);
       bool success = await _friendRepository.follow(
-        myId: AppBloc.userCubit.user!.id!,
-        followId: state.user.id!,
+        myId: AppBloc.userCubit.user!.userId!,
+        followId: state.user.userId!,
       );
 
       if (success) {
@@ -82,8 +81,8 @@ class FollowCubit extends Cubit<FollowState> {
     try {
       setLoading(LoadingState.loading);
       bool success = await _friendRepository.unFollow(
-        myId: AppBloc.userCubit.user!.id!,
-        followId: state.user.id!,
+        myId: AppBloc.userCubit.user!.userId!,
+        followId: state.user.userId!,
       );
 
       if (success) {
@@ -106,8 +105,8 @@ class FollowCubit extends Cubit<FollowState> {
       emit(state.copyWith(
         loading: LoadingState.done,
         isFollow: await _friendRepository.isFollow(
-          myId: AppBloc.userCubit.user!.id!,
-          followId: state.user.id!,
+          myId: AppBloc.userCubit.user!.userId!,
+          followId: state.user.userId!,
         ),
       ));
     } catch (e) {

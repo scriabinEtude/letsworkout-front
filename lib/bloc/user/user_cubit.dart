@@ -49,7 +49,7 @@ class UserCubit extends Cubit<UserState> {
       // 이미지 제거하는 경우
       if (image == null) {
         bool success =
-            await _userRepository.deleteProfileImage(state.user!.id!);
+            await _userRepository.deleteProfileImage(state.user!.userId!);
         if (success) {
           emit(state.copyWith(user: state.user!.deleteProfileImage()));
           return true;
@@ -62,7 +62,7 @@ class UserCubit extends Cubit<UserState> {
       else {
         SignedUrl? signedUrl = await AppRepository.getSignedUrl(
           bucketPath: BucketPath.userProfile,
-          filename: '${state.user!.id}',
+          filename: '${state.user!.userId}',
           image: image,
         );
 
@@ -76,7 +76,7 @@ class UserCubit extends Cubit<UserState> {
 
         if (success) {
           success = await _userRepository.updateProfileImage(
-            state.user!.id!,
+            state.user!.userId!,
             signedUrl.url,
           );
           if (success) {

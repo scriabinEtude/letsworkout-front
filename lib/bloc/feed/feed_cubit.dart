@@ -3,15 +3,15 @@ import 'package:letsworkout/bloc/app_bloc.dart';
 import 'package:letsworkout/bloc/feed/feed_state.dart';
 import 'package:letsworkout/enum/loading_state.dart';
 import 'package:letsworkout/model/comment.dart';
-import 'package:letsworkout/model/feed_active.dart';
+import 'package:letsworkout/model/feed.dart';
 import 'package:letsworkout/repository/feed_repository.dart';
 
-class FeedCubit extends Cubit<FeedState> {
-  FeedCubit({FeedActive? feedActive})
+class FeedCubit<T extends Feed> extends Cubit<FeedState> {
+  FeedCubit({T? feed})
       : super(
           FeedState(
-            feedActives: [],
-            feedActive: feedActive,
+            feeds: [],
+            feed: feed,
             comments: [],
           ),
         );
@@ -21,18 +21,17 @@ class FeedCubit extends Cubit<FeedState> {
     emit(state.copyWith(loading: loading));
   }
 
-  void addFeedActive(FeedActive feedActive) async {
+  void addFeed(T feed) async {
     emit(state.copyWith(
-      feedActives: [
-        feedActive,
-        ...state.feedActives,
+      feeds: [
+        feed,
+        ...state.feeds,
       ],
     ));
   }
 
-  void removeFeedActive(FeedActive feedActive) async {
-    state.feedActives
-        .removeWhere((feed) => feed.workoutId == feedActive.workoutId);
+  void removeFeed(Feed feedWillRemove) async {
+    state.feeds.removeWhere((feed) => feed.feedId == feedWillRemove.feedId);
 
     emit(state.copyWith());
   }
@@ -41,8 +40,8 @@ class FeedCubit extends Cubit<FeedState> {
     try {
       setLoading(LoadingState.loading);
       emit(state.copyWith(
-        feedActives: await _feedRepository.getFeedActives(
-          userId: AppBloc.userCubit.user!.id!,
+        feeds: await _feedRepository.getFeedActives(
+          userId: AppBloc.userCubit.user!.userId!,
         ),
       ));
     } catch (e) {
@@ -53,24 +52,24 @@ class FeedCubit extends Cubit<FeedState> {
   }
 
   Future toggleLike() async {
-    state.feedActive!.isLiked! ? await _unLike() : await _like();
+    state.feed!.isLiked! ? await _unLike() : await _like();
   }
 
   Future _like() async {
     try {
       _setIsLiked(
-        feedId: state.feedActive!.feedId!,
+        feedId: state.feed!.feedId!,
         isLiked: true,
       );
 
       await _feedRepository.like(
-        feedId: state.feedActive!.feedId!,
-        userId: AppBloc.userCubit.user!.id!,
+        feedId: state.feed!.feedId!,
+        userId: AppBloc.userCubit.user!.userId!,
       );
     } catch (e) {
       print(e);
       _setIsLiked(
-        feedId: state.feedActive!.feedId!,
+        feedId: state.feed!.feedId!,
         isLiked: false,
       );
     }
@@ -79,18 +78,18 @@ class FeedCubit extends Cubit<FeedState> {
   Future _unLike() async {
     try {
       _setIsLiked(
-        feedId: state.feedActive!.feedId!,
+        feedId: state.feed!.feedId!,
         isLiked: false,
       );
 
       await _feedRepository.unLike(
-        feedId: state.feedActive!.feedId!,
-        userId: AppBloc.userCubit.user!.id!,
+        feedId: state.feed!.feedId!,
+        userId: AppBloc.userCubit.user!.userId!,
       );
     } catch (e) {
       print(e);
       _setIsLiked(
-        feedId: state.feedActive!.feedId!,
+        feedId: state.feed!.feedId!,
         isLiked: true,
       );
     }
@@ -98,19 +97,18 @@ class FeedCubit extends Cubit<FeedState> {
 
   void _setIsLiked({required int feedId, required bool isLiked}) {
     AppBloc.feedCubit.setIsLikeInActives(feedId: feedId, isLiked: isLiked);
-    emit(state.copyWith(
-      feedActive: state.feedActive!.copyWith(
-        isLiked: isLiked,
-      ),
-    ));
+    state.feed!.isLiked = isLiked;
+    emit(state.copyWith());
+    // emit(state.copyWith(
+    //   feed: state.feed!.copyWith(
+    //     isLiked: isLiked,
+    //   ),
+    // ));
   }
 
   void setIsLikeInActives({required int feedId, required bool isLiked}) {
-    state.feedActives
-        .firstWhere((active) => active.feedId == feedId,
-            orElse: () => FeedActive())
-        .isLiked = isLiked;
-    emit(state.copyWith());
+    state.feeds.firstWhere((active) => active.feedId == feedId).isLiked =
+        isLiked;
   }
 
   Future commentInsert({
@@ -121,14 +119,14 @@ class FeedCubit extends Cubit<FeedState> {
     try {
       setLoading(LoadingState.loading);
       await _feedRepository.comment(
-        userId: AppBloc.userCubit.user!.id!,
-        feedId: state.feedActive!.feedId!,
+        userId: AppBloc.userCubit.user!.userId!,
+        feedId: state.feed!.feedId!,
         depth: depth,
         parentId: parentId,
         comment: comment,
       );
 
-      await commentGet(feedId: state.feedActive!.feedId!);
+      await commentGet(feedId: state.feed!.feedId!);
     } catch (e) {
       print(e);
     } finally {
@@ -137,16 +135,17 @@ class FeedCubit extends Cubit<FeedState> {
   }
 
   Future commentDelete({
-    required int commentId,
+    required Comment comment,
   }) async {
     try {
       setLoading(LoadingState.loading);
       await _feedRepository.commentDelete(
-        commentId: commentId,
+        commentId: comment.feedCommentId!,
+        feedId: comment.feedId!,
       );
 
       await commentGet(
-        feedId: state.feedActive!.feedId!,
+        feedId: state.feed!.feedId!,
       );
     } catch (e) {
       print(e);
@@ -163,7 +162,7 @@ class FeedCubit extends Cubit<FeedState> {
       emit(state.copyWith(
           comments: await _feedRepository.getComments(
         feedId: feedId,
-        userId: AppBloc.userCubit.user!.id!,
+        userId: AppBloc.userCubit.user!.userId!,
       )));
     } catch (e) {
       print(e);
@@ -174,8 +173,8 @@ class FeedCubit extends Cubit<FeedState> {
 
   Future toggleCommentLike({required Comment comment}) async {
     comment.isLiked!
-        ? await _commentUnLike(comment.id!)
-        : await _commentLike(comment.id!);
+        ? await _commentUnLike(comment.feedCommentId!)
+        : await _commentLike(comment.feedCommentId!);
   }
 
   Future _commentLike(int commentId) async {
@@ -187,7 +186,7 @@ class FeedCubit extends Cubit<FeedState> {
 
       await _feedRepository.commentLike(
         commentId: commentId,
-        userId: AppBloc.userCubit.user!.id!,
+        userId: AppBloc.userCubit.user!.userId!,
       );
     } catch (e) {
       print(e);
@@ -207,7 +206,7 @@ class FeedCubit extends Cubit<FeedState> {
 
       await _feedRepository.commentUnLike(
         commentId: commentId,
-        userId: AppBloc.userCubit.user!.id!,
+        userId: AppBloc.userCubit.user!.userId!,
       );
     } catch (e) {
       print(e);
@@ -219,7 +218,7 @@ class FeedCubit extends Cubit<FeedState> {
   }
 
   void _setCommentIsLiked({required int commentId, required bool isLiked}) {
-    Comment c = state.comments.firstWhere((c) => c.id == commentId);
+    Comment c = state.comments.firstWhere((c) => c.feedCommentId == commentId);
     c.isLiked = isLiked;
     c.likes = c.likes! + (isLiked ? 1 : -1);
 

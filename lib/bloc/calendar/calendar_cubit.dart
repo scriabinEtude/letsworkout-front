@@ -25,7 +25,7 @@ class CalendarCubit extends Cubit<CalendarState> {
 
   Future getFeedsMonth(DateTime date) async {
     List<Feed> feeds = await _feedRepository.getFeedsMonth(
-      userId: user.id!,
+      userId: user.userId!,
       yearMonth: getYearMonth(date),
     );
 
@@ -55,7 +55,7 @@ class CalendarCubit extends Cubit<CalendarState> {
     emit(state.copyWith(
       loading: LoadingState.done,
       feedOneDay: await _feedRepository.getFeedsDay(
-        userId: user.id!,
+        userId: user.userId!,
         yearMonthDay: getYearMonthDay(date),
       ),
     ));
@@ -70,7 +70,7 @@ class CalendarCubit extends Cubit<CalendarState> {
 
     if (success) {
       state.feeds[getYearMonthDay(date)]!
-          .removeWhere((prev) => prev.id == feed.feedId);
+          .removeWhere((prev) => prev.feedId == feed.feedId);
       state.feedOneDay.removeWhere((prev) => prev.feedId == feed.feedId);
     }
 

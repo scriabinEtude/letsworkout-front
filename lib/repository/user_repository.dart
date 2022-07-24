@@ -25,7 +25,7 @@ class UserRepository {
   Future<User?> getUserId(int id) async {
     try {
       Response result = await api.get(_getUrl('/id'), queryParameters: {
-        'id': id,
+        'user_id': id,
       });
 
       if (result.data == "") return null;
@@ -53,7 +53,7 @@ class UserRepository {
   Future<User?> registUser(User user) async {
     try {
       Response result = await api.post(_getUrl('/'), data: user.toJson());
-      return user.copyWith(id: result.data['id']);
+      return user.copyWith(userId: result.data['id']);
     } catch (e) {
       print(e);
       return null;
@@ -83,7 +83,7 @@ class UserRepository {
   Future<bool> updateProfileImage(int userId, String url) async {
     try {
       Response result = await api.post(_getUrl('/profile/image'), data: {
-        'id': userId,
+        'user_id': userId,
         'url': url,
       });
       return result.statusCode == 200;
@@ -96,7 +96,7 @@ class UserRepository {
   Future<bool> deleteProfileImage(int userId) async {
     try {
       Response result = await api.delete(_getUrl('/profile/image'), data: {
-        'id': userId,
+        'user_id': userId,
       });
       return result.statusCode == 200;
     } catch (e) {

@@ -2,7 +2,7 @@ import 'package:letsworkout/util/object_util.dart';
 
 class Comment {
   Comment({
-    this.id,
+    this.feedCommentId,
     this.userId,
     this.feedId,
     this.depth,
@@ -16,7 +16,7 @@ class Comment {
     this.isLiked,
   });
 
-  final int? id;
+  final int? feedCommentId;
   final int? userId;
   final int? feedId;
   final int? depth;
@@ -30,7 +30,7 @@ class Comment {
   bool? isLiked;
 
   Comment copyWith({
-    int? id,
+    int? feedCommentId,
     int? userId,
     int? feedId,
     int? depth,
@@ -44,7 +44,7 @@ class Comment {
     bool? isLiked,
   }) =>
       Comment(
-        id: id ?? this.id,
+        feedCommentId: feedCommentId ?? this.feedCommentId,
         userId: userId ?? this.userId,
         feedId: feedId ?? this.feedId,
         depth: depth ?? this.depth,
@@ -59,7 +59,7 @@ class Comment {
       );
 
   factory Comment.fromJson(Map<String, dynamic> json) => Comment(
-        id: json["id"],
+        feedCommentId: json["feed_comment_id"],
         userId: json["user_id"],
         feedId: json["feed_id"],
         depth: json["depth"],
@@ -74,7 +74,7 @@ class Comment {
       );
 
   Map<String, dynamic> toJson() => {
-        "id": id,
+        "feed_comment_id": feedCommentId,
         "user_id": userId,
         "feed_id": feedId,
         "depth": depth,

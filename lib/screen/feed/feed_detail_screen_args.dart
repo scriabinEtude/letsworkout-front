@@ -1,7 +1,7 @@
-import 'package:letsworkout/model/feed_active.dart';
+import 'package:letsworkout/model/feed.dart';
 
 class FeedDetailScreenArgs {
-  final FeedActive feedActive;
+  final Feed feed;
 
-  FeedDetailScreenArgs({required this.feedActive});
+  FeedDetailScreenArgs({required this.feed});
 }

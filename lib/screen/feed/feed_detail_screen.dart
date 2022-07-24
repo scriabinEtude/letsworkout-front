@@ -1,25 +1,25 @@
-import 'dart:developer';
-
 import 'package:adaptive_dialog/adaptive_dialog.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:carousel_slider/carousel_slider.dart';
-import 'package:carousel_slider/carousel_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:letsworkout/bloc/app_bloc.dart';
 import 'package:letsworkout/bloc/feed/feed_cubit.dart';
 import 'package:letsworkout/bloc/feed/feed_state.dart';
+import 'package:letsworkout/enum/act_type.dart';
 import 'package:letsworkout/enum/comment_state.dart';
 import 'package:letsworkout/model/comment.dart';
-import 'package:letsworkout/model/feed_active.dart';
+import 'package:letsworkout/model/diet.dart';
+import 'package:letsworkout/model/feed.dart';
+import 'package:letsworkout/model/workout.dart';
 import 'package:letsworkout/widget/avatar.dart';
 import 'package:letsworkout/widget/photo_cards.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class FeedDetailScreen extends StatefulWidget {
-  const FeedDetailScreen({Key? key, required this.feedActive})
-      : super(key: key);
-  final FeedActive feedActive;
+  const FeedDetailScreen({
+    Key? key,
+    required this.feed,
+  }) : super(key: key);
+  final Feed feed;
 
   @override
   State<FeedDetailScreen> createState() => _FeedDetailScreenState();
@@ -29,13 +29,13 @@ class _FeedDetailScreenState extends State<FeedDetailScreen>
     with AutomaticKeepAliveClientMixin {
   late final FeedCubit _feedCubit;
   final _commentController = TextEditingController();
-  int? meId = AppBloc.userCubit.user?.id;
+  int? meId = AppBloc.userCubit.user?.userId;
   final _pageController = PageController();
 
   @override
   void initState() {
-    _feedCubit = FeedCubit(feedActive: widget.feedActive);
-    _feedCubit.commentGet(feedId: widget.feedActive.feedId);
+    _feedCubit = FeedCubit(feed: widget.feed);
+    _feedCubit.commentGet(feedId: widget.feed.feedId);
     super.initState();
   }
 
@@ -64,7 +64,7 @@ class _FeedDetailScreenState extends State<FeedDetailScreen>
             decoration: InputDecoration(
               hintText: "댓글 달기",
               suffixIcon: IconButton(
-                icon: Icon(Icons.send),
+                icon: const Icon(Icons.send),
                 color: _commentController.text.isEmpty
                     ? Colors.black
                     : Colors.blue,
@@ -85,39 +85,47 @@ class _FeedDetailScreenState extends State<FeedDetailScreen>
       body: BlocBuilder<FeedCubit, FeedState>(
         bloc: _feedCubit,
         builder: (context, state) {
+          String description;
+          Feed feed = state.feed!;
+          if (feed is Workout) {
+            description = feed.description ?? "";
+          } else {
+            description = (feed as Diet).description ?? "";
+          }
+
           return SingleChildScrollView(
             child: Column(
               children: [
                 Avatar(
                   size: 40,
-                  image: state.feedActive!.profileImage,
+                  image: state.feed!.user!.profileImage,
                 ),
-                Text(state.feedActive!.name!),
+                Text(state.feed!.user!.name!),
                 // if (state.feedActive?.images?.isNotEmpty  == true)
                 GestureDetector(
                   onDoubleTap: _feedCubit.toggleLike,
                   child: PhotoCards(
                     pageController: _pageController,
-                    images: state.feedActive!.images!,
+                    images: state.feed!.images!,
                     isViewMode: true,
                     width: MediaQuery.of(context).size.width,
                     height: 400,
                   ),
                 ),
                 const SizedBox(height: 8),
-                if (state.feedActive!.images!.listShowable.isNotEmpty)
+                if (state.feed!.images!.listShowable.isNotEmpty)
                   SmoothPageIndicator(
                     controller: _pageController,
-                    count: state.feedActive!.images!.listShowable.length,
+                    count: state.feed!.images!.listShowable.length,
                     effect: const SlideEffect(
                       dotHeight: 5,
                       dotWidth: 5,
                       spacing: 5,
                     ),
                   ),
-                Text(state.feedActive!.description ?? ""),
+                Text(description),
                 IconButton(
-                  icon: Icon(state.feedActive!.isLiked!
+                  icon: Icon(state.feed!.isLiked!
                       ? Icons.favorite
                       : Icons.favorite_border),
                   onPressed: _feedCubit.toggleLike,
@@ -154,7 +162,6 @@ class _FeedDetailScreenState extends State<FeedDetailScreen>
                 Row(
                   children: [
                     Text("좋아요${c.likes}개   "),
-                    Text('답글'),
                     Text('신고'),
                     Text('수정'),
                     if (c.userId == meId)
@@ -166,7 +173,9 @@ class _FeedDetailScreenState extends State<FeedDetailScreen>
                                     okLabel: '확인',
                                     cancelLabel: "취소") ==
                                 OkCancelResult.ok) {
-                              _feedCubit.commentDelete(commentId: c.id!);
+                              _feedCubit.commentDelete(
+                                comment: c,
+                              );
                             }
                           },
                           child: Text('   삭제')),

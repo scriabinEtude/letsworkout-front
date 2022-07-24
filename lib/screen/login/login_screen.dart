@@ -32,7 +32,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Future<void> _testLogin() async {
     // 유저 저장하고 메인화면으로 이동
     User testUser = User(
-        id: 2,
+        userId: 2,
         email: 'letsworkout@gmail.co.kr',
         name: '한결',
         tag: 'scriabinEtude',

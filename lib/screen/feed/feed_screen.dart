@@ -8,9 +8,12 @@ import 'package:letsworkout/bloc/workout/workout_cubit.dart';
 import 'package:letsworkout/bloc/workout/workout_state.dart';
 import 'package:letsworkout/config/route.dart';
 import 'package:letsworkout/enum/workout_type.dart';
-import 'package:letsworkout/model/feed_active.dart';
+import 'package:letsworkout/model/diet.dart';
+import 'package:letsworkout/model/feed.dart';
 import 'package:letsworkout/model/user.dart';
+import 'package:letsworkout/model/workout.dart';
 import 'package:letsworkout/screen/feed/feed_detail_screen_args.dart';
+import 'package:letsworkout/widget/test_widget.dart';
 
 class FeedScreen extends StatefulWidget {
   const FeedScreen({
@@ -53,8 +56,7 @@ class _FeedScreenState extends State<FeedScreen> {
             bloc: AppBloc.feedCubit,
             builder: (context, state) {
               return Column(
-                children:
-                    state.feedActives.map((feed) => feedWidget(feed)).toList(),
+                children: state.feeds.map((feed) => feedWidget(feed)).toList(),
               );
             },
           )
@@ -111,13 +113,13 @@ class _FeedScreenState extends State<FeedScreen> {
     );
   }
 
-  Widget feedWidget(FeedActive feed) {
+  Widget feedWidget(Feed feed) {
     return InkWell(
       onTap: () => Navigator.pushNamed(
         context,
         Routes.feedDetailScreen,
         arguments: FeedDetailScreenArgs(
-          feedActive: feed,
+          feed: feed,
         ),
       ),
       child: Container(
@@ -154,7 +156,7 @@ class _FeedScreenState extends State<FeedScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('${feed.name} @${feed.tag} 운동 시작!'),
+                Text('${feed.user!.name} @${feed.user!.tag} 운동 시작!'),
                 if ((feed.likes ?? 0) > 0)
                   Row(children: [
                     const Icon(

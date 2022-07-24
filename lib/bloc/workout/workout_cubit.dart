@@ -37,8 +37,10 @@ class WorkoutCubit extends Cubit<WorkoutState> {
         emit(state.copyWith(initial: false));
         return state.workout;
       } else if (workout.workoutType == WorkoutType.working.index) {
-        Workout workoutFilledData =
-            await _workoutRepository.getWorkout(workout.id!);
+        Workout workoutFilledData = await _workoutRepository.getWorkout(
+          workoutId: workout.workoutId!,
+          feedId: workout.feedId!,
+        );
         emit(state.copyWith(
           initial: false,
           workout: workoutFilledData,
@@ -57,15 +59,18 @@ class WorkoutCubit extends Cubit<WorkoutState> {
       setLoading(LoadingState.loading);
 
       Workout workout = Workout(
-        userId: AppBloc.userCubit.user!.id,
+        userId: AppBloc.userCubit.user!.userId,
         workoutType: WorkoutType.working.index,
         time: mysqlDateTimeFormat(DateTime.now()),
       );
 
-      int workoutId = await _workoutRepository.postWorkout(
+      Map<String, dynamic> ids = await _workoutRepository.postWorkout(
           workout, AppBloc.userCubit.user!);
 
-      workout = workout.copyWith(id: workoutId);
+      workout = workout.copyWith(
+        workoutId: ids['workout_id'],
+        feedId: ids['feed_id'],
+      );
 
       emit(state.copyWith(workout: workout));
       await Preferences.workoutSet(workout);

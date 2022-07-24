@@ -3,9 +3,9 @@ import 'package:letsworkout/enum/act_type.dart';
 import 'package:letsworkout/model/comment.dart';
 import 'package:letsworkout/model/diet.dart';
 import 'package:letsworkout/model/feed.dart';
-import 'package:letsworkout/model/feed_active.dart';
 import 'package:letsworkout/model/workout.dart';
 import 'package:letsworkout/module/api/api.dart';
+import 'package:letsworkout/module/error/letsworkout_error.dart';
 
 class FeedRepository {
   String _getUrl(String url) {
@@ -59,7 +59,7 @@ class FeedRepository {
   }) async {
     try {
       Response result = await api.delete(_getUrl('/'), data: {
-        'id': feed.id,
+        'id': feed.feedCommentId,
         'feed_id': feed.feedId,
         'act_type': feed.actType,
       });
@@ -71,19 +71,17 @@ class FeedRepository {
     }
   }
 
-  Future<List<FeedActive>> getFeedActives({
+  Future<List<Feed>> getFeedActives({
     required int userId,
   }) async {
     try {
       Response result = await api.get(_getUrl('/active'), queryParameters: {
         'user_id': userId,
       });
-      return result.statusCode == 200
-          ? FeedActive.fromJsonList(result.data)
-          : [];
+      return result.statusCode == 200 ? Feed.fromJsonList(result.data) : [];
     } catch (e) {
       print(e);
-      return [];
+      throw LetsworkoutError('feed repository getFeedActives : ', e.toString());
     }
   }
 
@@ -125,9 +123,11 @@ class FeedRepository {
 
   Future commentDelete({
     required int commentId,
+    required int feedId,
   }) async {
     await api.delete(_getUrl('/comment'), data: {
-      'id': commentId,
+      'comment_id': commentId,
+      'feed_id': feedId,
     });
   }
 

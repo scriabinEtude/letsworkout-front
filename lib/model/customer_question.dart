@@ -1,6 +1,6 @@
 class CustomerQuestion {
   CustomerQuestion({
-    this.id,
+    this.customerQuestionId,
     this.userId,
     this.title,
     this.body,
@@ -9,7 +9,7 @@ class CustomerQuestion {
     this.appVersion,
   });
 
-  final int? id;
+  final int? customerQuestionId;
   final int? userId;
   final String? title;
   final String? body;
@@ -18,7 +18,7 @@ class CustomerQuestion {
   final String? appVersion;
 
   CustomerQuestion copyWith({
-    int? id,
+    int? customerQuestionId,
     int? userId,
     String? title,
     String? body,
@@ -27,7 +27,7 @@ class CustomerQuestion {
     String? appVersion,
   }) =>
       CustomerQuestion(
-        id: id ?? this.id,
+        customerQuestionId: customerQuestionId ?? this.customerQuestionId,
         userId: userId ?? this.userId,
         title: title ?? this.title,
         body: body ?? this.body,
@@ -38,7 +38,7 @@ class CustomerQuestion {
 
   factory CustomerQuestion.fromJson(Map<String, dynamic> json) =>
       CustomerQuestion(
-        id: json["id"],
+        customerQuestionId: json["customer_question_id"],
         userId: json["user_id"],
         title: json["title"],
         body: json["body"],
@@ -48,7 +48,7 @@ class CustomerQuestion {
       );
 
   Map<String, dynamic> toJson() => {
-        "id": id,
+        "customer_question_id": customerQuestionId,
         "user_id": userId,
         "title": title,
         "body": body,

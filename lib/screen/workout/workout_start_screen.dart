@@ -80,8 +80,7 @@ class _WorkoutStartScreenState extends State<WorkoutStartScreen> {
                 },
                 child: const Text('저장')),
           ),
-          body: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
+          body: SingleChildScrollView(
             child: Column(
               children: [
                 const SizedBox(height: 20),
@@ -92,10 +91,11 @@ class _WorkoutStartScreenState extends State<WorkoutStartScreen> {
                   onActions: () => setState(() {}),
                   isViewMode: false,
                   height: 500,
-                  width: MediaQuery.of(context).size.width - (20 * 2),
+                  width: MediaQuery.of(context).size.width,
                 ),
                 const SizedBox(height: 20),
                 workoutTextField(),
+                const SizedBox(height: 100),
               ],
             ),
           )),

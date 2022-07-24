@@ -2,20 +2,20 @@ import 'package:letsworkout/enum/file_action_type.dart';
 import 'package:letsworkout/model/signed_url.dart';
 
 class FileAction {
-  int? id;
+  int? fileId;
   dynamic file;
   FileActionType type;
   SignedUrl? signedUrl;
 
   FileAction({
-    this.id,
+    this.fileId,
     required this.file,
     required this.type,
     this.signedUrl,
   });
 
   factory FileAction.fromJson(Map json) => FileAction(
-        id: json['id'],
+        fileId: json['file_id'],
         file: json['image'],
         type: FileActionType.none,
       );
@@ -25,7 +25,7 @@ class FileAction {
 
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
+      'file_id': fileId,
       'file': file,
       'type': type.name,
       'signed_url': signedUrl?.toJson(),

@@ -148,7 +148,7 @@ class Routes {
             settings: const RouteSettings(name: feedDetailScreen),
             builder: (BuildContext context) {
               return FeedDetailScreen(
-                feedActive: args.feedActive,
+                feed: args.feed,
               );
             });
 

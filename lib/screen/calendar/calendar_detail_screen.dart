@@ -74,7 +74,7 @@ class _CalendarDetailScreenState extends State<CalendarDetailScreen> {
           ),
         Text(type.title),
         Text('${feed.time} ${feed.description}'),
-        if (AppBloc.userCubit.user!.id! == feed.userId)
+        if (AppBloc.userCubit.user!.userId! == feed.userId)
           ElevatedButton(
             onPressed: () async {
               OkCancelResult result = await showOkCancelAlertDialog(
