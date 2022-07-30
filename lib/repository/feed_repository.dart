@@ -87,32 +87,38 @@ class FeedRepository {
   }
 
   Future like({
+    required User user,
     required int feedId,
-    required int userId,
+    required String feedFcmToken,
   }) async {
     await api.post(_getUrl('/like'), data: {
-      'user_id': userId,
+      'user': user.toJson(),
       'feed_id': feedId,
+      'feed_fcm_token': feedFcmToken,
     });
   }
 
   Future unLike({
+    required User user,
     required int feedId,
-    required int userId,
+    required String feedFcmToken,
   }) async {
     await api.delete(_getUrl('/like'), data: {
-      'user_id': userId,
+      'user': user.toJson(),
       'feed_id': feedId,
+      'feed_fcm_token': feedFcmToken,
     });
   }
 
   Future comment({
     required String feedFcmToken,
     required Comment comment,
+    required bool isMine,
   }) async {
     await api.post(_getUrl('/comment'), data: {
       'comment': comment.toJson(),
       'feed_fcm_token': feedFcmToken,
+      'is_mine': isMine,
     });
   }
 

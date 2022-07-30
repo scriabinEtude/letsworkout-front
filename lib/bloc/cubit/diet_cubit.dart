@@ -7,6 +7,7 @@ import 'package:letsworkout/model/diet.dart';
 import 'package:letsworkout/model/file_actions.dart';
 import 'package:letsworkout/repository/diet_repository.dart';
 import 'package:letsworkout/util/date_util.dart';
+import 'package:letsworkout/util/widget_util.dart';
 
 class DietCubit extends Cubit<DietState> {
   DietCubit() : super(DietState());
@@ -27,7 +28,7 @@ class DietCubit extends Cubit<DietState> {
     required FileActions images,
   }) async {
     try {
-      setLoading(LoadingState.loading);
+      loadingShow();
 
       // 이미지 s3에 업로드
       if (!await images.uploadInsertFiles(BucketPath.diet)) {
@@ -50,7 +51,7 @@ class DietCubit extends Cubit<DietState> {
       print(e);
       return false;
     } finally {
-      setLoading(LoadingState.done);
+      loadingHide();
     }
   }
 }

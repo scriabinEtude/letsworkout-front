@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:letsworkout/bloc/app_bloc.dart';
 import 'package:letsworkout/bloc/customer/customer_cubit.dart';
 import 'package:letsworkout/util/cubit_util.dart';
+import 'package:letsworkout/util/widget_util.dart';
 import 'package:letsworkout/widget/scaffold.dart';
 
 class CustomerQuestionWirteScreen extends StatefulWidget {
@@ -21,12 +22,12 @@ class _CustomerQuestionWirteScreenState
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => FocusManager.instance.primaryFocus!.unfocus(),
+      onTap: unFocus,
       child: Scaffold(
         appBar: AppBar(
           title: const Text('고객문의 & 기능건의'),
           centerTitle: true,
-          actions: scaffoldSingleAction(
+          actions: appBarSingleAction(
             onTap: () async {
               if (_titleContoller.text.isEmpty) {
                 snack("제목은 필수입니다.");

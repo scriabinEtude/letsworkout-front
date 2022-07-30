@@ -21,7 +21,7 @@ class PhotoCards extends StatelessWidget {
     required this.images,
     required this.isViewMode,
     required this.width,
-    required this.height,
+    this.height = 400,
     this.onActions,
     this.pageController,
     this.boxfit = BoxFit.cover,

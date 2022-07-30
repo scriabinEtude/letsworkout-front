@@ -4,6 +4,7 @@ import 'package:letsworkout/bloc/feed/feed_state.dart';
 import 'package:letsworkout/enum/loading_state.dart';
 import 'package:letsworkout/model/comment.dart';
 import 'package:letsworkout/model/feed.dart';
+import 'package:letsworkout/model/like.dart';
 import 'package:letsworkout/repository/feed_repository.dart';
 
 class FeedCubit extends Cubit<FeedState> {
@@ -64,7 +65,8 @@ class FeedCubit extends Cubit<FeedState> {
 
       await _feedRepository.like(
         feedId: state.feed!.feedId!,
-        userId: AppBloc.userCubit.user!.userId!,
+        user: AppBloc.userCubit.user!,
+        feedFcmToken: state.feed!.user!.fcmToken!,
       );
     } catch (e) {
       print(e);
@@ -84,7 +86,8 @@ class FeedCubit extends Cubit<FeedState> {
 
       await _feedRepository.unLike(
         feedId: state.feed!.feedId!,
-        userId: AppBloc.userCubit.user!.userId!,
+        user: AppBloc.userCubit.user!,
+        feedFcmToken: state.feed!.user!.fcmToken!,
       );
     } catch (e) {
       print(e);
@@ -111,6 +114,10 @@ class FeedCubit extends Cubit<FeedState> {
         isLiked;
   }
 
+  void resetComment() {
+    emit(state.copyWith(comments: []));
+  }
+
   Future commentInsert({
     required int depth,
     required int? parentId,
@@ -127,6 +134,7 @@ class FeedCubit extends Cubit<FeedState> {
           user: AppBloc.userCubit.user!,
         ),
         feedFcmToken: state.feed!.user!.fcmToken!,
+        isMine: false,
       );
 
       await commentGet(feedId: state.feed!.feedId!);
@@ -134,6 +142,31 @@ class FeedCubit extends Cubit<FeedState> {
       print(e);
     } finally {
       setLoading(LoadingState.done);
+    }
+  }
+
+  Future workoutingCommentInsert({
+    required int feedId,
+    required int depth,
+    required int? parentId,
+    required String comment,
+  }) async {
+    Comment commentModel = Comment(
+      feedId: feedId,
+      depth: depth,
+      parentId: parentId,
+      comment: comment,
+      user: AppBloc.userCubit.user!,
+    );
+
+    try {
+      _feedRepository.comment(
+        comment: commentModel,
+        feedFcmToken: AppBloc.userCubit.user!.fcmToken!,
+        isMine: true,
+      );
+    } catch (e) {
+      print(e);
     }
   }
 
@@ -172,7 +205,7 @@ class FeedCubit extends Cubit<FeedState> {
     }
   }
 
-  Future toggleCommentLike({required Comment comment}) async {
+  Future toggleCommentLike(Comment comment) async {
     comment.isLiked!
         ? await _commentUnLike(comment.feedCommentId!)
         : await _commentLike(comment.feedCommentId!);
@@ -224,5 +257,36 @@ class FeedCubit extends Cubit<FeedState> {
     c.likes = c.likes! + (isLiked ? 1 : -1);
 
     emit(state.copyWith());
+  }
+
+  void addCommentFromFcm(Comment comment) {
+    if (AppBloc.workoutCubit.isNotWorkoutStart) return;
+    if (AppBloc.workoutCubit.state.workout?.feedId != comment.feedId) return;
+
+    state.comments.insert(0, comment);
+    emit(state.copyWith());
+  }
+
+  void removeCommentFromFcm(Comment willRemove) {
+    if (AppBloc.workoutCubit.isNotWorkoutStart) return;
+    if (AppBloc.workoutCubit.state.workout?.feedId != willRemove.feedId) return;
+
+    state.comments.removeWhere(
+        (comment) => comment.feedCommentId == willRemove.feedCommentId);
+    emit(state.copyWith());
+  }
+
+  void addLikeFromFcm(Like like) {
+    if (AppBloc.workoutCubit.isNotWorkoutStart) return;
+    if (AppBloc.workoutCubit.state.workout?.feedId != like.feedId) return;
+
+    AppBloc.workoutCubit.addLikes(1);
+  }
+
+  void removeLikeFromFcm(Like like) {
+    if (AppBloc.workoutCubit.isNotWorkoutStart) return;
+    if (AppBloc.workoutCubit.state.workout?.feedId != like.feedId) return;
+
+    AppBloc.workoutCubit.addLikes(-1);
   }
 }

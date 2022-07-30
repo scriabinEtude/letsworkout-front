@@ -5,11 +5,11 @@ import 'package:letsworkout/config/preference.dart';
 import 'package:letsworkout/enum/bucket_path.dart';
 import 'package:letsworkout/enum/loading_state.dart';
 import 'package:letsworkout/enum/workout_type.dart';
-import 'package:letsworkout/model/comment.dart';
 import 'package:letsworkout/model/file_actions.dart';
 import 'package:letsworkout/model/workout.dart';
 import 'package:letsworkout/repository/workout_repository.dart';
 import 'package:letsworkout/util/date_util.dart';
+import 'package:letsworkout/util/widget_util.dart';
 
 class WorkoutCubit extends Cubit<WorkoutState> {
   WorkoutCubit()
@@ -20,10 +20,9 @@ class WorkoutCubit extends Cubit<WorkoutState> {
   final _workoutRepository = WorkoutRepository();
 
   bool get isNotWorkoutStart =>
-      AppBloc.workoutCubit.state.workout == null ||
-      AppBloc.workoutCubit.state.workout?.workoutType ==
-          WorkoutType.none.index ||
-      AppBloc.workoutCubit.state.workout?.workoutType == WorkoutType.end.index;
+      state.workout == null ||
+      state.workout?.workoutType == WorkoutType.none.index ||
+      state.workout?.workoutType == WorkoutType.end.index;
 
   bool get isWorkoutStart => !isNotWorkoutStart;
 
@@ -60,7 +59,7 @@ class WorkoutCubit extends Cubit<WorkoutState> {
 
   Future<Workout?> workoutStart() async {
     try {
-      setLoading(LoadingState.loading);
+      loadingShow();
 
       Workout workout = Workout(
         userId: AppBloc.userCubit.user!.userId,
@@ -82,7 +81,7 @@ class WorkoutCubit extends Cubit<WorkoutState> {
     } catch (e) {
       print(e);
     } finally {
-      setLoading(LoadingState.done);
+      loadingHide();
     }
   }
 
@@ -91,7 +90,7 @@ class WorkoutCubit extends Cubit<WorkoutState> {
     required FileActions fileActions,
   }) async {
     try {
-      setLoading(LoadingState.loading);
+      loadingShow();
 
       emit(state.copyWith(
           workout: state.workout?.copyWith(
@@ -101,7 +100,7 @@ class WorkoutCubit extends Cubit<WorkoutState> {
     } catch (e) {
       print(e);
     } finally {
-      setLoading(LoadingState.done);
+      loadingHide();
     }
   }
 
@@ -109,7 +108,7 @@ class WorkoutCubit extends Cubit<WorkoutState> {
     required String description,
     required FileActions fileActions,
   }) async {
-    setLoading(LoadingState.loading);
+    loadingShow();
 
     Workout workout = state.workout!.copyWith(
       description: description,
@@ -126,7 +125,7 @@ class WorkoutCubit extends Cubit<WorkoutState> {
       print(e);
       return workout;
     } finally {
-      setLoading(LoadingState.done);
+      loadingHide();
     }
   }
 
@@ -135,7 +134,7 @@ class WorkoutCubit extends Cubit<WorkoutState> {
     required FileActions fileActions,
   }) async {
     try {
-      setLoading(LoadingState.loading);
+      loadingShow();
       await workoutSave(
         description: description,
         fileActions: fileActions,
@@ -153,23 +152,21 @@ class WorkoutCubit extends Cubit<WorkoutState> {
       await Preferences.workoutRemove();
 
       emit(state.copyWith(workout: Workout.init()));
+      AppBloc.feedCubit.resetComment();
       return Workout.init();
     } catch (e) {
       print(e);
       return Workout.init();
     } finally {
-      setLoading(LoadingState.done);
+      loadingHide();
     }
   }
 
-  void addComment(Comment comment) {
-    state.comments.add(comment);
-    emit(state.copyWith());
-  }
-
-  void removeComment(Comment willRemove) {
-    state.comments.removeWhere(
-        (comment) => comment.feedCommentId == willRemove.feedCommentId);
-    emit(state.copyWith());
+  addLikes(int add) {
+    if (state.workout == null) return;
+    emit(state.copyWith(
+        workout: state.workout!.copyWith(
+      likes: state.workout!.likes! + add,
+    )));
   }
 }

@@ -7,9 +7,12 @@ import 'package:letsworkout/bloc/app/app_state.dart';
 import 'package:letsworkout/bloc/app_bloc.dart';
 import 'package:letsworkout/config/application.dart';
 import 'package:letsworkout/config/route.dart';
+import 'package:letsworkout/enum/app_state_type.dart';
 import 'package:letsworkout/screen/splash_screen.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'dart:developer' as developer;
+
+import 'package:loader_overlay/loader_overlay.dart';
 
 class AppBlocObserver extends BlocObserver {
   static const String TAG = "LISTAR";
@@ -82,7 +85,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       child: ScreenUtilInit(
         designSize: const Size(428, 926), //pro max
         minTextAdapt: true,
-        builder: (_) => MaterialApp(
+        builder: (context, _) => MaterialApp(
           title: '한결아 운동하자!',
           theme: ThemeData(
             splashColor: Colors.transparent,
@@ -91,14 +94,30 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
           ),
           onGenerateRoute: route.generateRoute,
           debugShowCheckedModeBanner: false,
-          home: Scaffold(
-            body: BlocListener<AppCubit, AppState>(
-              bloc: AppBloc.appCubit,
-              listener: (context, state) {
-                ScaffoldMessenger.of(context)
-                    .showSnackBar(SnackBar(content: Text(state.message!)));
-              },
-              child: const SplashScreen(),
+          home: LoaderOverlay(
+            useDefaultLoading: true,
+            overlayOpacity: 0,
+            child: Scaffold(
+              body: BlocListener<AppCubit, AppState>(
+                bloc: AppBloc.appCubit,
+                listener: (context, state) {
+                  switch (state.type) {
+                    case AppStateType.init:
+                      break;
+                    case AppStateType.snackBar:
+                      ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text(state.message!)));
+                      break;
+                    case AppStateType.loadingShow:
+                      context.loaderOverlay.show();
+                      break;
+                    case AppStateType.loadingHide:
+                      context.loaderOverlay.hide();
+                      break;
+                  }
+                },
+                child: const SplashScreen(),
+              ),
             ),
           ),
         ),

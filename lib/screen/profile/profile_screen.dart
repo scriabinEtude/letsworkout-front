@@ -35,7 +35,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         appBar: AppBar(
           title: const Text('프로필'),
           centerTitle: true,
-          actions: scaffoldSingleAction(
+          actions: appBarSingleAction(
               onTap: () async {
                 bool success = await AppBloc.userCubit.updateUser(
                   name: _nameController.text,

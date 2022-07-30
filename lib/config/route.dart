@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:letsworkout/model/food.dart';
 import 'package:letsworkout/screen/calendar/calendar_detail_screen.dart';
 import 'package:letsworkout/screen/calendar/calendar_detail_screen_args.dart';
 import 'package:letsworkout/screen/calendar/calendar_screen.dart';
 import 'package:letsworkout/screen/calendar/calendar_screen_args.dart';
 import 'package:letsworkout/screen/customer/customer_question_view_screen.dart';
 import 'package:letsworkout/screen/customer/customer_question_wirte_screen.dart';
+import 'package:letsworkout/screen/diet/diet_food_search_screen.dart';
+import 'package:letsworkout/screen/diet/diet_food_write_screen.dart';
 import 'package:letsworkout/screen/diet/diet_write_screen.dart';
 import 'package:letsworkout/screen/feed/feed_detail_screen.dart';
 import 'package:letsworkout/screen/feed/feed_detail_screen_args.dart';
@@ -38,6 +41,8 @@ class Routes {
 
   // diet
   static const String dietWriteScreen = "/diet/write";
+  static const String dietFoodSearchScreen = '/diet/food/search';
+  static const String dietFoodWriteScreen = '/diet/food/write';
 
   // feed
   static const String feedDetailScreen = "/feed/detail";
@@ -140,6 +145,20 @@ class Routes {
             settings: const RouteSettings(name: dietWriteScreen),
             builder: (BuildContext context) {
               return const DietWriteScreen();
+            });
+
+      case dietFoodSearchScreen:
+        return MaterialPageRoute<Food?>(
+            settings: const RouteSettings(name: dietFoodSearchScreen),
+            builder: (BuildContext context) {
+              return const DietFoodSearchScreen();
+            });
+
+      case dietFoodWriteScreen:
+        return MaterialPageRoute(
+            settings: const RouteSettings(name: dietFoodWriteScreen),
+            builder: (BuildContext context) {
+              return const DietFoodWriteScreen();
             });
 
       case feedDetailScreen:

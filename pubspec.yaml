@@ -35,12 +35,12 @@ dependencies:
 
   # required
   cupertino_icons: ^1.0.2
-  shared_preferences:
-  bloc:
-  flutter_bloc:
-  dio:
-  http:
-  intl:
+  shared_preferences: ^2.0.15
+  bloc: ^8.0.3
+  flutter_bloc: ^8.0.1
+  dio: ^4.0.6
+  http: ^0.13.4
+  intl: ^0.17.0
   json_serializable: ^6.2.0
 
   # device
@@ -59,15 +59,17 @@ dependencies:
   # etc
   image_picker: ^0.8.5+3
   cached_network_image: ^3.2.1
-  flutter_screenutil:
-  loader_overlay:
-  table_calendar:
-  easy_debounce:
+  flutter_screenutil: ^5.5.3+2
+  loader_overlay: ^2.0.8
+  table_calendar: ^3.0.6
+  easy_debounce: ^2.0.2+1
   salomon_bottom_bar: ^3.3.1
   adaptive_dialog: ^1.6.3
   modal_bottom_sheet: ^2.1.0
   carousel_slider: ^4.1.1
   smooth_page_indicator: ^1.0.0+2
+  flutter_keyboard_visibility: ^5.3.0
+  substring_highlight: ^1.0.33
 
   flutter_localizations:
     sdk: flutter

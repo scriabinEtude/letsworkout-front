@@ -1,4 +1,4 @@
-enum CommentState {
+enum CommentType {
   created,
   updated,
   deleted;

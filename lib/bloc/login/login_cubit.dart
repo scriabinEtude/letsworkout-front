@@ -6,6 +6,7 @@ import 'package:letsworkout/model/user.dart';
 import 'package:letsworkout/repository/user_repository.dart';
 import 'package:letsworkout/util/app_util.dart';
 import 'package:letsworkout/util/cubit_util.dart';
+import 'package:letsworkout/util/widget_util.dart';
 
 //***
 //
@@ -118,14 +119,22 @@ class LoginCubit extends Cubit<User> {
   }
 
   Future<bool> autoLogin(User requestUser) async {
-    User? user = await _repository.login(requestUser.copyWith(
-      fcmToken: await getFcmToken(),
-    ));
-    if (user == null) {
-      return false;
-    }
+    try {
+      loadingShow();
+      User? user = await _repository.login(requestUser.copyWith(
+        fcmToken: await getFcmToken(),
+      ));
+      if (user == null) {
+        return false;
+      }
 
-    AppBloc.userCubit.setUser(user);
-    return true;
+      AppBloc.userCubit.setUser(user);
+      return true;
+    } catch (e) {
+      print(e);
+      return false;
+    } finally {
+      loadingHide();
+    }
   }
 }

@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:letsworkout/enum/act_type.dart';
 import 'package:letsworkout/model/diet.dart';
 import 'package:letsworkout/model/file_actions.dart';
