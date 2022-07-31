@@ -4,7 +4,9 @@ import 'package:letsworkout/config/route.dart';
 import 'package:letsworkout/enum/loading_state.dart';
 import 'package:letsworkout/model/food.dart';
 import 'package:letsworkout/repository/diet_repository.dart';
+import 'package:letsworkout/screen/diet/diet_food_detail_screen.dart';
 import 'package:letsworkout/screen/diet/diet_food_update_request_screen.dart';
+import 'package:letsworkout/screen/diet/diet_food_widgets.dart';
 import 'package:letsworkout/widget/scaffold.dart';
 import 'package:substring_highlight/substring_highlight.dart';
 
@@ -74,38 +76,41 @@ class _DietFoodSearchScreenState extends State<DietFoodSearchScreen> {
         ),
       ),
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
-        child: ListView(
-          children: [
-            Row(
-              children: [
-                Flexible(
-                  flex: 2,
-                  child: DietFoodSearchBar(
-                    label: '음식',
-                    controller: _foodNameController,
-                    onChanged: (text) => _searchFoodDebouncer(),
+        padding: const EdgeInsets.symmetric(horizontal: 10),
+        child: SingleChildScrollView(
+          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  Flexible(
+                    flex: 2,
+                    child: DietFoodSearchBar(
+                      label: '음식',
+                      controller: _foodNameController,
+                      onChanged: (text) => _searchFoodDebouncer(),
+                    ),
                   ),
-                ),
-                Flexible(
-                  flex: 1,
-                  child: DietFoodSearchBar(
-                    label: '브랜드',
-                    controller: _foodBrandController,
-                    onChanged: (text) => _searchFoodDebouncer(),
+                  Flexible(
+                    flex: 1,
+                    child: DietFoodSearchBar(
+                      label: '브랜드',
+                      controller: _foodBrandController,
+                      onChanged: (text) => _searchFoodDebouncer(),
+                    ),
                   ),
-                ),
-              ],
-            ),
-            if (_state == LoadingState.init)
-              initWidget()
-            else if (_state == LoadingState.done && _searchFoods.isEmpty)
-              emptyWidget()
-            else if (_state == LoadingState.done)
-              ..._searchFoods.map((food) => foodWidget(food))
-            else if (_state == LoadingState.error)
-              errorWidget(),
-          ],
+                ],
+              ),
+              if (_state == LoadingState.init)
+                initWidget()
+              else if (_state == LoadingState.done && _searchFoods.isEmpty)
+                emptyWidget()
+              else if (_state == LoadingState.done)
+                ..._searchFoods.map((food) => foodWidget(food))
+              else if (_state == LoadingState.error)
+                errorWidget(),
+            ],
+          ),
         ),
       ),
     );
@@ -134,7 +139,9 @@ class _DietFoodSearchScreenState extends State<DietFoodSearchScreen> {
             value: food.calorie, prefix: '칼: ', suffix: 'kcal / ') +
         foodInfoText(value: food.carbohydrate, prefix: '탄: ', suffix: 'g / ') +
         foodInfoText(value: food.protein, prefix: '단: ', suffix: 'g / ') +
-        foodInfoText(value: food.fat, prefix: '지: ', suffix: 'g / ');
+        foodInfoText(value: food.fat, prefix: '지: ', suffix: 'g / ') +
+        foodInfoText(value: food.sugar, prefix: '당: ', suffix: 'g / ') +
+        foodInfoText(value: food.sodium, prefix: '나: ', suffix: 'mg / ');
 
     foodInfo = foodInfo.substring(0, foodInfo.length - 3);
 
@@ -169,32 +176,39 @@ class _DietFoodSearchScreenState extends State<DietFoodSearchScreen> {
                   Text(
                     foodInfo,
                     overflow: TextOverflow.ellipsis,
-                  )
+                  ),
+                  Row(
+                    children: [
+                      Text('인용 : ${food.refCount}          '),
+                      InkWell(
+                        onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                DietFoodDetailScreen(food: food),
+                          ),
+                        ),
+                        child: Text('정보       '),
+                      ),
+                      InkWell(
+                        onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                DietFoodUpdateRequestScreen(food: food),
+                          ),
+                        ),
+                        child: Text('수정'),
+                      ),
+                    ],
+                  ),
                 ],
               ),
             ),
           ),
-          InkWell(
-            onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => DietFoodUpdateRequestScreen(food: food),
-              ),
-            ),
-            child: Text('수정'),
-          ),
         ],
       ),
     );
-  }
-
-  String foodInfoText({
-    required int? value,
-    required String prefix,
-    required String suffix,
-  }) {
-    if (value == null) return "";
-    return '$prefix$value$suffix';
   }
 
   Widget stateWidgetContainer({required Widget child}) {

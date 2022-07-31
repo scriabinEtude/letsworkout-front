@@ -50,6 +50,11 @@ class _FeedScreenState extends State<FeedScreen> {
               dietButton(),
             ],
           ),
+          TestButton(
+            onTap: () {
+              AppBloc.appCubit.successUpSnacbar('message');
+            },
+          ),
           BlocBuilder<FeedCubit, FeedState>(
             bloc: AppBloc.feedCubit,
             builder: (context, state) {

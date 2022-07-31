@@ -1,5 +1,6 @@
 import 'package:letsworkout/model/feed.dart';
 import 'package:letsworkout/model/file_actions.dart';
+import 'package:letsworkout/model/food.dart';
 import 'package:letsworkout/model/user.dart';
 import 'package:letsworkout/util/object_util.dart';
 
@@ -22,6 +23,9 @@ class Diet extends Feed {
     this.carbohydrate,
     this.protein,
     this.fat,
+    this.sugar,
+    this.sodium,
+    this.foods,
   }) : super(
           feedId: feedId,
           userId: userId,
@@ -42,6 +46,9 @@ class Diet extends Feed {
   final int? carbohydrate;
   final int? protein;
   final int? fat;
+  final int? sugar;
+  final int? sodium;
+  final List<Food>? foods;
 
   @override
   Diet copyWith({
@@ -62,6 +69,9 @@ class Diet extends Feed {
     int? carbohydrate,
     int? protein,
     int? fat,
+    int? sugar,
+    int? sodium,
+    List<Food>? foods,
   }) =>
       Diet(
         feedId: feedId ?? this.feedId,
@@ -81,6 +91,9 @@ class Diet extends Feed {
         carbohydrate: carbohydrate ?? this.carbohydrate,
         protein: protein ?? this.protein,
         fat: fat ?? this.fat,
+        sugar: sugar ?? this.sugar,
+        sodium: sodium ?? this.sodium,
+        foods: foods ?? this.foods,
       );
 
   factory Diet.fromJson(Map<String, dynamic> json) => Diet(
@@ -101,6 +114,9 @@ class Diet extends Feed {
         carbohydrate: json["carbohydrate"],
         protein: json["protein"],
         fat: json["fat"],
+        sugar: json["sugar"],
+        sodium: json["sodium"],
+        foods: json["foods"],
       );
 
   @override
@@ -113,5 +129,8 @@ class Diet extends Feed {
         "carbohydrate": carbohydrate,
         "protein": protein,
         "fat": fat,
+        "sugar": sugar,
+        "sodium": sodium,
+        "foods": foods?.map((food) => food.toJson()).toList(),
       };
 }

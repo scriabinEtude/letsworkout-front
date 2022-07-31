@@ -7,6 +7,9 @@ class Food {
     this.carbohydrate,
     this.protein,
     this.fat,
+    this.sugar,
+    this.sodium,
+    this.multiply = 1,
     this.description,
     this.refCount,
     this.userId,
@@ -21,6 +24,9 @@ class Food {
   final int? carbohydrate;
   final int? protein;
   final int? fat;
+  final int? sugar;
+  final int? sodium;
+  final double multiply;
   final String? description;
   final int? refCount;
   final int? userId;
@@ -35,6 +41,9 @@ class Food {
     int? carbohydrate,
     int? protein,
     int? fat,
+    int? sugar,
+    int? sodium,
+    double? multiply,
     String? description,
     int? refCount,
     int? userId,
@@ -49,6 +58,9 @@ class Food {
         carbohydrate: carbohydrate ?? this.carbohydrate,
         protein: protein ?? this.protein,
         fat: fat ?? this.fat,
+        sugar: sugar ?? this.sugar,
+        sodium: sodium ?? this.sodium,
+        multiply: multiply ?? this.multiply,
         description: description ?? this.description,
         refCount: refCount ?? this.refCount,
         userId: userId ?? this.userId,
@@ -64,6 +76,9 @@ class Food {
         carbohydrate: json["carbohydrate"],
         protein: json["protein"],
         fat: json["fat"],
+        sugar: json["sugar"],
+        sodium: json["sodium"],
+        multiply: json["multiply"] ?? 1,
         description: json["description"],
         refCount: json["ref_count"],
         userId: json['user_id'],
@@ -84,6 +99,9 @@ class Food {
         "carbohydrate": carbohydrate,
         "protein": protein,
         "fat": fat,
+        "sugar": sugar,
+        "sodium": sodium,
+        "multiply": multiply,
         "description": description,
         "ref_count": refCount,
         "user_id": userId,

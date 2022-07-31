@@ -28,6 +28,8 @@ class _DietFoodUpdateRequestScreenState
   late final TextEditingController _carboController;
   late final TextEditingController _proteinController;
   late final TextEditingController _fatController;
+  late final TextEditingController _sugarController;
+  late final TextEditingController _sodiumController;
   late final TextEditingController _descriptionController;
   bool _validation = true;
 
@@ -43,6 +45,10 @@ class _DietFoodUpdateRequestScreenState
         TextEditingController(text: intToString(widget.food.calorie));
     _fatController =
         TextEditingController(text: intToString(widget.food.calorie));
+    _sugarController =
+        TextEditingController(text: intToString(widget.food.sugar));
+    _sodiumController =
+        TextEditingController(text: intToString(widget.food.sodium));
     _descriptionController =
         TextEditingController(text: widget.food.description);
     super.initState();
@@ -56,6 +62,8 @@ class _DietFoodUpdateRequestScreenState
     _carboController.dispose();
     _proteinController.dispose();
     _fatController.dispose();
+    _sugarController.dispose();
+    _sodiumController.dispose();
     _descriptionController.dispose();
     super.dispose();
   }
@@ -80,6 +88,8 @@ class _DietFoodUpdateRequestScreenState
           carbohydrate: parseStringNumber(_carboController.text),
           protein: parseStringNumber(_proteinController.text),
           fat: parseStringNumber(_fatController.text),
+          sugar: parseStringNumber(_sugarController.text),
+          sodium: parseStringNumber(_sodiumController.text),
           description: _descriptionController.text,
           userId: AppBloc.userCubit.user!.userId,
         ),
@@ -153,6 +163,20 @@ class _DietFoodUpdateRequestScreenState
                 keyboardType: TextInputType.number,
                 decoration: const InputDecoration(
                   label: Text('지방'),
+                ),
+              ),
+              TextField(
+                controller: _sugarController,
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(
+                  label: Text('당'),
+                ),
+              ),
+              TextField(
+                controller: _sodiumController,
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(
+                  label: Text('나트륨'),
                 ),
               ),
               TextField(

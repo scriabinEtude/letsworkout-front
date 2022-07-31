@@ -22,4 +22,11 @@ class AppCubit extends Cubit<AppState> {
   void loadingHide() {
     emit(state.copyWith(type: AppStateType.loadingHide));
   }
+
+  void successUpSnacbar(String message) {
+    emit(state.copyWith(
+      type: AppStateType.successUpSnacbar,
+      message: message,
+    ));
+  }
 }

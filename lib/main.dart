@@ -92,6 +92,8 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
             highlightColor: Colors.transparent,
             hoverColor: Colors.transparent,
           ),
+          scrollBehavior:
+              MyCustomScrollBehavior(), // how to remove scroll glow? // https://stackoverflow.com/questions/51119795/how-to-remove-scroll-glow?rq=1&answertab=trending#tab-top
           onGenerateRoute: route.generateRoute,
           debugShowCheckedModeBanner: false,
           home: LoaderOverlay(
@@ -114,6 +116,8 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
                     case AppStateType.loadingHide:
                       context.loaderOverlay.hide();
                       break;
+                    case AppStateType.successUpSnacbar:
+                      throw UnsupportedError('아직 구현되지 않음.');
                   }
                 },
                 child: const SplashScreen(),
@@ -123,5 +127,18 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         ),
       ),
     );
+  }
+}
+
+/// how to remove scroll glow?
+///
+/// 스크롤시 가장자리에 닿으면 생기는 파란 원형 제거
+///
+/// https://stackoverflow.com/questions/51119795/how-to-remove-scroll-glow?rq=1&answertab=trending#tab-top
+class MyCustomScrollBehavior extends MaterialScrollBehavior {
+  @override
+  Widget buildOverscrollIndicator(
+      BuildContext context, Widget child, ScrollableDetails details) {
+    return child;
   }
 }

@@ -4,9 +4,7 @@ import 'package:letsworkout/bloc/cubit/diet_state.dart';
 import 'package:letsworkout/enum/bucket_path.dart';
 import 'package:letsworkout/enum/loading_state.dart';
 import 'package:letsworkout/model/diet.dart';
-import 'package:letsworkout/model/file_actions.dart';
 import 'package:letsworkout/repository/diet_repository.dart';
-import 'package:letsworkout/util/date_util.dart';
 import 'package:letsworkout/util/widget_util.dart';
 
 class DietCubit extends Cubit<DietState> {
@@ -19,33 +17,19 @@ class DietCubit extends Cubit<DietState> {
   }
 
   Future<bool> createDiet({
-    required DateTime time,
-    required String? description,
-    required int? calorie,
-    required int? carbohydrate,
-    required int? protein,
-    required int? fat,
-    required FileActions images,
+    required Diet diet,
   }) async {
     try {
       loadingShow();
 
       // 이미지 s3에 업로드
-      if (!await images.uploadInsertFiles(BucketPath.diet)) {
+      if (!await diet.images!.uploadInsertFiles(BucketPath.diet)) {
         return false;
       }
 
-      bool success = await _dietRepository.insertDiet(Diet(
-        userId: AppBloc.userCubit.user!.userId!,
-        time: mysqlDateTimeFormat(time),
-        description: description,
-        calorie: calorie,
-        carbohydrate: carbohydrate,
-        protein: protein,
-        fat: fat,
-        images: images,
-      ));
+      bool success = await _dietRepository.insertDiet(diet);
 
+      AppBloc.appCubit.appSnackBar('식단 등록이 완료되었습니다!');
       return success;
     } catch (e) {
       print(e);
