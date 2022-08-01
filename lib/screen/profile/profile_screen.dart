@@ -6,7 +6,6 @@ import 'package:letsworkout/bloc/app_bloc.dart';
 import 'package:letsworkout/widget/avatar.dart';
 import 'package:letsworkout/widget/bottomsheet.dart';
 import 'package:letsworkout/widget/scaffold.dart';
-import 'package:loader_overlay/loader_overlay.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({Key? key}) : super(key: key);
@@ -30,39 +29,37 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return LoaderOverlay(
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text('프로필'),
-          centerTitle: true,
-          actions: appBarSingleAction(
-              onTap: () async {
-                bool success = await AppBloc.userCubit.updateUser(
-                  name: _nameController.text,
-                  isProfileImageUpdate: _isProfileImageUpdate,
-                  image: _profileImage,
-                );
-                if (success) Navigator.pop(context);
-              },
-              child: const Text('저장')),
-        ),
-        body: Column(
-          children: [
-            const SizedBox(height: 50),
-            avatar(),
-            const SizedBox(height: 50),
-            Center(
-              child: SizedBox(
-                width: 200,
-                child: TextField(
-                  textAlign: TextAlign.center,
-                  controller: _nameController,
-                  maxLength: 6,
-                ),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('프로필'),
+        centerTitle: true,
+        actions: appBarSingleAction(
+            onTap: () async {
+              bool success = await AppBloc.userCubit.updateUser(
+                name: _nameController.text,
+                isProfileImageUpdate: _isProfileImageUpdate,
+                image: _profileImage,
+              );
+              if (success) Navigator.pop(context);
+            },
+            child: const Text('저장')),
+      ),
+      body: Column(
+        children: [
+          const SizedBox(height: 50),
+          avatar(),
+          const SizedBox(height: 50),
+          Center(
+            child: SizedBox(
+              width: 200,
+              child: TextField(
+                textAlign: TextAlign.center,
+                controller: _nameController,
+                maxLength: 6,
               ),
-            )
-          ],
-        ),
+            ),
+          )
+        ],
       ),
     );
   }

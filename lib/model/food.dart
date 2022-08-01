@@ -78,7 +78,7 @@ class Food {
         fat: json["fat"],
         sugar: json["sugar"],
         sodium: json["sodium"],
-        multiply: json["multiply"] ?? 1,
+        multiply: json["multiply"]?.toDouble() ?? 1,
         description: json["description"],
         refCount: json["ref_count"],
         userId: json['user_id'],

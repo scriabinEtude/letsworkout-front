@@ -29,7 +29,7 @@ class DietCubit extends Cubit<DietState> {
 
       bool success = await _dietRepository.insertDiet(diet);
 
-      AppBloc.appCubit.appSnackBar('식단 등록이 완료되었습니다!');
+      snack('식단 등록이 완료되었습니다!');
       return success;
     } catch (e) {
       print(e);

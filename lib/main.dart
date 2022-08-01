@@ -12,8 +12,6 @@ import 'package:letsworkout/screen/splash_screen.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'dart:developer' as developer;
 
-import 'package:loader_overlay/loader_overlay.dart';
-
 class AppBlocObserver extends BlocObserver {
   static const String TAG = "LISTAR";
 
@@ -96,32 +94,22 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
               MyCustomScrollBehavior(), // how to remove scroll glow? // https://stackoverflow.com/questions/51119795/how-to-remove-scroll-glow?rq=1&answertab=trending#tab-top
           onGenerateRoute: route.generateRoute,
           debugShowCheckedModeBanner: false,
-          home: LoaderOverlay(
-            useDefaultLoading: true,
-            overlayOpacity: 0,
-            child: Scaffold(
-              body: BlocListener<AppCubit, AppState>(
-                bloc: AppBloc.appCubit,
-                listener: (context, state) {
-                  switch (state.type) {
-                    case AppStateType.init:
-                      break;
-                    case AppStateType.snackBar:
-                      ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text(state.message!)));
-                      break;
-                    case AppStateType.loadingShow:
-                      context.loaderOverlay.show();
-                      break;
-                    case AppStateType.loadingHide:
-                      context.loaderOverlay.hide();
-                      break;
-                    case AppStateType.successUpSnacbar:
-                      throw UnsupportedError('아직 구현되지 않음.');
-                  }
-                },
-                child: const SplashScreen(),
-              ),
+          home: Scaffold(
+            body: BlocListener<AppCubit, AppState>(
+              bloc: AppBloc.appCubit,
+              listener: (context, state) {
+                switch (state.type) {
+                  case AppStateType.init:
+                    break;
+                  case AppStateType.snackBar:
+                    ScaffoldMessenger.of(context)
+                        .showSnackBar(SnackBar(content: Text(state.message!)));
+                    break;
+                  case AppStateType.successUpSnacbar:
+                    throw UnsupportedError('아직 구현되지 않음.');
+                }
+              },
+              child: const SplashScreen(),
             ),
           ),
         ),

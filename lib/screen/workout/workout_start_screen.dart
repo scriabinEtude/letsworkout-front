@@ -1,14 +1,10 @@
 import 'dart:async';
-import 'dart:developer';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:letsworkout/bloc/app_bloc.dart';
 import 'package:letsworkout/bloc/feed/feed_cubit.dart';
 import 'package:letsworkout/bloc/feed/feed_state.dart';
 import 'package:letsworkout/enum/workout_type.dart';
-import 'package:letsworkout/model/comment.dart';
 import 'package:letsworkout/model/file_actions.dart';
 import 'package:letsworkout/model/workout.dart';
 import 'package:letsworkout/util/widget_util.dart';

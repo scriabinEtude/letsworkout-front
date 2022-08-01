@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:letsworkout/util/cubit_util.dart';
+import 'package:letsworkout/util/widget_util.dart';
 
 class ApiErrorInterceptor extends Interceptor {
   @override

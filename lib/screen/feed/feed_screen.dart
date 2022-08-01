@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -11,6 +13,7 @@ import 'package:letsworkout/enum/workout_type.dart';
 import 'package:letsworkout/model/feed.dart';
 import 'package:letsworkout/model/user.dart';
 import 'package:letsworkout/screen/feed/feed_detail_screen_args.dart';
+import 'package:letsworkout/util/widget_util.dart';
 import 'package:letsworkout/widget/test_widget.dart';
 
 class FeedScreen extends StatefulWidget {
@@ -52,7 +55,10 @@ class _FeedScreenState extends State<FeedScreen> {
           ),
           TestButton(
             onTap: () {
-              AppBloc.appCubit.successUpSnacbar('message');
+              loadingShow();
+              Timer(Duration(seconds: 2), () {
+                loadingHide();
+              });
             },
           ),
           BlocBuilder<FeedCubit, FeedState>(

@@ -10,6 +10,7 @@ class Diet extends Feed {
     int? userId,
     int? actId,
     int? actType,
+    String? time,
     int? likes,
     int? comments,
     User? user,
@@ -17,7 +18,6 @@ class Diet extends Feed {
     bool? isLiked,
     String? createdAt,
     this.dietId,
-    this.time,
     this.description,
     this.calorie,
     this.carbohydrate,
@@ -31,6 +31,7 @@ class Diet extends Feed {
           userId: userId,
           actId: actId,
           actType: actType,
+          time: time,
           likes: likes,
           comments: comments,
           user: user,
@@ -40,7 +41,6 @@ class Diet extends Feed {
         );
 
   final int? dietId;
-  final String? time;
   final String? description;
   final int? calorie;
   final int? carbohydrate;
@@ -56,6 +56,7 @@ class Diet extends Feed {
     int? userId,
     int? actId,
     int? actType,
+    String? time,
     int? likes,
     int? comments,
     User? user,
@@ -63,7 +64,6 @@ class Diet extends Feed {
     bool? isLiked,
     String? createdAt,
     int? dietId,
-    String? time,
     String? description,
     int? calorie,
     int? carbohydrate,
@@ -101,6 +101,7 @@ class Diet extends Feed {
         userId: json["user_id"],
         actId: json["act_id"],
         actType: json["act_type"],
+        time: json["time"],
         likes: json["likes"],
         comments: json["comments"],
         user: User.fromJson(json['user']),
@@ -108,7 +109,6 @@ class Diet extends Feed {
         isLiked: btb(json['is_liked']),
         createdAt: json["created_at"],
         dietId: json["diet_id"],
-        time: json["time"],
         description: json["description"],
         calorie: json["calorie"],
         carbohydrate: json["carbohydrate"],
@@ -116,14 +116,13 @@ class Diet extends Feed {
         fat: json["fat"],
         sugar: json["sugar"],
         sodium: json["sodium"],
-        foods: json["foods"],
+        foods: Food.fromJsonList(json["foods"]),
       );
 
   @override
   Map<String, dynamic> toJson() => {
         ...super.toJson(),
         "diet_id": dietId,
-        "time": time,
         "description": description,
         "calorie": calorie,
         "carbohydrate": carbohydrate,

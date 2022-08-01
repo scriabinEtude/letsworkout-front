@@ -11,6 +11,7 @@ class Workout extends Feed {
     int? userId,
     int? actId,
     int? actType,
+    String? time,
     int? likes,
     int? comments,
     User? user,
@@ -19,7 +20,6 @@ class Workout extends Feed {
     String? createdAt,
     this.workoutId,
     required this.workoutType,
-    this.time,
     this.endTime,
     this.description,
   }) : super(
@@ -27,6 +27,7 @@ class Workout extends Feed {
           userId: userId,
           actId: actId,
           actType: actType,
+          time: time,
           likes: likes,
           comments: comments,
           user: user,
@@ -37,7 +38,6 @@ class Workout extends Feed {
 
   final int? workoutId;
   final int workoutType;
-  final String? time;
   final String? endTime;
   final String? description;
 
@@ -51,6 +51,7 @@ class Workout extends Feed {
     int? userId,
     int? actId,
     int? actType,
+    String? time,
     int? likes,
     int? comments,
     User? user,
@@ -59,7 +60,6 @@ class Workout extends Feed {
     String? createdAt,
     int? workoutId,
     int? workoutType,
-    String? time,
     String? endTime,
     String? description,
   }) =>
@@ -68,6 +68,7 @@ class Workout extends Feed {
         userId: userId ?? this.userId,
         actId: actId ?? this.actId,
         actType: actType ?? this.actType,
+        time: time ?? this.time,
         likes: likes ?? this.likes,
         comments: comments ?? this.comments,
         user: user ?? this.user,
@@ -76,7 +77,6 @@ class Workout extends Feed {
         createdAt: createdAt ?? this.createdAt,
         workoutId: workoutId ?? this.workoutId,
         workoutType: workoutType ?? this.workoutType,
-        time: time ?? this.time,
         endTime: endTime ?? this.endTime,
         description: description ?? this.description,
       );
@@ -88,6 +88,7 @@ class Workout extends Feed {
         userId: json["user_id"],
         actId: json["act_id"],
         actType: json["act_type"],
+        time: json["time"],
         likes: json["likes"],
         comments: json["comments"],
         user: User.fromJson(json['user']),
@@ -96,7 +97,6 @@ class Workout extends Feed {
         createdAt: json["created_at"],
         workoutId: json["workout_id"],
         workoutType: json['workout_type'],
-        time: json["time"],
         endTime: json["end_time"],
         description: json["description"],
       );
@@ -111,7 +111,6 @@ class Workout extends Feed {
         ...super.toJson(),
         "workout_id": workoutId,
         'workout_type': workoutType,
-        "time": time,
         "end_time": endTime,
         "description": description,
       };

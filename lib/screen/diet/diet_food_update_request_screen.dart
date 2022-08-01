@@ -96,7 +96,7 @@ class _DietFoodUpdateRequestScreenState
       );
 
       if (response.statusCode == 200) {
-        AppBloc.appCubit.appSnackBar('수정 요청이 등록되었습니다. 감사합니다!');
+        snack('수정 요청이 등록되었습니다. 감사합니다!');
         Navigator.pop(context);
       }
     } catch (e) {

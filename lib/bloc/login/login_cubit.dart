@@ -5,7 +5,6 @@ import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart' as kakao;
 import 'package:letsworkout/model/user.dart';
 import 'package:letsworkout/repository/user_repository.dart';
 import 'package:letsworkout/util/app_util.dart';
-import 'package:letsworkout/util/cubit_util.dart';
 import 'package:letsworkout/util/widget_util.dart';
 
 //***

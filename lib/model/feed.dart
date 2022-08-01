@@ -10,6 +10,7 @@ class Feed {
   final int? userId;
   final int? actId;
   final int? actType;
+  final String? time;
   int? likes;
   int? comments;
   final User? user;
@@ -22,6 +23,7 @@ class Feed {
     this.userId,
     this.actType,
     this.actId,
+    this.time,
     this.likes,
     this.comments,
     this.user,
@@ -35,6 +37,7 @@ class Feed {
     int? userId,
     int? actId,
     int? actType,
+    String? time,
     int? likes,
     int? comments,
     User? user,
@@ -43,16 +46,17 @@ class Feed {
     String? createdAt,
   }) =>
       Feed(
-        feedId: feedId,
-        userId: userId,
-        actId: actId,
-        actType: actType,
-        likes: likes,
-        comments: comments,
-        user: user,
-        images: images,
-        isLiked: isLiked,
-        createdAt: createdAt,
+        feedId: feedId ?? this.feedId,
+        userId: userId ?? this.userId,
+        actId: actId ?? this.actId,
+        actType: actType ?? this.actType,
+        time: time ?? this.time,
+        likes: likes ?? this.likes,
+        comments: comments ?? this.comments,
+        user: user ?? this.user,
+        images: images ?? this.images,
+        isLiked: isLiked ?? this.isLiked,
+        createdAt: createdAt ?? this.createdAt,
       );
 
   factory Feed.fromJson(Map<String, dynamic> json) {
@@ -69,6 +73,7 @@ class Feed {
         userId: json["user_id"],
         actId: json["act_id"],
         actType: json["act_type"],
+        time: json['time'],
         likes: json["likes"],
         comments: json["comments"],
         user: User.fromJson(json['user']),
@@ -84,6 +89,7 @@ class Feed {
         "user_id": userId,
         "act_id": actId,
         "act_type": actType,
+        "time": time,
         "likes": likes,
         "comments": comments,
         'user': user?.toJson(),

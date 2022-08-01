@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:letsworkout/bloc/app_bloc.dart';
 import 'package:letsworkout/bloc/customer/customer_cubit.dart';
-import 'package:letsworkout/util/cubit_util.dart';
 import 'package:letsworkout/util/widget_util.dart';
 import 'package:letsworkout/widget/scaffold.dart';
 

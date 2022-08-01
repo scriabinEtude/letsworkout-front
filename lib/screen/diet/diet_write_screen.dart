@@ -268,7 +268,7 @@ class _DietWriteScreenState extends State<DietWriteScreen> {
         int selectedindex = _selectedFoods.indexWhere(
             (selectedFood) => selectedFood.dietFoodId == food.dietFoodId);
         if (selectedindex != -1) {
-          AppBloc.appCubit.appSnackBar('이미 추가한 음식입니다\n음식을 눌러 수량을 조절해주세요');
+          snack('이미 추가한 음식입니다\n음식을 눌러 수량을 조절해주세요');
           return;
         }
 

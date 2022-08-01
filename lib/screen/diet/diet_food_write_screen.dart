@@ -140,7 +140,7 @@ class _DietFoodWriteScreenState extends State<DietFoodWriteScreen> {
       ));
 
       if (response.statusCode == 200) {
-        AppBloc.appCubit.appSnackBar('등록 완료!');
+        snack('등록 완료!');
         Navigator.pop(context);
       }
     } catch (e) {
