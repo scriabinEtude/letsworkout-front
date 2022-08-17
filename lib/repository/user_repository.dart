@@ -9,9 +9,9 @@ class UserRepository {
 
   Future<User?> login(User user) async {
     try {
-      Response result = await api.post(
+      Response result = await api.get(
         _getUrl('/login'),
-        data: user.toJson(),
+        queryParameters: user.toJson(),
       );
 
       if (result.data == "") return null;
@@ -22,10 +22,10 @@ class UserRepository {
     }
   }
 
-  Future<User?> getUserId(int id) async {
+  Future<User?> getUserId(String id) async {
     try {
       Response result = await api.get(_getUrl('/id'), queryParameters: {
-        'user_id': id,
+        '_id': id,
       });
 
       if (result.data == "") return null;
@@ -33,6 +33,22 @@ class UserRepository {
     } catch (e) {
       print(e);
       return null;
+    }
+  }
+
+  Future<List<User>> getUsersById(List<String> ids) async {
+    if (ids.isEmpty) return [];
+
+    try {
+      Response result = await api.get(_getUrl('/ids'), queryParameters: {
+        'ids': ids,
+      });
+
+      if (result.data == "") return [];
+      return User.fromJsonList(result.data);
+    } catch (e) {
+      print(e);
+      return [];
     }
   }
 
@@ -80,10 +96,10 @@ class UserRepository {
     }
   }
 
-  Future<bool> updateProfileImage(int userId, String url) async {
+  Future<bool> updateProfileImage(String userId, String url) async {
     try {
       Response result = await api.post(_getUrl('/profile/image'), data: {
-        'user_id': userId,
+        '_id': userId,
         'url': url,
       });
       return result.statusCode == 200;
@@ -93,10 +109,10 @@ class UserRepository {
     }
   }
 
-  Future<bool> deleteProfileImage(int userId) async {
+  Future<bool> deleteProfileImage(String userId) async {
     try {
       Response result = await api.delete(_getUrl('/profile/image'), data: {
-        'user_id': userId,
+        '_id': userId,
       });
       return result.statusCode == 200;
     } catch (e) {

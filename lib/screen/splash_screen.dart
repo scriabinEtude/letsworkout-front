@@ -121,7 +121,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
     //저장된 유저로 자동 로그인
     else {
-      User? user = await AppBloc.userCubit.loadInitialData();
+      User? user = AppBloc.userCubit.loadInitialData();
       if (await AppBloc.loginCubit.autoLogin(user!)) {
         Navigator.pushNamed(context, Routes.homeScreen);
       }
@@ -139,8 +139,15 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(child: Text('한결아 운동하자!')),
+    return Scaffold(
+      body: Column(
+        children: const [
+          Expanded(
+            child: Center(child: Text('한결아 운동하자!')),
+          ),
+          Expanded(child: SizedBox.shrink())
+        ],
+      ),
     );
   }
 }

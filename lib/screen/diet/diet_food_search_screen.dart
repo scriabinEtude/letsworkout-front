@@ -71,7 +71,8 @@ class _DietFoodSearchScreenState extends State<DietFoodSearchScreen> {
       appBar: AppBar(
         title: const Text('음식 찾기'),
         actions: appBarSingleAction(
-          onTap: () => Navigator.pushNamed(context, Routes.dietFoodWriteScreen),
+          onTap: () =>
+              Navigator.pushNamed(context, Routes.dietFoodWrite1CompanyScreen),
           child: const Text('등록'),
         ),
       ),
@@ -94,7 +95,7 @@ class _DietFoodSearchScreenState extends State<DietFoodSearchScreen> {
                   Flexible(
                     flex: 1,
                     child: DietFoodSearchBar(
-                      label: '브랜드',
+                      label: '제조사',
                       controller: _foodBrandController,
                       onChanged: (text) => _searchFoodDebouncer(),
                     ),
@@ -158,16 +159,15 @@ class _DietFoodSearchScreenState extends State<DietFoodSearchScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      if (food.foodBrand != null && food.foodBrand!.isNotEmpty)
-                        SubstringHighlight(
-                          term: _foodBrandController.text,
-                          text: '${food.foodBrand} ',
-                          textStyleHighlight:
-                              const TextStyle(fontWeight: FontWeight.w700),
-                        ),
+                      SubstringHighlight(
+                        term: _foodBrandController.text,
+                        text: '${food.company} ',
+                        textStyleHighlight:
+                            const TextStyle(fontWeight: FontWeight.w700),
+                      ),
                       SubstringHighlight(
                         term: _foodNameController.text,
-                        text: food.foodName!,
+                        text: food.foodName,
                         textStyleHighlight:
                             const TextStyle(fontWeight: FontWeight.w700),
                       ),

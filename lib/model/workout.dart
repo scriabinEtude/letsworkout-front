@@ -1,117 +1,31 @@
-import 'package:letsworkout/enum/workout_type.dart';
-import 'package:letsworkout/model/feed.dart';
-import 'package:letsworkout/model/file_actions.dart';
-import 'package:letsworkout/model/user.dart';
-import 'package:letsworkout/module/error/letsworkout_error.dart';
-import 'package:letsworkout/util/object_util.dart';
-
-class Workout extends Feed {
+class Workout {
   Workout({
-    int? feedId,
-    int? userId,
-    int? actId,
-    int? actType,
-    String? time,
-    int? likes,
-    int? comments,
-    User? user,
-    FileActions? images,
-    bool? isLiked,
-    String? createdAt,
-    this.workoutId,
-    required this.workoutType,
+    this.workoutType,
     this.endTime,
-    this.description,
-  }) : super(
-          feedId: feedId,
-          userId: userId,
-          actId: actId,
-          actType: actType,
-          time: time,
-          likes: likes,
-          comments: comments,
-          user: user,
-          images: images,
-          isLiked: isLiked,
-          createdAt: createdAt,
-        );
+  });
 
-  final int? workoutId;
-  final int workoutType;
+  final int? workoutType;
   final String? endTime;
-  final String? description;
 
-  factory Workout.init() => Workout(
-        workoutType: WorkoutType.none.index,
-      );
-
-  @override
   Workout copyWith({
-    int? feedId,
-    int? userId,
-    int? actId,
-    int? actType,
-    String? time,
-    int? likes,
-    int? comments,
-    User? user,
-    FileActions? images,
-    bool? isLiked,
-    String? createdAt,
-    int? workoutId,
     int? workoutType,
     String? endTime,
-    String? description,
   }) =>
       Workout(
-        feedId: feedId ?? this.feedId,
-        userId: userId ?? this.userId,
-        actId: actId ?? this.actId,
-        actType: actType ?? this.actType,
-        time: time ?? this.time,
-        likes: likes ?? this.likes,
-        comments: comments ?? this.comments,
-        user: user ?? this.user,
-        images: images ?? this.images,
-        isLiked: isLiked ?? this.isLiked,
-        createdAt: createdAt ?? this.createdAt,
-        workoutId: workoutId ?? this.workoutId,
         workoutType: workoutType ?? this.workoutType,
         endTime: endTime ?? this.endTime,
-        description: description ?? this.description,
       );
 
-  factory Workout.fromJson(Map<String, dynamic> json) {
-    try {
-      return Workout(
-        feedId: json["feed_id"],
-        userId: json["user_id"],
-        actId: json["act_id"],
-        actType: json["act_type"],
-        time: json["time"],
-        likes: json["likes"],
-        comments: json["comments"],
-        user: User.fromJson(json['user']),
-        images: FileActions.fromJsonList(json['images']),
-        isLiked: btb(json['is_liked']),
-        createdAt: json["created_at"],
-        workoutId: json["workout_id"],
-        workoutType: json['workout_type'],
-        endTime: json["end_time"],
-        description: json["description"],
-      );
-    } catch (e) {
-      print(e);
-      throw LetsworkoutError('Workout.fromJson', e);
-    }
+  static Workout? fromJson(Map<String, dynamic>? json) {
+    if (json == null) return null;
+    return Workout(
+      workoutType: json["workoutType"],
+      endTime: json["endTime"],
+    );
   }
 
-  @override
   Map<String, dynamic> toJson() => {
-        ...super.toJson(),
-        "workout_id": workoutId,
-        'workout_type': workoutType,
-        "end_time": endTime,
-        "description": description,
+        "workoutType": workoutType,
+        "endTime": endTime,
       };
 }

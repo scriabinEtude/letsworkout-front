@@ -10,7 +10,7 @@ class SignedUrl {
   });
 
   factory SignedUrl.fromJson(Map json) => SignedUrl(
-        signedUrl: json['signed_url'],
+        signedUrl: json['signedUrl'],
         url: json['url'],
         ext: json['ext'],
       );
@@ -19,7 +19,7 @@ class SignedUrl {
       list.map((json) => SignedUrl.fromJson(json)).toList();
 
   Map<String, dynamic> toJson() => {
-        'sigend_url': signedUrl,
+        'signedUrl': signedUrl,
         'url': url,
         'ext': ext,
       };

@@ -32,7 +32,7 @@ class _FeedDetailScreenState extends State<FeedDetailScreen>
   late final FeedCubit _feedCubit;
   late final CommentCubit _commentCubit;
   final _commentController = TextEditingController();
-  int? myId = AppBloc.userCubit.user?.userId;
+  String? myId = AppBloc.userCubit.user?.userId;
   final _pageController = PageController();
 
   @override
@@ -72,13 +72,7 @@ class _FeedDetailScreenState extends State<FeedDetailScreen>
       body: BlocBuilder<FeedCubit, FeedState>(
         bloc: _feedCubit,
         builder: (context, state) {
-          String description;
           Feed feed = state.feed!;
-          if (feed is Workout) {
-            description = feed.description ?? "";
-          } else {
-            description = (feed as Diet).description ?? "";
-          }
 
           return SingleChildScrollView(
             child: Column(
@@ -109,7 +103,7 @@ class _FeedDetailScreenState extends State<FeedDetailScreen>
                       spacing: 5,
                     ),
                   ),
-                Text(description),
+                Text(state.feed!.description ?? ""),
                 IconButton(
                   icon: Icon(state.feed!.isLiked!
                       ? Icons.favorite

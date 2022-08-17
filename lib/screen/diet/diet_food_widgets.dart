@@ -1,26 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:letsworkout/model/food.dart';
+import 'package:letsworkout/model/selected_food.dart';
 import 'package:letsworkout/util/string_util.dart';
 
 class FoodTag extends StatelessWidget {
   const FoodTag({
     Key? key,
-    required this.food,
+    required this.selectedFood,
     required this.onTap,
     this.deleteActive = false,
     this.onDelete,
   }) : super(key: key);
-  final Food food;
+  final SelectedFood selectedFood;
   final void Function() onTap;
   final bool deleteActive;
-  final void Function(Food)? onDelete;
+  final void Function(SelectedFood)? onDelete;
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
         if (deleteActive) {
-          onDelete!(food);
+          onDelete!(selectedFood);
         } else {
           onTap();
         }
@@ -48,50 +49,50 @@ class FoodTag extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Text(food.foodName!),
-                    Text(' ${cutFixIfZero(food.multiply)}개'),
+                    Text(selectedFood.foodName),
+                    Text(' ${cutFixIfZero(selectedFood.multiply)}개'),
                   ],
                 ),
                 FoodInfoTextWidget(
-                  value: food.calorie,
+                  value: selectedFood.calorie,
                   prefix: '칼로리: ',
                   suffix: 'kcal',
-                  multiply: food.multiply,
+                  multiply: selectedFood.multiply,
                   ifNullValueText: '-',
                 ),
                 FoodInfoTextWidget(
-                  value: food.carbohydrate,
+                  value: selectedFood.carbohydrate,
                   prefix: '탄수화물: ',
                   suffix: 'g',
-                  multiply: food.multiply,
+                  multiply: selectedFood.multiply,
                   ifNullValueText: '-',
                 ),
                 FoodInfoTextWidget(
-                  value: food.protein,
+                  value: selectedFood.protein,
                   prefix: '단백질: ',
                   suffix: 'g',
-                  multiply: food.multiply,
+                  multiply: selectedFood.multiply,
                   ifNullValueText: '-',
                 ),
                 FoodInfoTextWidget(
-                  value: food.fat,
+                  value: selectedFood.fat,
                   prefix: '지방: ',
                   suffix: 'g',
-                  multiply: food.multiply,
+                  multiply: selectedFood.multiply,
                   ifNullValueText: '-',
                 ),
                 FoodInfoTextWidget(
-                  value: food.sugar,
+                  value: selectedFood.sugar,
                   prefix: '당: ',
                   suffix: 'g',
-                  multiply: food.multiply,
+                  multiply: selectedFood.multiply,
                   ifNullValueText: '-',
                 ),
                 FoodInfoTextWidget(
-                  value: food.sodium,
+                  value: selectedFood.sodium,
                   prefix: '나트륨: ',
                   suffix: 'mg',
-                  multiply: food.multiply,
+                  multiply: selectedFood.multiply,
                   ifNullValueText: '-',
                 ),
               ],
@@ -102,7 +103,7 @@ class FoodTag extends StatelessWidget {
               top: -7,
               right: -7,
               child: InkWell(
-                onTap: onDelete == null ? null : () => onDelete!(food),
+                onTap: onDelete == null ? null : () => onDelete!(selectedFood),
                 child: const Icon(
                   Icons.cancel,
                   size: 20,
@@ -120,14 +121,14 @@ class FoodTagDialog extends StatefulWidget {
     Key? key,
     required this.food,
   }) : super(key: key);
-  final Food food;
+  final SelectedFood food;
 
   @override
   State<FoodTagDialog> createState() => _FoodTagDialogState();
 }
 
 class _FoodTagDialogState extends State<FoodTagDialog> {
-  late Food food;
+  late SelectedFood food;
 
   @override
   void initState() {
@@ -161,8 +162,8 @@ class _FoodTagDialogState extends State<FoodTagDialog> {
                 height: 500,
                 child: ListView(
                   children: [
-                    Text(food.foodName!),
-                    if (food.foodBrand != null) Text(food.foodBrand!),
+                    Text(food.foodName),
+                    Text(food.company),
                     FoodInfoTextWidget(
                       value: food.calorie,
                       prefix: '칼로리: ',
@@ -213,10 +214,6 @@ class _FoodTagDialogState extends State<FoodTagDialog> {
                           ),
                         )
                       ],
-                    ),
-                    Text(
-                      food.description ?? "",
-                      overflow: TextOverflow.clip,
                     ),
                   ],
                 ),

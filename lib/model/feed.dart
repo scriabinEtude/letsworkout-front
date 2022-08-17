@@ -1,101 +1,120 @@
-import 'package:letsworkout/enum/act_type.dart';
 import 'package:letsworkout/model/diet.dart';
 import 'package:letsworkout/model/file_actions.dart';
 import 'package:letsworkout/model/user.dart';
 import 'package:letsworkout/model/workout.dart';
-import 'package:letsworkout/util/object_util.dart';
 
 class Feed {
-  final int? feedId;
-  final int? userId;
-  final int? actId;
-  final int? actType;
+  final String? feedId;
+  final int? feedType;
+  final Workout? workout;
+  final Diet? diet;
   final String? time;
-  int? likes;
-  int? comments;
+  final String? description;
   final User? user;
   final FileActions? images;
+  int? likes;
+  int? comments;
   bool? isLiked;
+  final int? year;
+  final int? month;
+  final int? day;
+  final int? week;
   final String? createdAt;
+  final String? updatedAt;
 
   Feed({
     this.feedId,
-    this.userId,
-    this.actType,
-    this.actId,
+    this.feedType,
+    this.workout,
+    this.diet,
     this.time,
-    this.likes,
-    this.comments,
+    this.description,
     this.user,
     this.images,
+    this.likes = 0,
+    this.comments = 0,
     this.isLiked,
+    this.year,
+    this.month,
+    this.day,
+    this.week,
     this.createdAt,
+    this.updatedAt,
   });
 
   Feed copyWith({
-    int? feedId,
-    int? userId,
-    int? actId,
-    int? actType,
-    String? time,
+    String? feedId,
+    int? feedType,
+    Workout? workout,
+    Diet? diet,
+    User? user,
+    int? year,
+    int? month,
+    int? day,
+    int? week,
     int? likes,
     int? comments,
-    User? user,
+    String? description,
     FileActions? images,
-    bool? isLiked,
+    String? time,
     String? createdAt,
+    String? updatedAt,
   }) =>
       Feed(
         feedId: feedId ?? this.feedId,
-        userId: userId ?? this.userId,
-        actId: actId ?? this.actId,
-        actType: actType ?? this.actType,
-        time: time ?? this.time,
+        feedType: feedType ?? this.feedType,
+        workout: workout ?? this.workout,
+        diet: diet ?? this.diet,
+        user: user ?? this.user,
+        year: year ?? this.year,
+        month: month ?? this.month,
+        day: day ?? this.day,
+        week: week ?? this.week,
         likes: likes ?? this.likes,
         comments: comments ?? this.comments,
-        user: user ?? this.user,
+        description: description ?? this.description,
         images: images ?? this.images,
-        isLiked: isLiked ?? this.isLiked,
+        time: time ?? this.time,
         createdAt: createdAt ?? this.createdAt,
+        updatedAt: updatedAt ?? this.updatedAt,
       );
 
-  factory Feed.fromJson(Map<String, dynamic> json) {
-    try {
-      switch (ActType.values[json['act_type']]) {
-        case ActType.workout:
-          return Workout.fromJson(json);
-        case ActType.diet:
-          return Diet.fromJson(json);
-      }
-    } catch (e) {
-      return Feed(
-        feedId: json["feed_id"],
-        userId: json["user_id"],
-        actId: json["act_id"],
-        actType: json["act_type"],
-        time: json['time'],
+  factory Feed.fromJson(Map<String, dynamic> json) => Feed(
+        feedId: json["_id"],
+        feedType: json["feedType"],
+        workout: Workout.fromJson(json['workout']),
+        diet: Diet.fromJson(json['diet']),
+        user: User.fromJson(json['user']),
+        year: json["year"],
+        month: json["month"],
+        day: json["day"],
+        week: json["week"],
         likes: json["likes"],
         comments: json["comments"],
-        user: User.fromJson(json['user']),
+        description: json["description"],
         images: FileActions.fromJsonList(json['images']),
-        isLiked: btb(json['is_liked']),
-        createdAt: json["created_at"],
+        time: json["time"],
+        createdAt: json["createdAt"],
+        updatedAt: json["updatedAt"],
       );
-    }
-  }
 
   Map<String, dynamic> toJson() => {
-        "feed_id": feedId,
-        "user_id": userId,
-        "act_id": actId,
-        "act_type": actType,
-        "time": time,
+        "_id": feedId,
+        "feedType": feedType,
+        "workout": workout?.toJson(),
+        "diet": diet?.toJson(),
+        "user": user?.toJson(),
+        "year": year,
+        "month": month,
+        "day": day,
+        "week": week,
         "likes": likes,
         "comments": comments,
-        'user': user?.toJson(),
+        "description": description,
         "images": images?.toJson(),
-        "is_liked": isLiked,
-        "created_at": createdAt,
+        "time": time,
+        "createdAt": createdAt,
+        "updatedAt": updatedAt,
       };
 
   static List<Feed> fromJsonList(List list) {

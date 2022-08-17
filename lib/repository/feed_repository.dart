@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:letsworkout/enum/act_type.dart';
+import 'package:letsworkout/enum/feed_type.dart';
 import 'package:letsworkout/model/comment.dart';
 import 'package:letsworkout/model/diet.dart';
 import 'package:letsworkout/model/feed.dart';
@@ -13,13 +13,19 @@ class FeedRepository {
     return '/feed$url';
   }
 
+  Future<Feed?> getFeed({required String feedId}) async {
+    Response result =
+        await api.get(_getUrl('/'), queryParameters: {"feedId": feedId});
+    return Feed.fromJson(result.data);
+  }
+
   Future<List<Feed>> getFeedsMonth({
-    required int userId,
+    required String userId,
     required String yearMonth,
   }) async {
     try {
       Response result = await api.get(_getUrl('/month'),
-          queryParameters: {'user_id': userId, 'year_month': yearMonth});
+          queryParameters: {'userId': userId, 'yearMonth': yearMonth});
       return result.statusCode == 200 ? Feed.fromJsonList(result.data) : [];
     } catch (e) {
       print(e);
@@ -28,12 +34,12 @@ class FeedRepository {
   }
 
   Future<List<dynamic>> getFeedsDay({
-    required int userId,
+    required String userId,
     required String yearMonthDay,
   }) async {
     try {
       Response result = await api.get(_getUrl('/day'),
-          queryParameters: {'user_id': userId, 'year_month_day': yearMonthDay});
+          queryParameters: {'userId': userId, 'yearMonthDay': yearMonthDay});
 
       if (result.statusCode != 200) return [];
 
@@ -41,7 +47,7 @@ class FeedRepository {
       List<dynamic> feeds = result.data;
 
       feeds = feeds.map((feed) {
-        if (feed['act_type'] == ActType.workout.index) {
+        if (feed['actType'] == FeedType.workout.index) {
           return Workout.fromJson(feed);
         } else {
           return Diet.fromJson(feed);
@@ -62,7 +68,7 @@ class FeedRepository {
       Response result = await api.delete(_getUrl('/'), data: {
         'id': feed.feedCommentId,
         'feed_id': feed.feedId,
-        'act_type': feed.actType,
+        'actType': feed.feedType,
       });
 
       return result.statusCode == 200;
@@ -73,11 +79,11 @@ class FeedRepository {
   }
 
   Future<List<Feed>> getFeedActives({
-    required int userId,
+    required String userId,
   }) async {
     try {
       Response result = await api.get(_getUrl('/active'), queryParameters: {
-        'user_id': userId,
+        'userId': userId,
       });
       return result.statusCode == 200 ? Feed.fromJsonList(result.data) : [];
     } catch (e) {
@@ -88,25 +94,25 @@ class FeedRepository {
 
   Future like({
     required User user,
-    required int feedId,
+    required String feedId,
     required String feedFcmToken,
   }) async {
     await api.post(_getUrl('/like'), data: {
       'user': user.toJson(),
-      'feed_id': feedId,
-      'feed_fcm_token': feedFcmToken,
+      'feedId': feedId,
+      'feedFcmToken': feedFcmToken,
     });
   }
 
   Future unLike({
     required User user,
-    required int feedId,
+    required String feedId,
     required String feedFcmToken,
   }) async {
     await api.delete(_getUrl('/like'), data: {
       'user': user.toJson(),
-      'feed_id': feedId,
-      'feed_fcm_token': feedFcmToken,
+      'feedId': feedId,
+      'feedFcmToken': feedFcmToken,
     });
   }
 
@@ -117,8 +123,8 @@ class FeedRepository {
   }) async {
     await api.post(_getUrl('/comment'), data: {
       'comment': comment.toJson(),
-      'feed_fcm_token': feedFcmToken,
-      'is_mine': isMine,
+      'feedFcmToken': feedFcmToken,
+      'isMine': isMine,
     });
   }
 
@@ -128,39 +134,39 @@ class FeedRepository {
   }) async {
     await api.delete(_getUrl('/comment'), data: {
       'comment': comment.toJson(),
-      'feed_fcm_token': feedFcmToken,
+      'feedFcmToken': feedFcmToken,
     });
   }
 
   Future<List<Comment>> getComments({
-    required int feedId,
-    required int userId,
+    required String feedId,
+    required String userId,
   }) async {
     Response result = await api.get(_getUrl('/comments'), queryParameters: {
-      'feed_id': feedId,
-      'user_id': userId,
+      'feedId': feedId,
+      'userId': userId,
     });
 
     return Comment.fromJsonList(result.data);
   }
 
   Future commentLike({
-    required int commentId,
-    required int userId,
+    required String commentId,
+    required String userId,
   }) async {
     await api.post(_getUrl('/comment/like'), data: {
-      'user_id': userId,
-      'comment_id': commentId,
+      'userId': userId,
+      'commentId': commentId,
     });
   }
 
   Future commentUnLike({
-    required int commentId,
-    required int userId,
+    required String commentId,
+    required String userId,
   }) async {
     await api.delete(_getUrl('/comment/like'), data: {
-      'user_id': userId,
-      'comment_id': commentId,
+      'userId': userId,
+      'commentId': commentId,
     });
   }
 }

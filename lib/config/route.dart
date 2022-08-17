@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:letsworkout/model/food.dart';
+import 'package:letsworkout/model/selected_food.dart';
 import 'package:letsworkout/screen/calendar/calendar_detail_screen.dart';
 import 'package:letsworkout/screen/calendar/calendar_detail_screen_args.dart';
 import 'package:letsworkout/screen/calendar/calendar_screen.dart';
@@ -7,8 +7,12 @@ import 'package:letsworkout/screen/calendar/calendar_screen_args.dart';
 import 'package:letsworkout/screen/customer/customer_question_view_screen.dart';
 import 'package:letsworkout/screen/customer/customer_question_wirte_screen.dart';
 import 'package:letsworkout/screen/diet/diet_food_search_screen.dart';
-import 'package:letsworkout/screen/diet/diet_food_write_screen.dart';
+import 'package:letsworkout/screen/diet/food_write/diet_food_wirte_1_company.dart';
 import 'package:letsworkout/screen/diet/diet_write_screen.dart';
+import 'package:letsworkout/screen/diet/food_write/diet_food_write_2_foodname.dart';
+import 'package:letsworkout/screen/diet/food_write/diet_food_write_3_unit_screen.dart';
+import 'package:letsworkout/screen/diet/food_write/diet_food_write_4_Nutirition_screen.dart';
+import 'package:letsworkout/screen/diet/food_write/diet_food_write_5_servings.dart';
 import 'package:letsworkout/screen/feed/feed_detail_screen.dart';
 import 'package:letsworkout/screen/feed/feed_detail_screen_args.dart';
 import 'package:letsworkout/screen/follow/follow_list_screen.dart';
@@ -42,7 +46,17 @@ class Routes {
   // diet
   static const String dietWriteScreen = "/diet/write";
   static const String dietFoodSearchScreen = '/diet/food/search';
-  static const String dietFoodWriteScreen = '/diet/food/write';
+
+  // food write
+  static const String dietFoodWrite1CompanyScreen =
+      "/diet/food/write/1/company";
+  static const String dietFoodWrite2FoodnameScreen =
+      "/diet/food/write/2/foodname";
+  static const String dietFoodWrite3UnitScreen = "/diet/food/write/3/unit";
+  static const String dietFoodWirte4NutiritionScreen =
+      "/diet/food/write/4/nutirion";
+  static const String dietFoodWrite5ServingsScreen =
+      "/diet/food/write/5/servings";
 
   // feed
   static const String feedDetailScreen = "/feed/detail";
@@ -148,17 +162,43 @@ class Routes {
             });
 
       case dietFoodSearchScreen:
-        return MaterialPageRoute<Food?>(
+        return MaterialPageRoute<SelectedFood?>(
             settings: const RouteSettings(name: dietFoodSearchScreen),
             builder: (BuildContext context) {
               return const DietFoodSearchScreen();
             });
 
-      case dietFoodWriteScreen:
+      case dietFoodWrite1CompanyScreen:
         return MaterialPageRoute(
-            settings: const RouteSettings(name: dietFoodWriteScreen),
+            settings: const RouteSettings(name: dietFoodWrite1CompanyScreen),
             builder: (BuildContext context) {
-              return const DietFoodWriteScreen();
+              return const DietFoodWrite1CompanyScreen();
+            });
+
+      case dietFoodWrite2FoodnameScreen:
+        return MaterialPageRoute(
+            settings: const RouteSettings(name: dietFoodWrite2FoodnameScreen),
+            builder: (BuildContext context) {
+              return const DietFoodWrite2FoodName();
+            });
+      case dietFoodWrite3UnitScreen:
+        return MaterialPageRoute(
+            settings: const RouteSettings(name: dietFoodWrite3UnitScreen),
+            builder: (BuildContext context) {
+              return const DietFoodWrite3UnitScreen();
+            });
+
+      case dietFoodWirte4NutiritionScreen:
+        return MaterialPageRoute(
+            settings: const RouteSettings(name: dietFoodWirte4NutiritionScreen),
+            builder: (BuildContext context) {
+              return const DietFoodWrite4NutiritionScreen();
+            });
+      case dietFoodWrite5ServingsScreen:
+        return MaterialPageRoute(
+            settings: const RouteSettings(name: dietFoodWrite5ServingsScreen),
+            builder: (BuildContext context) {
+              return const DietFoodWrite5Servings();
             });
 
       case feedDetailScreen:

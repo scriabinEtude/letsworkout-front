@@ -5,6 +5,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:letsworkout/model/file_action.dart';
 import 'package:letsworkout/model/file_actions.dart';
 import 'package:letsworkout/util/file_util.dart';
+import 'package:collection/collection.dart';
 
 /// ```
 ///
@@ -42,8 +43,8 @@ class PhotoCards extends StatelessWidget {
       physics: const PageScrollPhysics(),
       child: Row(
         children: [
-          ...images.listShowable.map(
-            (image) => photoCard(context, image),
+          ...images.listShowable.mapIndexed(
+            (index, image) => photoCard(context, index, image),
           ),
           if (!isViewMode) addPhotoCard(context),
         ],
@@ -51,7 +52,7 @@ class PhotoCards extends StatelessWidget {
     );
   }
 
-  Widget photoCard(BuildContext context, FileAction image) {
+  Widget photoCard(BuildContext context, int index, FileAction image) {
     return Stack(
       children: [
         Image(
@@ -74,6 +75,12 @@ class PhotoCards extends StatelessWidget {
               child: const Icon(Icons.cancel),
             ),
           ),
+        Positioned(
+          right: 0,
+          child: Text(
+            '${index + 1} / ${images.listShowable.length}',
+          ),
+        )
       ],
     );
   }

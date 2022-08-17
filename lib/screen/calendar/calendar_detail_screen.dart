@@ -1,14 +1,12 @@
 import 'package:adaptive_dialog/adaptive_dialog.dart';
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:letsworkout/bloc/app_bloc.dart';
 import 'package:letsworkout/bloc/calendar/calendar_cubit.dart';
 import 'package:letsworkout/bloc/calendar/calendar_state.dart';
-import 'package:letsworkout/enum/act_type.dart';
+import 'package:letsworkout/enum/feed_type.dart';
 import 'package:letsworkout/model/diet.dart';
 import 'package:letsworkout/model/feed.dart';
-import 'package:letsworkout/model/file_actions.dart';
 import 'package:letsworkout/model/workout.dart';
 import 'package:letsworkout/screen/diet/diet_food_widgets.dart';
 import 'package:letsworkout/util/date_util.dart';
@@ -51,12 +49,12 @@ class _CalendarDetailScreenState extends State<CalendarDetailScreen> {
             return SingleChildScrollView(
               child: Column(
                 children: state.feedOneDay.map((feed) {
-                  ActType type = ActType.values[feed.actType!];
+                  FeedType type = FeedType.values[feed.feedType!];
 
                   switch (type) {
-                    case ActType.workout:
+                    case FeedType.workout:
                       return workoutWidget(feed);
-                    case ActType.diet:
+                    case FeedType.diet:
                       return dietWidget(feed);
                   }
                 }).toList(),
@@ -66,24 +64,26 @@ class _CalendarDetailScreenState extends State<CalendarDetailScreen> {
     );
   }
 
-  Widget workoutWidget(Workout workout) {
+  Widget workoutWidget(Feed feed) {
     return Container();
   }
 
-  Widget dietWidget(Diet diet) {
+  Widget dietWidget(Feed feed) {
+    final Diet diet = feed.diet!;
+
     return Column(
       children: [
-        Text(diet.time!),
-        if (diet.images?.isNotEmpty == true)
+        Text(feed.time!),
+        if (feed.images?.isNotEmpty == true)
           PhotoCards(
-            images: diet.images!,
+            images: feed.images!,
             isViewMode: true,
             width: MediaQuery.of(context).size.width,
           ),
-        if (diet.foods?.isNotEmpty == true)
+        if (diet.selectedFoods?.isNotEmpty == true)
           Wrap(
-            children: diet.foods!
-                .map((food) => FoodTag(food: food, onTap: () {}))
+            children: diet.selectedFoods!
+                .map((food) => FoodTag(selectedFood: food, onTap: () {}))
                 .toList(),
           ),
         Text('칼로리: ${diet.calorie ?? 0}'),
@@ -92,10 +92,10 @@ class _CalendarDetailScreenState extends State<CalendarDetailScreen> {
         Text('지방: ${diet.fat ?? 0}'),
         Text('당: ${diet.sugar ?? 0}'),
         Text('나트륨: ${diet.sodium ?? 0}'),
-        Text('${diet.description}'),
+        Text('${feed.description}'),
         // Text('좋아요: ${diet.likes ?? 0}'),
         // Text('댓글: ${diet.comments ?? 0}'),
-        if (AppBloc.userCubit.user!.userId! == diet.userId)
+        if (AppBloc.userCubit.user!.userId! == feed.user!.userId)
           ElevatedButton(
             onPressed: () async {
               OkCancelResult result = await showOkCancelAlertDialog(
@@ -118,7 +118,7 @@ class _CalendarDetailScreenState extends State<CalendarDetailScreen> {
   }
 
   Widget feedWidget(Feed feed) {
-    ActType type = ActType.values[feed.actType!];
+    FeedType type = FeedType.values[feed.feedType!];
 
     return Container(
         child: Column(
@@ -126,7 +126,7 @@ class _CalendarDetailScreenState extends State<CalendarDetailScreen> {
         if (feed.images?.isNotEmpty == true)
           PhotoCards(images: feed.images!, isViewMode: true, width: 100),
         Text(type.title),
-        if (AppBloc.userCubit.user!.userId! == feed.userId)
+        if (AppBloc.userCubit.user!.userId! == feed.user!.userId)
           ElevatedButton(
             onPressed: () async {
               OkCancelResult result = await showOkCancelAlertDialog(

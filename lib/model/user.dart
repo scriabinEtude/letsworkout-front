@@ -11,8 +11,8 @@ class User {
     this.createdAt,
   });
 
-  final int? userId;
-  final int? userType;
+  final String? userId;
+  final String? userType;
   final String? email;
   final String? provider;
   final String? tag;
@@ -22,8 +22,8 @@ class User {
   final String? createdAt;
 
   User copyWith({
-    int? userId,
-    int? userType,
+    String? userId,
+    String? userType,
     String? email,
     String? provider,
     String? tag,
@@ -48,32 +48,35 @@ class User {
     if (json == null) return null;
 
     return User(
-      userId: json["user_id"],
-      userType: json["user_type"],
+      userId: json["_id"],
+      userType: json["userType"],
       email: json["email"],
       provider: json["provider"],
       tag: json["tag"],
       name: json["name"],
-      profileImage: json['profile_image'],
-      fcmToken: json['fcm_token'],
-      createdAt: json["created_at"],
+      profileImage: json['profileImage'],
+      fcmToken: json['fcmToken'],
+      createdAt: json["createdAt"],
     );
   }
 
   Map<String, dynamic> toJson() => {
-        "user_id": userId,
-        "user_type": userType,
+        "_id": userId,
+        "userType": userType,
         "email": email,
         "provider": provider,
         "tag": tag,
         "name": name,
-        'profile_image': profileImage,
+        'profileImage': profileImage,
         'fcm_token': fcmToken,
-        "created_at": createdAt,
+        "createdAt": createdAt,
       };
 
-  static List<User> fromJsonList(List list) =>
-      list.map((user) => User.fromJson(user)!).toList();
+  static List<User> fromJsonList(List? list) {
+    return list == null
+        ? []
+        : list.map((user) => User.fromJson(user)!).toList();
+  }
 
   User deleteProfileImage() {
     profileImage = null;

@@ -1,4 +1,5 @@
 import 'package:letsworkout/enum/workout_type.dart';
+import 'package:letsworkout/model/feed.dart';
 import 'package:letsworkout/model/user.dart';
 import 'package:letsworkout/model/workout.dart';
 import 'package:letsworkout/repository/workout_repository.dart';
@@ -20,15 +21,17 @@ class Preferences {
     return await instance!.remove(key);
   }
 
-  static T? getObject<T>(String key) {
+  static T? getObject<T>(String key,
+      [T? Function(Map<String, dynamic>)? parser]) {
     String? objStr = instance!.getString(key);
     if (objStr == null || objStr == "null" || objStr.isEmpty) {
       return null;
     }
 
     try {
-      return jsonDecode(objStr);
+      return parser == null ? jsonDecode(objStr) : parser(jsonDecode(objStr));
     } catch (e) {
+      print(e);
       snack('object decode error');
       return null;
     }
@@ -64,26 +67,15 @@ class Preferences {
 
   //*** WORKOUT */
   static Future<void> workoutRemove() async {
-    await remove('workout_time');
-    await remove('workout_id');
-    await remove('feed_id');
+    await remove('workout');
   }
 
-  static Workout workoutGet() {
-    return Workout(
-      workoutId: getObject('workout_id'),
-      feedId: getObject('feed_id'),
-      workoutType: getObject('workout_id') == null
-          ? WorkoutType.none.index
-          : WorkoutType.working.index,
-      time: getObject('workout_time'),
-    );
+  static Feed? workoutGet() {
+    return getObject('workout', Feed.fromJson);
   }
 
-  static Future workoutSet(Workout workout) async {
-    setObject('workout_time', workout.time);
-    setObject('workout_id', workout.workoutId);
-    setObject('feed_id', workout.feedId);
+  static Future workoutSet(Feed feed) async {
+    await setObject('workout', feed);
   }
 
   ///Singleton factory

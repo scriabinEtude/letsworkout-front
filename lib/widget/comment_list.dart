@@ -12,7 +12,7 @@ class CommentColumn extends StatelessWidget {
   }) : super(key: key);
 
   final FeedCubit feedCubit;
-  final int? myId;
+  final String? myId;
 
   @override
   Widget build(BuildContext context) {

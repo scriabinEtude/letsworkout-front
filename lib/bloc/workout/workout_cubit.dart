@@ -5,8 +5,10 @@ import 'package:letsworkout/config/preference.dart';
 import 'package:letsworkout/enum/bucket_path.dart';
 import 'package:letsworkout/enum/loading_state.dart';
 import 'package:letsworkout/enum/workout_type.dart';
+import 'package:letsworkout/model/feed.dart';
 import 'package:letsworkout/model/file_actions.dart';
 import 'package:letsworkout/model/workout.dart';
+import 'package:letsworkout/repository/feed_repository.dart';
 import 'package:letsworkout/repository/workout_repository.dart';
 import 'package:letsworkout/util/date_util.dart';
 import 'package:letsworkout/util/widget_util.dart';
@@ -18,11 +20,13 @@ class WorkoutCubit extends Cubit<WorkoutState> {
         ));
 
   final _workoutRepository = WorkoutRepository();
+  final _feedRepository = FeedRepository();
 
   bool get isNotWorkoutStart =>
-      state.workout == null ||
-      state.workout?.workoutType == WorkoutType.none.index ||
-      state.workout?.workoutType == WorkoutType.end.index;
+      state.feedActive == null ||
+      state.feedActive?.workout == null ||
+      state.feedActive?.workout?.workoutType == WorkoutType.none.index ||
+      state.feedActive?.workout?.workoutType == WorkoutType.end.index;
 
   bool get isWorkoutStart => !isNotWorkoutStart;
 
@@ -30,56 +34,49 @@ class WorkoutCubit extends Cubit<WorkoutState> {
     emit(state.copyWith(loading: loading));
   }
 
-  Future<Workout?> loadData() async {
+  Future<Feed?> loadData() async {
     setLoading(LoadingState.loading);
-    if (!state.initial) return state.workout;
     try {
-      Workout workout = Preferences.workoutGet();
+      Feed? feed = Preferences.workoutGet();
 
-      if (workout.workoutType == WorkoutType.none.index) {
-        emit(state.copyWith(initial: false));
-        return state.workout;
-      } else if (workout.workoutType == WorkoutType.working.index) {
-        Workout workoutFilledData = await _workoutRepository.getWorkout(
-          workoutId: workout.workoutId!,
-          feedId: workout.feedId!,
-        );
+      if (feed != null) {
+        feed = await _feedRepository.getFeed(feedId: feed.feedId!);
         emit(state.copyWith(
-          initial: false,
-          workout: workoutFilledData,
+          feedActive: feed,
         ));
-        return workoutFilledData;
       }
+
+      return feed;
     } catch (e) {
       print(e);
+      return null;
     } finally {
       setLoading(LoadingState.done);
     }
   }
 
-  Future<Workout?> workoutStart() async {
+  Future<Feed?> workoutStart() async {
     try {
       loadingShow();
 
-      Workout workout = Workout(
-        userId: AppBloc.userCubit.user!.userId,
-        workoutType: WorkoutType.working.index,
+      Feed feedActive = Feed(
+        user: AppBloc.userCubit.user!,
+        workout: Workout(
+          workoutType: WorkoutType.working.index,
+        ),
         time: mysqlDateTimeFormat(DateTime.now()),
       );
 
-      Map<String, dynamic> ids = await _workoutRepository.postWorkout(
-          workout, AppBloc.userCubit.user!);
-
-      workout = workout.copyWith(
-        workoutId: ids['workout_id'],
-        feedId: ids['feed_id'],
+      feedActive = feedActive.copyWith(
+        feedId: await _workoutRepository.postWorkout(feedActive),
       );
 
-      emit(state.copyWith(workout: workout));
-      await Preferences.workoutSet(workout);
-      return workout;
+      emit(state.copyWith(feedActive: feedActive));
+      await Preferences.workoutSet(feedActive);
+      return feedActive;
     } catch (e) {
       print(e);
+      return null;
     } finally {
       loadingHide();
     }
@@ -93,7 +90,7 @@ class WorkoutCubit extends Cubit<WorkoutState> {
       loadingShow();
 
       emit(state.copyWith(
-          workout: state.workout?.copyWith(
+          feedActive: state.feedActive?.copyWith(
         description: description,
         images: fileActions,
       )));
@@ -104,32 +101,32 @@ class WorkoutCubit extends Cubit<WorkoutState> {
     }
   }
 
-  Future<Workout> workoutSave({
+  Future<Feed> workoutSave({
     required String description,
     required FileActions fileActions,
   }) async {
     loadingShow();
 
-    Workout workout = state.workout!.copyWith(
+    Feed feed = state.feedActive!.copyWith(
       description: description,
       images: fileActions,
     );
     try {
-      await workout.images?.uploadInsertFiles(BucketPath.workout);
-      await _workoutRepository.patchWorkout(workout);
-      workout.images?.init();
+      await feed.images?.uploadInsertFiles(BucketPath.workout);
+      await _workoutRepository.patchWorkout(feed);
+      feed.images?.init();
 
-      emit(state.copyWith(workout: workout));
-      return workout;
+      emit(state.copyWith(feedActive: feed));
+      return feed;
     } catch (e) {
       print(e);
-      return workout;
+      return feed;
     } finally {
       loadingHide();
     }
   }
 
-  Future<Workout> workoutEnd({
+  Future workoutEnd({
     required String description,
     required FileActions fileActions,
   }) async {
@@ -140,33 +137,32 @@ class WorkoutCubit extends Cubit<WorkoutState> {
         fileActions: fileActions,
       );
 
-      Workout workout = state.workout!.copyWith(
-        workoutType: WorkoutType.end.index,
-        endTime: mysqlDateTimeFormat(DateTime.now()),
+      Feed feed = state.feedActive!.copyWith(
+        workout: state.feedActive!.workout!.copyWith(
+          workoutType: WorkoutType.end.index,
+          endTime: mysqlDateTimeFormat(DateTime.now()),
+        ),
       );
 
-      await _workoutRepository.endWorkout(
-        workout,
-        AppBloc.userCubit.user!,
-      );
+      await _workoutRepository.endWorkout(feed);
       await Preferences.workoutRemove();
 
-      emit(state.copyWith(workout: Workout.init()));
+      emit(state.setFeedNull());
       AppBloc.feedCubit.resetComment();
-      return Workout.init();
+      return null;
     } catch (e) {
       print(e);
-      return Workout.init();
+      return null;
     } finally {
       loadingHide();
     }
   }
 
   addLikes(int add) {
-    if (state.workout == null) return;
+    if (state.feedActive == null) return;
     emit(state.copyWith(
-        workout: state.workout!.copyWith(
-      likes: state.workout!.likes! + add,
+        feedActive: state.feedActive!.copyWith(
+      likes: state.feedActive!.likes! + add,
     )));
   }
 }

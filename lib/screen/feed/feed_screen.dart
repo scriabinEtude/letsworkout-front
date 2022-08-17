@@ -1,8 +1,10 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:letsworkout/bloc/app_bloc.dart';
 import 'package:letsworkout/bloc/feed/feed_cubit.dart';
 import 'package:letsworkout/bloc/feed/feed_state.dart';
@@ -54,11 +56,17 @@ class _FeedScreenState extends State<FeedScreen> {
             ],
           ),
           TestButton(
-            onTap: () {
+            onTap: () async {
               loadingShow();
-              Timer(Duration(seconds: 2), () {
+              Timer(const Duration(seconds: 1), () {
                 loadingHide();
               });
+
+              return;
+              // loadingShow();
+              // Timer(Duration(seconds: 2), () {
+              //   loadingHide();
+              // });
             },
           ),
           BlocBuilder<FeedCubit, FeedState>(
@@ -81,8 +89,7 @@ class _FeedScreenState extends State<FeedScreen> {
         Color color;
         String text;
 
-        if (state.workout == null ||
-            state.workout!.workoutType == WorkoutType.none.index) {
+        if (AppBloc.workoutCubit.isNotWorkoutStart) {
           color = Colors.lightBlue[400]!.withOpacity(0.5);
           text = "운동하기";
         } else {

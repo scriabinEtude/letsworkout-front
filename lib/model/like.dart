@@ -1,8 +1,8 @@
 class Like {
-  final int userId;
+  final String userId;
   final String? tag;
   final String? name;
-  final int feedId;
+  final String feedId;
 
   Like({
     required this.userId,
@@ -12,9 +12,9 @@ class Like {
   });
 
   factory Like.fromJson(Map json) => Like(
-        userId: json['user_id'],
+        userId: json['userId'],
         tag: json['tag'],
         name: json['name'],
-        feedId: json['feed_id'],
+        feedId: json['feedId'],
       );
 }

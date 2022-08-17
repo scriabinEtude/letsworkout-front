@@ -15,10 +15,10 @@ class Comment {
     this.createdAt,
   });
 
-  final int? feedCommentId;
-  final int? feedId;
+  final String? feedCommentId;
+  final String? feedId;
   final int? depth;
-  final int? parentId;
+  final String? parentId;
   int? likes;
   final int? state;
   final String? comment;
@@ -27,10 +27,10 @@ class Comment {
   final String? createdAt;
 
   Comment copyWith({
-    int? feedCommentId,
-    int? feedId,
+    String? feedCommentId,
+    String? feedId,
     int? depth,
-    int? parentId,
+    String? parentId,
     int? likes,
     int? state,
     String? comment,
@@ -52,29 +52,29 @@ class Comment {
       );
 
   factory Comment.fromJson(Map<String, dynamic> json) => Comment(
-        feedCommentId: json["feed_comment_id"],
-        feedId: json["feed_id"],
+        feedCommentId: json["_id"],
+        feedId: json["feedId"],
         depth: json["depth"],
-        parentId: json["parent_id"],
+        parentId: json["parentId"],
         likes: json["likes"],
         state: json["state"],
         comment: json["comment"],
-        isLiked: btb(json["is_liked"]),
+        isLiked: btb(json["isLiked"]),
         user: User.fromJson(json['user']),
-        createdAt: json["created_at"],
+        createdAt: json["createdAt"],
       );
 
   Map<String, dynamic> toJson() => {
-        "feed_comment_id": feedCommentId,
-        "feed_id": feedId,
+        "_id": feedCommentId,
+        "feedId": feedId,
         "depth": depth,
-        "parent_id": parentId,
+        "parentId": parentId,
         "likes": likes,
         "state": state,
         "comment": comment,
-        "is_liked": isLiked,
+        "isLiked": isLiked,
         'user': user?.toJson(),
-        "created_at": createdAt,
+        "createdAt": createdAt,
       };
 
   static List<Comment> fromJsonList(List list) =>

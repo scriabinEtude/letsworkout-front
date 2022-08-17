@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:letsworkout/bloc/app_bloc.dart';
+import 'package:letsworkout/util/widget_util.dart';
 import 'package:letsworkout/widget/avatar.dart';
 import 'package:letsworkout/widget/bottomsheet.dart';
 import 'package:letsworkout/widget/scaffold.dart';
@@ -40,7 +41,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 isProfileImageUpdate: _isProfileImageUpdate,
                 image: _profileImage,
               );
-              if (success) Navigator.pop(context);
+              if (success) {
+                snack("변경되었습니다!");
+                Navigator.pop(context);
+              }
             },
             child: const Text('저장')),
       ),

@@ -35,7 +35,7 @@ class _DietFoodUpdateRequestScreenState
 
   @override
   void initState() {
-    _brandNameController = TextEditingController(text: widget.food.foodBrand);
+    _brandNameController = TextEditingController(text: widget.food.company);
     _foodNameController = TextEditingController(text: widget.food.foodName);
     _calorieController =
         TextEditingController(text: intToString(widget.food.calorie));
@@ -79,26 +79,26 @@ class _DietFoodUpdateRequestScreenState
       unFocus();
       loadingShow();
 
-      Response response = await _dietRepository.requestFoodUpdate(
-        food: Food(
-          dietFoodId: widget.food.dietFoodId,
-          foodBrand: _brandNameController.text.trim(),
-          foodName: _foodNameController.text.trim(),
-          calorie: parseStringNumber(_calorieController.text),
-          carbohydrate: parseStringNumber(_carboController.text),
-          protein: parseStringNumber(_proteinController.text),
-          fat: parseStringNumber(_fatController.text),
-          sugar: parseStringNumber(_sugarController.text),
-          sodium: parseStringNumber(_sodiumController.text),
-          description: _descriptionController.text,
-          userId: AppBloc.userCubit.user!.userId,
-        ),
-      );
+      // Response response = await _dietRepository.requestFoodUpdate(
+      //   food: Food(
+      //     dietFoodId: widget.food.dietFoodId,
+      //     company: _brandNameController.text.trim(),
+      //     foodName: _foodNameController.text.trim(),
+      //     calorie: parseStringNumber(_calorieController.text),
+      //     carbohydrate: parseStringNumber(_carboController.text),
+      //     protein: parseStringNumber(_proteinController.text),
+      //     fat: parseStringNumber(_fatController.text),
+      //     sugar: parseStringNumber(_sugarController.text),
+      //     sodium: parseStringNumber(_sodiumController.text),
+      //     description: _descriptionController.text,
+      //     // userId: AppBloc.userCubit.user!.userId,
+      //   ),
+      // );
 
-      if (response.statusCode == 200) {
-        snack('수정 요청이 등록되었습니다. 감사합니다!');
-        Navigator.pop(context);
-      }
+      // if (response.statusCode == 200) {
+      //   snack('수정 요청이 등록되었습니다. 감사합니다!');
+      //   Navigator.pop(context);
+      // }
     } catch (e) {
       print(e);
     } finally {

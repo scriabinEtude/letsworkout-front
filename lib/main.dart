@@ -10,7 +10,10 @@ import 'package:letsworkout/config/route.dart';
 import 'package:letsworkout/enum/app_state_type.dart';
 import 'package:letsworkout/screen/splash_screen.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'dart:developer' as developer;
+
+import 'package:letsworkout/util/widget_util.dart';
 
 class AppBlocObserver extends BlocObserver {
   static const String TAG = "LISTAR";
@@ -53,6 +56,9 @@ void main() {
   // package_info_plus
   WidgetsFlutterBinding.ensureInitialized();
 
+  // easy loading
+  configLoading();
+
   initializeDateFormatting().then((_) => BlocOverrides.runZoned(
         () => runApp(const MyApp()),
         blocObserver: AppBlocObserver(),
@@ -94,6 +100,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
               MyCustomScrollBehavior(), // how to remove scroll glow? // https://stackoverflow.com/questions/51119795/how-to-remove-scroll-glow?rq=1&answertab=trending#tab-top
           onGenerateRoute: route.generateRoute,
           debugShowCheckedModeBanner: false,
+          builder: EasyLoading.init(),
           home: Scaffold(
             body: BlocListener<AppCubit, AppState>(
               bloc: AppBloc.appCubit,

@@ -31,42 +31,46 @@ class _DietFoodDetailScreenState extends State<DietFoodDetailScreen> {
       appBar: AppBar(title: Text('음식 정보')),
       body: ListView(
         children: [
-          Text('음식이름 ${food.foodName ?? ""}'),
-          Text('브랜드 ${food.foodBrand ?? ""}'),
-          Text('인용횟수 ${food.refCount ?? ""}'),
-          FutureBuilder<User?>(
-            future: _userRepository.getUserId(food.userId!),
+          Text('음식이름 ${food.foodName}'),
+          Text('브랜드 ${food.company}'),
+          Text('인용횟수 ${food.refCount}'),
+          FutureBuilder<List<User>?>(
+            future: _userRepository.getUsersById(
+                food.thanksto?.map((e) => e.userId).toList() ?? []),
             builder: ((context, snapshot) {
               if (snapshot.connectionState == ConnectionState.done) {
                 if (!snapshot.hasData) return const SizedBox.shrink();
 
-                return Row(
-                  children: [
-                    Avatar(
-                      size: 30,
-                      image: snapshot.data!.profileImage,
-                    ),
-                    Column(
-                      children: [
-                        Text(snapshot.data!.tag!),
-                        Text(snapshot.data!.name!),
-                      ],
-                    )
-                  ],
-                );
+                return Column(
+                    children: snapshot.data!
+                        .map((user) => Row(
+                              children: [
+                                Avatar(
+                                  size: 30,
+                                  image: user.profileImage,
+                                ),
+                                Column(
+                                  children: [
+                                    Text(user.tag!),
+                                    Text(user.name!),
+                                  ],
+                                )
+                              ],
+                            ))
+                        .toList());
               } else {
                 return SizedBox.shrink();
               }
             }),
           ),
           // if (user != null) Text('등록한 사람 ${user!.name ?? ""}'),
-          Text('칼로리 ${food.calorie ?? ""}'),
-          Text('탄수화물 ${food.carbohydrate ?? ""}'),
-          Text('단백질 ${food.protein ?? ""}'),
-          Text('지방 ${food.fat ?? ""}'),
-          Text('당 ${food.sugar ?? ""}'),
-          Text('나트륨 ${food.sodium ?? ""}'),
-          Text('설명 ${food.description ?? ""}'),
+          Text('칼로리 ${food.calorie}'),
+          Text('탄수화물 ${food.carbohydrate}'),
+          Text('단백질 ${food.protein}'),
+          Text('지방 ${food.fat}'),
+          Text('당 ${food.sugar}'),
+          Text('나트륨 ${food.sodium}'),
+          Text('설명 ${food.description}'),
         ],
       ),
     );

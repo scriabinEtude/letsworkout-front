@@ -22,10 +22,10 @@ class FriendRepository {
     }
   }
 
-  Future<Map> getFollowCount({required int userId}) async {
+  Future<Map> getFollowCount({required String userId}) async {
     try {
       Response result = await api
-          .get(_getUrl('/follow/count'), queryParameters: {'user_id': userId});
+          .get(_getUrl('/follow/count'), queryParameters: {'userId': userId});
 
       if (result.statusCode != 200) return {};
       return result.data;
@@ -35,10 +35,10 @@ class FriendRepository {
     }
   }
 
-  Future<Map> getFollows({required int userId}) async {
+  Future<Map> getFollows({required String userId}) async {
     try {
       Response result = await api
-          .get(_getUrl('/follows'), queryParameters: {'user_id': userId});
+          .get(_getUrl('/follows'), queryParameters: {'userId': userId});
 
       if (result.statusCode != 200) return {};
       return result.data;
@@ -48,11 +48,11 @@ class FriendRepository {
     }
   }
 
-  Future<bool> follow({required int myId, required int followId}) async {
+  Future<bool> follow({required String myId, required String followId}) async {
     try {
       Response result = await api.post(_getUrl('/follow'), data: {
-        'my_id': myId,
-        'follow_id': followId,
+        'myId': myId,
+        'followId': followId,
       });
 
       return result.statusCode == 200;
@@ -62,11 +62,12 @@ class FriendRepository {
     }
   }
 
-  Future<bool> unFollow({required int myId, required int followId}) async {
+  Future<bool> unFollow(
+      {required String myId, required String followId}) async {
     try {
       Response result = await api.delete(_getUrl('/follow'), data: {
-        'my_id': myId,
-        'follow_id': followId,
+        'myId': myId,
+        'followId': followId,
       });
 
       return result.statusCode == 200;
@@ -76,11 +77,12 @@ class FriendRepository {
     }
   }
 
-  Future<bool> isFollow({required int myId, required int followId}) async {
+  Future<bool> isFollow(
+      {required String myId, required String followId}) async {
     try {
       Response result = await api.get(_getUrl('/follow'), queryParameters: {
-        'my_id': myId,
-        'follow_id': followId,
+        'myId': myId,
+        'followId': followId,
       });
 
       return result.data;

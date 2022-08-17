@@ -5,11 +5,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:letsworkout/bloc/app_bloc.dart';
-import 'package:letsworkout/bloc/cubit/diet_cubit.dart';
+import 'package:letsworkout/bloc/diet/diet_cubit.dart';
 import 'package:letsworkout/config/route.dart';
+import 'package:letsworkout/enum/feed_type.dart';
 import 'package:letsworkout/model/diet.dart';
+import 'package:letsworkout/model/feed.dart';
 import 'package:letsworkout/model/file_actions.dart';
 import 'package:letsworkout/model/food.dart';
+import 'package:letsworkout/model/selected_food.dart';
 import 'package:letsworkout/screen/diet/diet_food_widgets.dart';
 import 'package:letsworkout/util/date_util.dart';
 import 'package:letsworkout/util/string_util.dart';
@@ -39,7 +42,7 @@ class _DietWriteScreenState extends State<DietWriteScreen> {
   final TextEditingController _descriptionController = TextEditingController();
 
   final FileActions _images = FileActions([]);
-  final List<Food> _selectedFoods = [];
+  final List<SelectedFood> _selectedFoods = [];
   bool _deleteActive = false;
 
   // selected food
@@ -81,18 +84,21 @@ class _DietWriteScreenState extends State<DietWriteScreen> {
 
   Future save() async {
     bool success = await _dietCubit.createDiet(
-      diet: Diet(
-        userId: AppBloc.userCubit.user!.userId!,
+      feed: Feed(
+        feedType: FeedType.diet.index,
+        user: AppBloc.userCubit.user!,
         time: mysqlDateTimeFormat(_time),
         description: _descriptionController.text,
-        calorie: _totalCalorie,
-        carbohydrate: _totalCarboHydrate,
-        protein: _totalProtein,
-        fat: _totalFat,
-        sugar: _totalSugar,
-        sodium: _totalSodium,
         images: _images,
-        foods: _selectedFoods,
+        diet: Diet(
+          calorie: _totalCalorie,
+          carbohydrate: _totalCarboHydrate,
+          protein: _totalProtein,
+          fat: _totalFat,
+          sugar: _totalSugar,
+          sodium: _totalSodium,
+          selectedFoods: _selectedFoods,
+        ),
       ),
     );
     if (success) Navigator.pop(context);
@@ -173,8 +179,8 @@ class _DietWriteScreenState extends State<DietWriteScreen> {
     };
   }
 
-  Future _foodOnTap(Food food) async {
-    Food? updatedFood = await showCupertinoDialog<Food?>(
+  Future _foodOnTap(SelectedFood food) async {
+    SelectedFood? updatedFood = await showCupertinoDialog<SelectedFood?>(
         barrierDismissible: true,
         context: context,
         builder: (context) {
@@ -182,15 +188,15 @@ class _DietWriteScreenState extends State<DietWriteScreen> {
         });
 
     if (updatedFood != null) {
-      int index = _selectedFoods.indexWhere(
-          (selectedFood) => selectedFood.dietFoodId == updatedFood.dietFoodId);
+      int index = _selectedFoods
+          .indexWhere((selectedFood) => selectedFood.eq(updatedFood));
       _selectedFoods[index] = updatedFood;
       _calSelectedFood();
       setState(() {});
     }
   }
 
-  Future _foodOnDelete(Food food) async {
+  Future _foodOnDelete(SelectedFood food) async {
     OkCancelResult result = await showOkCancelAlertDialog(
       context: context,
       message: '음식을 삭제하시겠습니까?',
@@ -199,8 +205,7 @@ class _DietWriteScreenState extends State<DietWriteScreen> {
     );
 
     if (result == OkCancelResult.ok) {
-      _selectedFoods.removeWhere(
-          (selectedFood) => selectedFood.dietFoodId == food.dietFoodId);
+      _selectedFoods.removeWhere((selectedFood) => selectedFood.eq(food));
       _deleteActive = false;
       _calSelectedFood();
       setState(() {});
@@ -239,7 +244,7 @@ class _DietWriteScreenState extends State<DietWriteScreen> {
                 runSpacing: 5,
                 children: _selectedFoods
                     .map((food) => FoodTag(
-                          food: food,
+                          selectedFood: food,
                           onTap: () => _foodOnTap(food),
                           deleteActive: _deleteActive,
                           onDelete: _foodOnDelete,
@@ -261,12 +266,12 @@ class _DietWriteScreenState extends State<DietWriteScreen> {
   Widget foodSearchButton() {
     return InkWell(
       onTap: () async {
-        Food? food = await Navigator.pushNamed<Food?>(
+        SelectedFood? food = await Navigator.pushNamed<SelectedFood?>(
             context, Routes.dietFoodSearchScreen);
         if (food == null) return;
 
-        int selectedindex = _selectedFoods.indexWhere(
-            (selectedFood) => selectedFood.dietFoodId == food.dietFoodId);
+        int selectedindex =
+            _selectedFoods.indexWhere((selectedFood) => selectedFood.eq(food));
         if (selectedindex != -1) {
           snack('이미 추가한 음식입니다\n음식을 눌러 수량을 조절해주세요');
           return;

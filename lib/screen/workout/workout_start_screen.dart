@@ -5,8 +5,8 @@ import 'package:letsworkout/bloc/app_bloc.dart';
 import 'package:letsworkout/bloc/feed/feed_cubit.dart';
 import 'package:letsworkout/bloc/feed/feed_state.dart';
 import 'package:letsworkout/enum/workout_type.dart';
+import 'package:letsworkout/model/feed.dart';
 import 'package:letsworkout/model/file_actions.dart';
-import 'package:letsworkout/model/workout.dart';
 import 'package:letsworkout/util/widget_util.dart';
 import 'package:letsworkout/widget/comment_input_field.dart';
 import 'package:letsworkout/widget/comment_list.dart';
@@ -25,7 +25,7 @@ class _WorkoutStartScreenState extends State<WorkoutStartScreen> {
   final TextEditingController _commentController = TextEditingController();
   final FocusNode _focusNode = FocusNode();
   final ScrollController _scroller = ScrollController();
-  Workout? workout;
+  Feed? feedActive;
   Timer? timer;
   FileActions images = FileActions([]);
   // var keyboardVisibilityController = KeyboardVisibilityController();
@@ -69,23 +69,23 @@ class _WorkoutStartScreenState extends State<WorkoutStartScreen> {
   }
 
   Future initData() async {
-    setData(await AppBloc.workoutCubit.loadData());
-    if (workout != null) {
-      AppBloc.feedCubit.commentGet(feedId: workout!.feedId);
+    setData(AppBloc.workoutCubit.state.feedActive);
+    if (feedActive != null) {
+      AppBloc.feedCubit.commentGet(feedId: feedActive!.feedId);
     }
   }
 
-  void setData(Workout? newWorkout) {
-    workout = newWorkout;
-    _textController.text = workout?.description ?? "";
-    images = workout?.images ?? FileActions([]);
+  void setData(Feed? feed) {
+    feedActive = feed;
+    _textController.text = feedActive?.description ?? "";
+    images = feedActive?.images ?? FileActions([]);
     setState(() {});
   }
 
   @override
   void dispose() {
     // 운동상태 저장
-    if (workout != null) {
+    if (feedActive != null) {
       AppBloc.workoutCubit.workoutSaveLocal(
         description: _textController.text,
         fileActions: images,
@@ -123,12 +123,12 @@ class _WorkoutStartScreenState extends State<WorkoutStartScreen> {
                 child: const Text('저장')),
           ),
           bottomNavigationBar: CommentInputField(
-            display: workout != null && !_textHasFocus,
+            display: feedActive != null && !_textHasFocus,
             controller: _commentController,
             onChanged: (text) => setState(() {}),
             onPressed: () async {
               await AppBloc.feedCubit.workoutingCommentInsert(
-                feedId: workout!.feedId!,
+                feedId: feedActive!.feedId!,
                 depth: 0,
                 parentId: null,
                 comment: _commentController.text,
@@ -177,15 +177,17 @@ class _WorkoutStartScreenState extends State<WorkoutStartScreen> {
   }
 
   String workoutTimer() {
-    if (workout == null || workout!.workoutType != WorkoutType.working.index) {
+    if (feedActive == null ||
+        feedActive?.workout == null ||
+        feedActive!.workout!.workoutType != WorkoutType.working.index) {
       return "00:00";
     }
 
     String time = "";
-    DateTime endTime = workout!.endTime != null
-        ? DateTime.parse(workout!.endTime!)
+    DateTime endTime = feedActive!.workout!.endTime != null
+        ? DateTime.parse(feedActive!.workout!.endTime!)
         : DateTime.now();
-    Duration difference = endTime.difference(DateTime.parse(workout!.time!));
+    Duration difference = endTime.difference(DateTime.parse(feedActive!.time!));
     int hour = difference.inSeconds ~/ (60 * 60);
     int min = difference.inSeconds ~/ 60 % 60;
     int sec = difference.inSeconds % 60;
@@ -256,8 +258,8 @@ class _WorkoutStartScreenState extends State<WorkoutStartScreen> {
         child: TextField(
           focusNode: _focusNode,
           // 시작전과 운동중일 때 작성 가능
-          enabled: workout == null ||
-              workout!.workoutType == WorkoutType.working.index,
+          enabled: feedActive == null ||
+              feedActive!.workout!.workoutType == WorkoutType.working.index,
           maxLength: 1000,
           controller: _textController,
           maxLines: null,
