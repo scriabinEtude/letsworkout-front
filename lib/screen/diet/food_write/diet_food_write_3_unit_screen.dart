@@ -1,9 +1,4 @@
-import 'dart:developer';
-
-import 'package:adaptive_dialog/adaptive_dialog.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:letsworkout/bloc/app_bloc.dart';
 import 'package:letsworkout/config/route.dart';
 import 'package:letsworkout/screen/diet/food_write/widgets.dart';
@@ -21,14 +16,11 @@ class DietFoodWrite3UnitScreen extends StatefulWidget {
 class _DietFoodWrite3UnitScreenState extends State<DietFoodWrite3UnitScreen> {
   Uuid uuid = const Uuid();
   bool _validation = false;
-  bool _firstSelectUnit = false;
   String _selectedUnit = "";
   String _selectedServingName = "";
-  String _servingDisplay = "";
-  bool _sizeControllerEnabled = true;
-  Key _servingNamePickerKey = const Key('servingNamePicker');
-  final _sizeController = TextEditingController();
-  late List<String> _units;
+  String _selectedSize = "";
+  String _display = "";
+  late List<String> _servingNames;
 
   @override
   void initState() {
@@ -36,19 +28,20 @@ class _DietFoodWrite3UnitScreenState extends State<DietFoodWrite3UnitScreen> {
   }
 
   void _validate() {
-    _firstSelectUnit = _selectedUnit.isNotEmpty;
     _validation = _selectedUnit.isNotEmpty &&
         _selectedServingName.isNotEmpty &&
-        _sizeController.text.isNotEmpty;
+        _selectedSize.isNotEmpty;
     setState(() {});
   }
 
   _selectUnit(String unit) {
     _selectedUnit = unit;
-    _refreshServingNamePicker();
-    _selectServingName(_selectedServingName);
 
-    _units = [
+    String opposition = _selectedUnit == "g" ? "ml" : "g";
+    _selectedServingName =
+        _selectedServingName.replaceAll(opposition, _selectedUnit);
+
+    _servingNames = [
       '100$_selectedUnit',
       '1인분',
       '1회제공량',
@@ -75,37 +68,30 @@ class _DietFoodWrite3UnitScreenState extends State<DietFoodWrite3UnitScreen> {
     _validate();
   }
 
-  void _selectServingName(String servingName) {
-    _selectedServingName = servingName;
-    if (["1인분", "1회제공량"].contains(_selectedServingName)) {
-      _servingDisplay = "$_selectedUnit $_selectedServingName".trim();
-      _sizeControllerEnabled = true;
-    } else if (["100g", "100ml"].contains(_selectedServingName)) {
-      _servingDisplay = _selectedUnit;
-      _sizeController.text = "100";
-      _sizeControllerEnabled = false;
-      unFocus();
-    } else {
-      _servingDisplay = "$_selectedUnit 1$_selectedServingName".trim();
-      _sizeControllerEnabled = true;
-    }
-    _validate();
-  }
-
-  _refreshServingNamePicker() {
-    _servingNamePickerKey = Key(uuid.v4());
-  }
-
   _save() {
     unFocus();
 
     AppBloc.foodWriteCubit.setFirstServing(
       unit: _selectedUnit,
       firstServingName: _selectedServingName,
-      firstServingSize: _sizeController.text,
+      firstServingSize: _selectedSize,
     );
 
     Navigator.pushNamed(context, Routes.dietFoodWirte4NutiritionScreen);
+  }
+
+  _callServingPicker() async {
+    Map<String, dynamic>? result = await showDietFoodServingPicker(
+        context: context,
+        servingNames: _servingNames,
+        selectedUnit: _selectedUnit);
+
+    if (result != null) {
+      _selectedServingName = result['servingName'];
+      _selectedSize = result['size'];
+      _display = result['display'];
+      _validate();
+    }
   }
 
   @override
@@ -131,53 +117,82 @@ class _DietFoodWrite3UnitScreenState extends State<DietFoodWrite3UnitScreen> {
                 unitSelectBox('ml'),
               ],
             ),
-            // showMaterialScrollPicker(context: context, items: [1,2,3,4,5,6,7,8,], selectedItem: selectedItem),
-            // ScrollPickerDialog(items: [1, 2, 3, 4, 5, 6, 7], selectedItem: 2),
-            if (_selectedUnit.isNotEmpty)
-              Column(
-                children: [
-                  Text('1회 제공량 단위 선택'),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        children: [
-                          SizedBox(
-                            width: 100,
-                            child: TextField(
-                              onChanged: (text) => _validate(),
-                              controller: _sizeController,
-                              enabled: _sizeControllerEnabled,
-                              keyboardType: TextInputType.number,
-                              inputFormatters: <TextInputFormatter>[
-                                FilteringTextInputFormatter.digitsOnly,
-                              ],
-                            ),
-                          ),
-                          Text(_servingDisplay),
-                        ],
-                      ),
-                      SizedBox(
-                        height: 200,
-                        width: 200,
-                        child: CupertinoPicker(
-                          key: _servingNamePickerKey,
-                          itemExtent: 30,
-                          squeeze: 1,
-                          selectionOverlay: ColoredBox(
-                            color: Colors.blueAccent.withOpacity(0.2),
-                          ),
-                          onSelectedItemChanged: (index) {
-                            _selectServingName(_units[index]);
-                          },
-                          children: _units.map((unit) => Text(unit)).toList(),
-                        ),
-                      )
-                    ],
-                  ),
-                  newServingSizeName(),
-                ],
-              ),
+            Builder(builder: (context) {
+              if (_selectedUnit.isEmpty) {
+                return const SizedBox.shrink();
+              } else if (_selectedUnit.isNotEmpty &&
+                  _selectedServingName.isEmpty) {
+                return InkWell(
+                  onTap: _callServingPicker,
+                  child: Text('제공량 선택'),
+                );
+              } else {
+                return Column(
+                  children: [
+                    Text('$_selectedSize$_selectedUnit$_selectedServingName'),
+                    InkWell(
+                      child: Text('재작성'),
+                      onTap: _callServingPicker,
+                    )
+                  ],
+                );
+              }
+            }),
+
+            // DietFoodServingPicker(
+            //   key: _servingNamePickerKey,
+            //   onChanged: (text) => _validate(),
+            //   sizeController: _sizeController,
+            //   textFieldEnabled: _sizeControllerEnabled,
+            //   servingDisplay: _servingDisplay,
+            //   onSelecteServingName: _selectServingName,
+            //   units: _units,
+            // ),
+            // if (_selectedUnit.isNotEmpty)
+            //   Column(
+            //     children: [
+            //       Text('1회 제공량 단위 선택'),
+            //       Row(
+            //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            //         children: [
+            //           Row(
+            //             children: [
+            //               SizedBox(
+            //                 width: 100,
+            //                 child: TextField(
+            //                   onChanged: (text) => _validate(),
+            //                   controller: _sizeController,
+            //                   enabled: _sizeControllerEnabled,
+            //                   keyboardType: TextInputType.number,
+            //                   inputFormatters: <TextInputFormatter>[
+            //                     FilteringTextInputFormatter.digitsOnly,
+            //                   ],
+            //                 ),
+            //               ),
+            //               Text(_servingDisplay),
+            //             ],
+            //           ),
+            //           SizedBox(
+            //             height: 200,
+            //             width: 200,
+            //             child: CupertinoPicker(
+            //               key: _servingNamePickerKey,
+            //               itemExtent: 30,
+            //               squeeze: 1,
+            //               selectionOverlay: ColoredBox(
+            //                 color: Colors.blueAccent.withOpacity(0.2),
+            //               ),
+            //               onSelectedItemChanged: (index) {
+            //                 _selectServingName(_units[index]);
+            //               },
+            //               children: _units.map((unit) => Text(unit)).toList(),
+            //             ),
+            //           )
+            //         ],
+            //       ),
+            //       newServingSizeName(),
+            //     ],
+            //   ),
 
             // Row(
             //   mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -238,52 +253,33 @@ class _DietFoodWrite3UnitScreenState extends State<DietFoodWrite3UnitScreen> {
     );
   }
 
-  Widget newServingSizeName() {
-    return InkWell(
-      onTap: () async {
-        List<String>? userInput = await showTextInputDialog(
-          context: context,
-          title: "새로운 입력",
-          textFields: [
-            DialogTextField(),
-          ],
-        );
-
-        if (userInput != null && userInput[0].isNotEmpty) {
-          _selectServingName(userInput[0]);
-        }
-      },
-      child: Text('+ 새로운 입력'),
-    );
-  }
-
-  Widget servingNameBox(String value) {
-    bool enable = value == _selectedServingName;
-    return InkWell(
-      onTap: _firstSelectUnit ? () => _selectServingName(value) : null,
-      child: Opacity(
-        opacity: _firstSelectUnit ? 1 : 0.2,
-        child: Container(
-          width: MediaQuery.of(context).size.width / 4 - 10,
-          margin: const EdgeInsets.symmetric(vertical: 5),
-          height: 50,
-          decoration: BoxDecoration(
-            border: Border.all(
-              color: enable ? Colors.black : Colors.grey,
-            ),
-          ),
-          child: Center(
-            child: Text(
-              value,
-              style: TextStyle(
-                fontWeight: enable ? FontWeight.bold : null,
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
+  // Widget servingNameBox(String value) {
+  //   bool enable = value == _selectedServingName;
+  //   return InkWell(
+  //     onTap: _firstSelectUnit ? () => _selectServingName(value) : null,
+  //     child: Opacity(
+  //       opacity: _firstSelectUnit ? 1 : 0.2,
+  //       child: Container(
+  //         width: MediaQuery.of(context).size.width / 4 - 10,
+  //         margin: const EdgeInsets.symmetric(vertical: 5),
+  //         height: 50,
+  //         decoration: BoxDecoration(
+  //           border: Border.all(
+  //             color: enable ? Colors.black : Colors.grey,
+  //           ),
+  //         ),
+  //         child: Center(
+  //           child: Text(
+  //             value,
+  //             style: TextStyle(
+  //               fontWeight: enable ? FontWeight.bold : null,
+  //             ),
+  //           ),
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
 
   Widget unitSelectBox(String unit) {
     bool enable = unit == _selectedUnit;
