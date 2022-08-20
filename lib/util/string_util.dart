@@ -1,3 +1,5 @@
+import 'package:letsworkout/module/error/letsworkout_error.dart';
+
 String onlyNumber(String text) {
   return text.replaceAll(RegExp(r'[^0-9]'), "");
 }
@@ -10,15 +12,31 @@ int? parseOnlyNumber(String text) {
   return int.parse(onlyNumber(text));
 }
 
+double parseStringToDouble(String text) {
+  if (text == '.') {
+    throw LetsworkoutError(
+      "(입력값 : . ) 정확히 입력해 주세요",
+      display: true,
+    );
+  }
+
+  try {
+    if (text.isEmpty) return 0;
+    return double.parse(text);
+  } catch (e) {
+    throw LetsworkoutError('숫자로 변환할 수 없는 문자열입니다');
+  }
+}
+
 /// 문자열형 숫자를 int로 변환
 ///
-/// 빈문자열이거나 에러나면 0
+/// 빈문자열 => 0
 int parseStringNumber(String text) {
   try {
     if (text.isEmpty) return 0;
     return int.parse(text);
   } catch (e) {
-    return 0;
+    throw LetsworkoutError('숫자로 변환할 수 없는 문자열입니다');
   }
 }
 
@@ -32,6 +50,16 @@ String? emptyToNull(String text) {
 /// null -> ''
 /// ```
 String intToString(int? value) {
+  if (value == null) return "";
+  return value.toString();
+}
+
+/// ```
+///
+/// value.toString()
+/// null -> ''
+/// ```
+String doubleToString(double? value) {
   if (value == null) return "";
   return value.toString();
 }

@@ -35,20 +35,21 @@ class _DietFoodUpdateRequestScreenState
 
   @override
   void initState() {
-    _brandNameController = TextEditingController(text: widget.food.company);
+    _brandNameController =
+        TextEditingController(text: widget.food.company.name);
     _foodNameController = TextEditingController(text: widget.food.foodName);
     _calorieController =
-        TextEditingController(text: intToString(widget.food.calorie));
+        TextEditingController(text: doubleToString(widget.food.calorie));
     _carboController =
-        TextEditingController(text: intToString(widget.food.calorie));
+        TextEditingController(text: doubleToString(widget.food.calorie));
     _proteinController =
-        TextEditingController(text: intToString(widget.food.calorie));
+        TextEditingController(text: doubleToString(widget.food.calorie));
     _fatController =
-        TextEditingController(text: intToString(widget.food.calorie));
+        TextEditingController(text: doubleToString(widget.food.calorie));
     _sugarController =
-        TextEditingController(text: intToString(widget.food.sugar));
+        TextEditingController(text: doubleToString(widget.food.sugar));
     _sodiumController =
-        TextEditingController(text: intToString(widget.food.sodium));
+        TextEditingController(text: doubleToString(widget.food.sodium));
     _descriptionController =
         TextEditingController(text: widget.food.description);
     super.initState();

@@ -18,14 +18,6 @@ class DietRepository {
     }
   }
 
-  Future<List<Food>> searchFood(
-      {required String foodBrand, required String foodName}) async {
-    Response result = await api.get(_getUrl('/food/search'),
-        queryParameters: {'foodName': foodName, 'foodBrand': foodBrand});
-
-    return Food.fromJsonList(result.data);
-  }
-
   Future<Response> foodWriteNameCheck({
     required String foodBrand,
     required String foodName,

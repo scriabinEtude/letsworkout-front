@@ -1,23 +1,24 @@
 import 'package:letsworkout/enum/loading_state.dart';
+import 'package:letsworkout/model/food_company.dart';
 
 class FoodWriteState {
   final LoadingState loading;
-  final String? companyName;
+  final FoodCompany? company;
   final String? foodName;
   final String? unit;
   final String? firstServingName;
-  final String? firstServingSize;
-  final int? calorie;
-  final int? carbohydrate;
-  final int? protein;
-  final int? fat;
-  final int? sugar;
-  final int? sodium;
+  final int? firstServingSize;
+  final double? calorie;
+  final double? carbohydrate;
+  final double? protein;
+  final double? fat;
+  final double? sugar;
+  final double? sodium;
   String? description;
 
   FoodWriteState({
     this.loading = LoadingState.init,
-    this.companyName,
+    this.company,
     this.foodName,
     this.unit,
     this.firstServingName,
@@ -33,22 +34,22 @@ class FoodWriteState {
 
   FoodWriteState copyWith({
     LoadingState? loading,
-    String? companyName,
+    FoodCompany? company,
     String? foodName,
     String? unit,
     String? firstServingName,
-    String? firstServingSize,
-    int? calorie,
-    int? carbohydrate,
-    int? protein,
-    int? fat,
-    int? sugar,
-    int? sodium,
+    int? firstServingSize,
+    double? calorie,
+    double? carbohydrate,
+    double? protein,
+    double? fat,
+    double? sugar,
+    double? sodium,
     String? description,
   }) =>
       FoodWriteState(
         loading: loading ?? this.loading,
-        companyName: companyName ?? this.companyName,
+        company: company ?? this.company,
         foodName: foodName ?? this.foodName,
         unit: unit ?? this.unit,
         firstServingName: firstServingName ?? this.firstServingName,

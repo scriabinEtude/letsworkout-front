@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:letsworkout/bloc/app_bloc.dart';
 import 'package:letsworkout/config/route.dart';
+import 'package:letsworkout/model/serving_size.dart';
 import 'package:letsworkout/screen/diet/food_write/widgets.dart';
 import 'package:letsworkout/util/widget_util.dart';
 import 'package:uuid/uuid.dart';
@@ -18,7 +19,7 @@ class _DietFoodWrite3UnitScreenState extends State<DietFoodWrite3UnitScreen> {
   bool _validation = false;
   String _selectedUnit = "";
   String _selectedServingName = "";
-  String _selectedSize = "";
+  int _selectedSize = 0;
   String _display = "";
   late List<String> _servingNames;
 
@@ -30,7 +31,7 @@ class _DietFoodWrite3UnitScreenState extends State<DietFoodWrite3UnitScreen> {
   void _validate() {
     _validation = _selectedUnit.isNotEmpty &&
         _selectedServingName.isNotEmpty &&
-        _selectedSize.isNotEmpty;
+        _selectedSize > 0;
     setState(() {});
   }
 
@@ -66,6 +67,7 @@ class _DietFoodWrite3UnitScreenState extends State<DietFoodWrite3UnitScreen> {
       '작은술',
     ];
     _validate();
+    _callServingPicker();
   }
 
   _save() {
@@ -81,15 +83,15 @@ class _DietFoodWrite3UnitScreenState extends State<DietFoodWrite3UnitScreen> {
   }
 
   _callServingPicker() async {
-    Map<String, dynamic>? result = await showDietFoodServingPicker(
+    ServingSize? result = await showDietFoodServingPicker(
         context: context,
         servingNames: _servingNames,
         selectedUnit: _selectedUnit);
 
     if (result != null) {
-      _selectedServingName = result['servingName'];
-      _selectedSize = result['size'];
-      _display = result['display'];
+      _selectedServingName = result.servingName;
+      _selectedSize = result.servingSize;
+      _display = result.display ?? "";
       _validate();
     }
   }
@@ -124,7 +126,7 @@ class _DietFoodWrite3UnitScreenState extends State<DietFoodWrite3UnitScreen> {
                   _selectedServingName.isEmpty) {
                 return InkWell(
                   onTap: _callServingPicker,
-                  child: Text('제공량 선택'),
+                  child: Text(' + 제공량 선택'),
                 );
               } else {
                 return Column(

@@ -40,8 +40,8 @@ class _DietFoodWrite1CompanyScreenState
     }
   }
 
-  _select(String companyName) {
-    AppBloc.foodWriteCubit.setCompanyName(companyName);
+  _select(FoodCompany company) {
+    AppBloc.foodWriteCubit.setFoodCompany(company);
     Navigator.pushNamed(context, Routes.dietFoodWrite2FoodnameScreen);
   }
 
@@ -58,14 +58,16 @@ class _DietFoodWrite1CompanyScreenState
             decoration: const InputDecoration(label: Text('제조사')),
             onChanged: _onChanged,
           ),
-          if (_companyController.text.isEmpty)
+          if (_companyController.text.trim().isEmpty)
             Text('제조사를 입력해주세요')
           else if (_companyList.isNotEmpty &&
               _companyController.text.isNotEmpty)
             ..._companyList.map((company) => companyWidget(company))
           else if (_companyList.isEmpty && _companyController.text.isNotEmpty)
             InkWell(
-              onTap: () => _select(_companyController.text),
+              onTap: () => _select(FoodCompany(
+                name: _companyController.text.trim(),
+              )),
               child: Text('${_companyController.text} 등록하기'),
             ),
         ],
@@ -75,13 +77,13 @@ class _DietFoodWrite1CompanyScreenState
 
   Widget companyWidget(FoodCompany company) {
     return InkWell(
-      onTap: () => _select(company.name!),
+      onTap: () => _select(company),
       child: Container(
         width: 50,
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Text(company.name!),
+            Text(company.name),
             Text('${company.refCount!}'),
           ],
         ),

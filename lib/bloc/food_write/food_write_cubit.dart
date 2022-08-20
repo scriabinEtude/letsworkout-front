@@ -1,9 +1,14 @@
 import 'package:bloc/bloc.dart';
+import 'package:letsworkout/bloc/app_bloc.dart';
 import 'package:letsworkout/bloc/food_write/food_write_state.dart';
 import 'package:letsworkout/enum/loading_state.dart';
 import 'package:letsworkout/model/food.dart';
+import 'package:letsworkout/model/food_company.dart';
+import 'package:letsworkout/model/serving_size.dart';
+import 'package:letsworkout/model/thanksto.dart';
 import 'package:letsworkout/module/error/letsworkout_error.dart';
 import 'package:letsworkout/repository/food_repository.dart';
+import 'package:letsworkout/util/string_util.dart';
 import 'package:letsworkout/util/widget_util.dart';
 
 class FoodWriteCubit extends Cubit<FoodWriteState> {
@@ -15,8 +20,8 @@ class FoodWriteCubit extends Cubit<FoodWriteState> {
     emit(state.copyWith(loading: loading));
   }
 
-  void setCompanyName(String companyName) {
-    emit(state.copyWith(companyName: companyName));
+  void setFoodCompany(FoodCompany company) {
+    emit(state.copyWith(company: company));
   }
 
   Future<Food?> validFoodName(String foodName) async {
@@ -25,7 +30,7 @@ class FoodWriteCubit extends Cubit<FoodWriteState> {
       emit(state.copyWith(foodName: foodName));
 
       Food? food = await _foodRepository.validateFood(
-        company: state.companyName!,
+        companyName: state.company!.name,
         foodName: state.foodName!,
       );
 
@@ -41,7 +46,7 @@ class FoodWriteCubit extends Cubit<FoodWriteState> {
   void setFirstServing({
     required String unit,
     required String firstServingName,
-    required String firstServingSize,
+    required int firstServingSize,
   }) {
     emit(state.copyWith(
       unit: unit,
@@ -51,12 +56,12 @@ class FoodWriteCubit extends Cubit<FoodWriteState> {
   }
 
   void setNutirition({
-    required int calorie,
-    required int carbohydrate,
-    required int protein,
-    required int fat,
-    required int sugar,
-    required int sodium,
+    required double calorie,
+    required double carbohydrate,
+    required double protein,
+    required double fat,
+    required double sugar,
+    required double sodium,
     required String description,
   }) {
     emit(state.copyWith(
@@ -68,5 +73,46 @@ class FoodWriteCubit extends Cubit<FoodWriteState> {
       sodium: sodium,
       description: description.isNotEmpty ? description : null,
     ));
+  }
+
+  double _100gFromFirstSize(double value, int firstSize) {
+    return double.parse((value * 100 / firstSize).toStringAsFixed(2));
+  }
+
+  Future<bool> saveFood({required List<ServingSize> servings}) async {
+    loadingShow();
+    try {
+      final food = Food(
+          foodName: state.foodName!,
+          company: state.company!,
+          unit: state.unit!,
+          calorie: _100gFromFirstSize(state.calorie!, state.firstServingSize!),
+          carbohydrate:
+              _100gFromFirstSize(state.carbohydrate!, state.firstServingSize!),
+          protein: _100gFromFirstSize(state.protein!, state.firstServingSize!),
+          fat: _100gFromFirstSize(state.fat!, state.firstServingSize!),
+          sugar: _100gFromFirstSize(state.sugar!, state.firstServingSize!),
+          sodium: _100gFromFirstSize(state.sodium!, state.firstServingSize!),
+          description: state.description,
+          servingSizes: [
+            ServingSize(
+                servingName: state.firstServingName!,
+                servingSize: state.firstServingSize!),
+            ...servings
+          ],
+          thanksto: [
+            Thanksto(
+              userId: AppBloc.userCubit.user!.userId!,
+              tag: AppBloc.userCubit.user!.tag!,
+              description: "최초 등록",
+            ),
+          ]);
+
+      return await _foodRepository.saveFood(food);
+    } catch (e) {
+      return false;
+    } finally {
+      loadingHide();
+    }
   }
 }

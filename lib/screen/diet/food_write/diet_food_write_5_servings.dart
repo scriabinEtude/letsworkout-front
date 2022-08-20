@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:letsworkout/bloc/app_bloc.dart';
+import 'package:letsworkout/config/route.dart';
+import 'package:letsworkout/model/food.dart';
+import 'package:letsworkout/model/serving_size.dart';
 import 'package:letsworkout/screen/diet/food_write/widgets.dart';
+import 'package:letsworkout/util/string_util.dart';
+import 'package:letsworkout/util/widget_util.dart';
 import 'package:uuid/uuid.dart';
 
 class DietFoodWrite5Servings extends StatefulWidget {
@@ -11,7 +16,7 @@ class DietFoodWrite5Servings extends StatefulWidget {
 }
 
 class _DietFoodWrite5ServingsState extends State<DietFoodWrite5Servings> {
-  List<Map<String, dynamic>> servings = [];
+  List<ServingSize> servings = [];
   String unit = AppBloc.foodWriteCubit.state.unit!;
   final Uuid uuid = const Uuid();
 
@@ -25,7 +30,18 @@ class _DietFoodWrite5ServingsState extends State<DietFoodWrite5Servings> {
       floatingActionButton: DietFoodWriteFloatingButton(
         title: '완료',
         enable: true,
-        onTap: () {},
+        onTap: () async {
+          bool success =
+              await AppBloc.foodWriteCubit.saveFood(servings: servings);
+
+          if (success) {
+            snack('음식 등록이 완료되었습니다!');
+            Navigator.popUntil(
+              context,
+              (route) => route.settings.name == Routes.dietFoodSearchScreen,
+            );
+          }
+        },
       ),
       body: Column(
         children: [
@@ -37,10 +53,10 @@ class _DietFoodWrite5ServingsState extends State<DietFoodWrite5Servings> {
     );
   }
 
-  Widget servingWidget(Map<String, dynamic> serving) {
+  Widget servingWidget(ServingSize serving) {
     return Row(
       children: [
-        Text('${serving['size']}${serving['display']}'),
+        Text('${serving.servingSize}${serving.display ?? ""}'),
         ElevatedButton(
             style: ElevatedButton.styleFrom(primary: Colors.red),
             onPressed: () {
@@ -53,10 +69,10 @@ class _DietFoodWrite5ServingsState extends State<DietFoodWrite5Servings> {
   }
 
   Widget servingAddButton() {
-    Iterable<String> names = servings.map((serving) => serving['servingName']);
+    Iterable<String> names = servings.map((serving) => serving.servingName);
     return InkWell(
       onTap: () async {
-        Map<String, dynamic>? result = await showDietFoodServingPicker(
+        ServingSize? result = await showDietFoodServingPicker(
             context: context,
             servingNames: [
               '100$unit',
@@ -89,11 +105,7 @@ class _DietFoodWrite5ServingsState extends State<DietFoodWrite5Servings> {
             selectedUnit: unit);
 
         if (result != null) {
-          servings.add({
-            'servingName': result['servingName'],
-            'size': result['size'],
-            'display': result['display'],
-          });
+          servings.add(result);
           setState(() {});
         }
       },

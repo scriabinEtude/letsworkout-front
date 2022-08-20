@@ -1,27 +1,33 @@
 class FoodCompany {
   FoodCompany({
-    this.name,
-    this.refCount = 0,
+    this.foodCompanyId,
+    required this.name,
+    this.refCount,
   });
 
-  final String? name;
+  final String? foodCompanyId;
+  final String name;
   final int? refCount;
 
   FoodCompany copyWith({
+    String? foodCompanyId,
     String? name,
     int? refCount,
   }) =>
       FoodCompany(
+        foodCompanyId: foodCompanyId ?? this.foodCompanyId,
         name: name ?? this.name,
         refCount: refCount ?? this.refCount,
       );
 
   factory FoodCompany.fromJson(Map<String, dynamic> json) => FoodCompany(
+        foodCompanyId: json["_id"],
         name: json["name"],
         refCount: json["refCount"],
       );
 
   Map<String, dynamic> toJson() => {
+        "_id": foodCompanyId,
         "name": name,
         "refCount": refCount,
       };

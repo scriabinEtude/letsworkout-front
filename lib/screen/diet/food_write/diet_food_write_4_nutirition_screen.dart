@@ -54,12 +54,12 @@ class _DietFoodWrite4NutiritionScreenState
   Future _save() async {
     unFocus();
     AppBloc.foodWriteCubit.setNutirition(
-      calorie: parseStringNumber(_calorieController.text),
-      carbohydrate: parseStringNumber(_carboController.text),
-      protein: parseStringNumber(_proteinController.text),
-      fat: parseStringNumber(_fatController.text),
-      sugar: parseStringNumber(_sugarController.text),
-      sodium: parseStringNumber(_sodiumController.text),
+      calorie: parseStringToDouble(_calorieController.text),
+      carbohydrate: parseStringToDouble(_carboController.text),
+      protein: parseStringToDouble(_proteinController.text),
+      fat: parseStringToDouble(_fatController.text),
+      sugar: parseStringToDouble(_sugarController.text),
+      sodium: parseStringToDouble(_sodiumController.text),
       description: _descriptionController.text,
     );
 
@@ -69,9 +69,10 @@ class _DietFoodWrite4NutiritionScreenState
   @override
   Widget build(BuildContext context) {
     FoodWriteState state = AppBloc.foodWriteCubit.state;
-    String foodNameText = state.companyName! + state.foodName!;
-    String prevText =
-        state.firstServingSize! + state.unit! + state.firstServingName!;
+    String foodNameText = state.company!.name + state.foodName!;
+    String prevText = state.firstServingSize!.toString() +
+        state.unit! +
+        state.firstServingName!;
 
     return GestureDetector(
       onTap: unFocus,
@@ -96,7 +97,7 @@ class _DietFoodWrite4NutiritionScreenState
                   label: Text('칼로리'),
                 ),
                 inputFormatters: <TextInputFormatter>[
-                  FilteringTextInputFormatter.digitsOnly,
+                  FilteringTextInputFormatter.allow(RegExp(r'(^-?\d*\.?\d*)'))
                 ],
               ),
               TextField(
@@ -107,7 +108,7 @@ class _DietFoodWrite4NutiritionScreenState
                   label: Text('탄수화물'),
                 ),
                 inputFormatters: <TextInputFormatter>[
-                  FilteringTextInputFormatter.digitsOnly,
+                  FilteringTextInputFormatter.allow(RegExp(r'(^-?\d*\.?\d*)'))
                 ],
               ),
               TextField(
@@ -118,7 +119,7 @@ class _DietFoodWrite4NutiritionScreenState
                   label: Text('단백질'),
                 ),
                 inputFormatters: <TextInputFormatter>[
-                  FilteringTextInputFormatter.digitsOnly,
+                  FilteringTextInputFormatter.allow(RegExp(r'(^-?\d*\.?\d*)'))
                 ],
               ),
               TextField(
@@ -129,7 +130,7 @@ class _DietFoodWrite4NutiritionScreenState
                   label: Text('지방'),
                 ),
                 inputFormatters: <TextInputFormatter>[
-                  FilteringTextInputFormatter.digitsOnly,
+                  FilteringTextInputFormatter.allow(RegExp(r'(^-?\d*\.?\d*)'))
                 ],
               ),
               TextField(
@@ -140,7 +141,7 @@ class _DietFoodWrite4NutiritionScreenState
                   label: Text('당'),
                 ),
                 inputFormatters: <TextInputFormatter>[
-                  FilteringTextInputFormatter.digitsOnly,
+                  FilteringTextInputFormatter.allow(RegExp(r'(^-?\d*\.?\d*)'))
                 ],
               ),
               TextField(
@@ -151,7 +152,7 @@ class _DietFoodWrite4NutiritionScreenState
                   label: Text('나트륨'),
                 ),
                 inputFormatters: <TextInputFormatter>[
-                  FilteringTextInputFormatter.digitsOnly,
+                  FilteringTextInputFormatter.allow(RegExp(r'(^-?\d*\.?\d*)'))
                 ],
               ),
               TextField(

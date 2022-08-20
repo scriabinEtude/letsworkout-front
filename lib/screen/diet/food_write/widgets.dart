@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:letsworkout/model/serving_size.dart';
+import 'package:letsworkout/util/string_util.dart';
 
 class DietFoodWriteFloatingButton extends StatelessWidget {
   const DietFoodWriteFloatingButton({
@@ -38,14 +40,15 @@ class DietFoodWriteFloatingButton extends StatelessWidget {
   }
 }
 
-showDietFoodServingPicker({
+Future<ServingSize?> showDietFoodServingPicker({
   required BuildContext context,
   required List<String> servingNames,
   required String selectedUnit,
 }) async {
-  return await showModalBottomSheet<Map<String, dynamic>>(
+  return await showModalBottomSheet<ServingSize?>(
       context: context,
       isScrollControlled: true,
+      enableDrag: false,
       builder: (context) {
         return DietFoodServingPicker(
           names: servingNames,
@@ -122,11 +125,15 @@ class _DietFoodServingPickerState extends State<DietFoodServingPicker> {
                   opacity: _validation ? 1 : 0.2,
                   child: InkWell(
                     onTap: _validation
-                        ? () => Navigator.pop(context, {
-                              'size': _sizeController.text,
-                              'servingName': _selectedServingName,
-                              'display': _servingDisplay,
-                            })
+                        ? () => Navigator.pop(
+                              context,
+                              ServingSize(
+                                servingName: _selectedServingName,
+                                servingSize: parseStringNumber(
+                                    _sizeController.text.trim()),
+                                display: _servingDisplay,
+                              ),
+                            )
                         : null,
                     child: Text('선택'),
                   ),

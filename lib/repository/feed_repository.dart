@@ -88,7 +88,7 @@ class FeedRepository {
       return result.statusCode == 200 ? Feed.fromJsonList(result.data) : [];
     } catch (e) {
       print(e);
-      throw LetsworkoutError('feed repository getFeedActives : ', e.toString());
+      throw LetsworkoutError('feed repository getFeedActives : ');
     }
   }
 

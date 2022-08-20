@@ -299,7 +299,7 @@ class FoodInfoTextWidget extends StatelessWidget {
     } else {
       return Text(
         foodInfoText(
-          value: (value! * multiply).toInt(),
+          value: (value! * multiply).toDouble(),
           prefix: prefix,
           suffix: suffix,
         ),
@@ -309,7 +309,7 @@ class FoodInfoTextWidget extends StatelessWidget {
 }
 
 String foodInfoText({
-  required int? value,
+  required double? value,
   required String prefix,
   required String suffix,
 }) {

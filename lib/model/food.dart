@@ -1,74 +1,6 @@
-class Thanksto {
-  Thanksto({
-    required this.userId,
-    required this.tag,
-    required this.description,
-  });
-
-  final String userId;
-  final String tag;
-  final String description;
-
-  Thanksto copyWith({
-    String? userId,
-    String? tag,
-    String? description,
-  }) =>
-      Thanksto(
-        userId: userId ?? this.userId,
-        tag: tag ?? this.tag,
-        description: description ?? this.description,
-      );
-
-  factory Thanksto.fromJson(Map<String, dynamic> json) => Thanksto(
-        userId: json['userId'],
-        tag: json["tag"],
-        description: json["description"],
-      );
-  static List<Thanksto> fromJsonList(List? list) {
-    return list == null ? [] : list.map((e) => Thanksto.fromJson(e)).toList();
-  }
-
-  Map<String, dynamic> toJson() => {
-        "userId": userId,
-        "tag": tag,
-        "description": description,
-      };
-}
-
-class ServingSize {
-  ServingSize({
-    required this.servingName,
-    required this.servingSize,
-  });
-
-  final String servingName;
-  final int servingSize;
-
-  ServingSize copyWith({
-    String? servingName,
-    int? servingSize,
-  }) =>
-      ServingSize(
-        servingName: servingName ?? this.servingName,
-        servingSize: servingSize ?? this.servingSize,
-      );
-
-  factory ServingSize.fromJson(Map<String, dynamic> json) => ServingSize(
-        servingName: json["servingName"],
-        servingSize: json["servingSize"],
-      );
-  static List<ServingSize> fromJsonList(List? list) {
-    return list == null
-        ? []
-        : list.map((e) => ServingSize.fromJson(e)).toList();
-  }
-
-  Map<String, dynamic> toJson() => {
-        "servingName": servingName,
-        "servingSize": servingSize,
-      };
-}
+import 'package:letsworkout/model/food_company.dart';
+import 'package:letsworkout/model/serving_size.dart';
+import 'package:letsworkout/model/thanksto.dart';
 
 class Food {
   Food({
@@ -92,14 +24,14 @@ class Food {
 
   final String? dietFoodId;
   final String foodName;
-  final String company;
+  final FoodCompany company;
   final String unit;
-  final int calorie;
-  final int carbohydrate;
-  final int protein;
-  final int fat;
-  final int sugar;
-  final int sodium;
+  final double calorie;
+  final double carbohydrate;
+  final double protein;
+  final double fat;
+  final double sugar;
+  final double sodium;
   String? description;
   List<Thanksto>? thanksto;
   List<ServingSize>? servingSizes;
@@ -110,14 +42,14 @@ class Food {
   Food copyWith({
     String? dietFoodId,
     String? foodName,
-    String? company,
+    FoodCompany? company,
     String? unit,
-    int? calorie,
-    int? carbohydrate,
-    int? protein,
-    int? fat,
-    int? sugar,
-    int? sodium,
+    double? calorie,
+    double? carbohydrate,
+    double? protein,
+    double? fat,
+    double? sugar,
+    double? sodium,
     String? description,
     List<Thanksto>? thanksto,
     List<ServingSize>? servingSizes,
@@ -147,14 +79,14 @@ class Food {
   factory Food.fromJson(Map<String, dynamic> json) => Food(
         dietFoodId: json["_id"],
         foodName: json["foodName"],
-        company: json["company"],
+        company: FoodCompany.fromJson(json["company"]),
         unit: json['unit'],
-        calorie: json["calorie"],
-        carbohydrate: json["carbohydrate"],
-        protein: json["protein"],
-        fat: json["fat"],
-        sugar: json["sugar"],
-        sodium: json["sodium"],
+        calorie: json["calorie"].toDouble(),
+        carbohydrate: json["carbohydrate"].toDouble(),
+        protein: json["protein"].toDouble(),
+        fat: json["fat"].toDouble(),
+        sugar: json["sugar"].toDouble(),
+        sodium: json["sodium"].toDouble(),
         description: json["description"],
         thanksto: Thanksto.fromJsonList(json['thanksto']),
         servingSizes: ServingSize.fromJsonList(json['servingSizes']),
@@ -180,8 +112,8 @@ class Food {
         "sugar": sugar,
         "sodium": sodium,
         "description": description,
-        "thanksto": thanksto?.map((e) => e.toJson()),
-        "servingSizes": servingSizes?.map((e) => e.toJson()),
+        "thanksto": thanksto?.map((e) => e.toJson()).toList(),
+        "servingSizes": servingSizes?.map((e) => e.toJson()).toList(),
         "refCount": refCount,
         "createdAt": createdAt,
         "updatedAt": updatedAt,

@@ -25,16 +25,32 @@ class FoodRepository {
   }
 
   Future<Food?> validateFood({
-    required String company,
+    required String companyName,
     required String foodName,
   }) async {
     Response result = await api.get(_getUrl('/validate'), queryParameters: {
-      'company': company,
+      'company': companyName,
       'foodName': foodName,
     });
 
     return (result.data == null || result.data == "")
         ? null
         : Food.fromJson(result.data);
+  }
+
+  Future<bool> saveFood(Food food) async {
+    Response result = await api.post(
+      _getUrl('/'),
+      data: food.toJson(),
+    );
+
+    return result.statusCode == 200;
+  }
+
+  Future<List<Food>> searchFood({required String foodName}) async {
+    Response result = await api
+        .get(_getUrl('/search'), queryParameters: {'foodName': foodName});
+
+    return Food.fromJsonList(result.data);
   }
 }

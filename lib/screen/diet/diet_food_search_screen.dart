@@ -4,6 +4,7 @@ import 'package:letsworkout/config/route.dart';
 import 'package:letsworkout/enum/loading_state.dart';
 import 'package:letsworkout/model/food.dart';
 import 'package:letsworkout/repository/diet_repository.dart';
+import 'package:letsworkout/repository/food_repository.dart';
 import 'package:letsworkout/screen/diet/diet_food_detail_screen.dart';
 import 'package:letsworkout/screen/diet/diet_food_update_request_screen.dart';
 import 'package:letsworkout/screen/diet/diet_food_widgets.dart';
@@ -19,8 +20,7 @@ class DietFoodSearchScreen extends StatefulWidget {
 
 class _DietFoodSearchScreenState extends State<DietFoodSearchScreen> {
   final _foodNameController = TextEditingController();
-  final _foodBrandController = TextEditingController();
-  final DietRepository _dietRepository = DietRepository();
+  final _foodRepository = FoodRepository();
   List<Food> _searchFoods = [];
   LoadingState _state = LoadingState.init;
 
@@ -28,7 +28,6 @@ class _DietFoodSearchScreenState extends State<DietFoodSearchScreen> {
   void dispose() {
     EasyDebounce.cancel('search_food');
     _foodNameController.dispose();
-    _foodBrandController.dispose();
     super.dispose();
   }
 
@@ -42,17 +41,15 @@ class _DietFoodSearchScreenState extends State<DietFoodSearchScreen> {
 
   _searchFood() async {
     try {
-      if (_foodBrandController.text.isEmpty &&
-          _foodNameController.text.isEmpty) {
+      if (_foodNameController.text.trim().isEmpty) {
         setState(() {
           _state = LoadingState.init;
         });
         return;
       }
 
-      _searchFoods = await _dietRepository.searchFood(
-        foodBrand: _foodBrandController.text,
-        foodName: _foodNameController.text,
+      _searchFoods = await _foodRepository.searchFood(
+        foodName: _foodNameController.text.trim(),
       );
       setState(() {
         _state = LoadingState.done;
@@ -82,25 +79,10 @@ class _DietFoodSearchScreenState extends State<DietFoodSearchScreen> {
           keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
           child: Column(
             children: [
-              Row(
-                children: [
-                  Flexible(
-                    flex: 2,
-                    child: DietFoodSearchBar(
-                      label: '음식',
-                      controller: _foodNameController,
-                      onChanged: (text) => _searchFoodDebouncer(),
-                    ),
-                  ),
-                  Flexible(
-                    flex: 1,
-                    child: DietFoodSearchBar(
-                      label: '제조사',
-                      controller: _foodBrandController,
-                      onChanged: (text) => _searchFoodDebouncer(),
-                    ),
-                  ),
-                ],
+              DietFoodSearchBar(
+                label: '음식',
+                controller: _foodNameController,
+                onChanged: (text) => _searchFoodDebouncer(),
               ),
               if (_state == LoadingState.init)
                 initWidget()
@@ -159,12 +141,6 @@ class _DietFoodSearchScreenState extends State<DietFoodSearchScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      SubstringHighlight(
-                        term: _foodBrandController.text,
-                        text: '${food.company} ',
-                        textStyleHighlight:
-                            const TextStyle(fontWeight: FontWeight.w700),
-                      ),
                       SubstringHighlight(
                         term: _foodNameController.text,
                         text: food.foodName,
