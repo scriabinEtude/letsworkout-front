@@ -118,4 +118,12 @@ class Food {
         "createdAt": createdAt,
         "updatedAt": updatedAt,
       };
+
+  static double g100FromSize(double value, int size) {
+    return double.parse((value * 100 / size).toStringAsFixed(2));
+  }
+
+  static double sizeFrom100g(double value, int size) {
+    return double.parse((value * (size / 100)).toStringAsFixed(2));
+  }
 }

@@ -8,7 +8,6 @@ import 'package:letsworkout/model/serving_size.dart';
 import 'package:letsworkout/model/thanksto.dart';
 import 'package:letsworkout/module/error/letsworkout_error.dart';
 import 'package:letsworkout/repository/food_repository.dart';
-import 'package:letsworkout/util/string_util.dart';
 import 'package:letsworkout/util/widget_util.dart';
 
 class FoodWriteCubit extends Cubit<FoodWriteState> {
@@ -75,10 +74,6 @@ class FoodWriteCubit extends Cubit<FoodWriteState> {
     ));
   }
 
-  double _100gFromFirstSize(double value, int firstSize) {
-    return double.parse((value * 100 / firstSize).toStringAsFixed(2));
-  }
-
   Future<bool> saveFood({required List<ServingSize> servings}) async {
     loadingShow();
     try {
@@ -86,13 +81,13 @@ class FoodWriteCubit extends Cubit<FoodWriteState> {
           foodName: state.foodName!,
           company: state.company!,
           unit: state.unit!,
-          calorie: _100gFromFirstSize(state.calorie!, state.firstServingSize!),
+          calorie: Food.g100FromSize(state.calorie!, state.firstServingSize!),
           carbohydrate:
-              _100gFromFirstSize(state.carbohydrate!, state.firstServingSize!),
-          protein: _100gFromFirstSize(state.protein!, state.firstServingSize!),
-          fat: _100gFromFirstSize(state.fat!, state.firstServingSize!),
-          sugar: _100gFromFirstSize(state.sugar!, state.firstServingSize!),
-          sodium: _100gFromFirstSize(state.sodium!, state.firstServingSize!),
+              Food.g100FromSize(state.carbohydrate!, state.firstServingSize!),
+          protein: Food.g100FromSize(state.protein!, state.firstServingSize!),
+          fat: Food.g100FromSize(state.fat!, state.firstServingSize!),
+          sugar: Food.g100FromSize(state.sugar!, state.firstServingSize!),
+          sodium: Food.g100FromSize(state.sodium!, state.firstServingSize!),
           description: state.description,
           servingSizes: [
             ServingSize(

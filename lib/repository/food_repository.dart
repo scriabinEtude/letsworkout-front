@@ -29,7 +29,7 @@ class FoodRepository {
     required String foodName,
   }) async {
     Response result = await api.get(_getUrl('/validate'), queryParameters: {
-      'company': companyName,
+      'companyName': companyName,
       'foodName': foodName,
     });
 

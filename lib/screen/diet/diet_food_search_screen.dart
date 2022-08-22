@@ -3,10 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:letsworkout/config/route.dart';
 import 'package:letsworkout/enum/loading_state.dart';
 import 'package:letsworkout/model/food.dart';
-import 'package:letsworkout/repository/diet_repository.dart';
 import 'package:letsworkout/repository/food_repository.dart';
-import 'package:letsworkout/screen/diet/diet_food_detail_screen.dart';
-import 'package:letsworkout/screen/diet/diet_food_update_request_screen.dart';
 import 'package:letsworkout/screen/diet/diet_food_widgets.dart';
 import 'package:letsworkout/widget/scaffold.dart';
 import 'package:substring_highlight/substring_highlight.dart';
@@ -134,12 +131,14 @@ class _DietFoodSearchScreenState extends State<DietFoodSearchScreen> {
         children: [
           Expanded(
             child: InkWell(
-              onTap: () => Navigator.pop(context, food),
+              onTap: () => Navigator.pushNamed(
+                  context, Routes.dietFoodDetailScreen,
+                  arguments: {'food': food}),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       SubstringHighlight(
                         term: _foodNameController.text,
@@ -147,37 +146,82 @@ class _DietFoodSearchScreenState extends State<DietFoodSearchScreen> {
                         textStyleHighlight:
                             const TextStyle(fontWeight: FontWeight.w700),
                       ),
+                      Text('🙌 : ${food.refCount}'),
                     ],
-                  ),
-                  Text(
-                    foodInfo,
-                    overflow: TextOverflow.ellipsis,
                   ),
                   Row(
                     children: [
-                      Text('인용 : ${food.refCount}          '),
-                      InkWell(
-                        onTap: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                DietFoodDetailScreen(food: food),
-                          ),
-                        ),
-                        child: Text('정보       '),
-                      ),
-                      InkWell(
-                        onTap: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                DietFoodUpdateRequestScreen(food: food),
-                          ),
-                        ),
-                        child: Text('수정'),
+                      Text(food.company.name + " | "),
+                      Text(
+                        food.servingSizes!
+                            .map((serving) =>
+                                "${serving.servingName} (${serving.servingSize}${food.unit})")
+                            .toList()
+                            .join(", "),
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ],
                   ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                          "${food.servingSizes![0].servingName} (${food.servingSizes![0].servingSize}${food.unit}) 기준 "),
+                      Text(
+                          '${Food.sizeFrom100g(food.calorie, food.servingSizes![0].servingSize)} kcal'),
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      NutiritionContainer(
+                          title: '탄수화물',
+                          unit: 'g',
+                          nutrition: Food.sizeFrom100g(food.carbohydrate,
+                              food.servingSizes![0].servingSize)),
+                      NutiritionContainer(
+                          title: '단백질',
+                          unit: 'g',
+                          nutrition: Food.sizeFrom100g(
+                              food.protein, food.servingSizes![0].servingSize)),
+                      NutiritionContainer(
+                          title: '지방',
+                          unit: 'g',
+                          nutrition: Food.sizeFrom100g(
+                              food.fat, food.servingSizes![0].servingSize)),
+                      NutiritionContainer(
+                          title: '당',
+                          unit: 'g',
+                          nutrition: Food.sizeFrom100g(
+                              food.sugar, food.servingSizes![0].servingSize)),
+                      NutiritionContainer(
+                          title: '나트륨',
+                          unit: 'mg',
+                          nutrition: Food.sizeFrom100g(
+                              food.sodium, food.servingSizes![0].servingSize)),
+                    ],
+                  ),
+
+                  // InkWell(
+                  //   onTap: () => Navigator.push(
+                  //     context,
+                  //     MaterialPageRoute(
+                  //       builder: (context) =>
+                  //           DietFoodDetailScreen(food: food),
+                  //     ),
+                  //   ),
+                  //   child: Text('정보       '),
+                  // ),
+                  // InkWell(
+                  //   onTap: () => Navigator.push(
+                  //     context,
+                  //     MaterialPageRoute(
+                  //       builder: (context) =>
+                  //           DietFoodUpdateRequestScreen(food: food),
+                  //     ),
+                  //   ),
+                  //   child: Text('수정'),
+                  // ),
                 ],
               ),
             ),
@@ -192,6 +236,28 @@ class _DietFoodSearchScreenState extends State<DietFoodSearchScreen> {
       margin: EdgeInsets.only(top: 100),
       child: child,
     );
+  }
+}
+
+class NutiritionContainer extends StatelessWidget {
+  const NutiritionContainer({
+    Key? key,
+    required this.title,
+    required this.unit,
+    required this.nutrition,
+  }) : super(key: key);
+
+  final String title;
+  final String unit;
+  final double nutrition;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        child: Column(children: [
+      Text(title),
+      Text(nutrition.toString() + unit),
+    ]));
   }
 }
 

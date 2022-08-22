@@ -6,6 +6,7 @@ import 'package:letsworkout/screen/calendar/calendar_screen.dart';
 import 'package:letsworkout/screen/calendar/calendar_screen_args.dart';
 import 'package:letsworkout/screen/customer/customer_question_view_screen.dart';
 import 'package:letsworkout/screen/customer/customer_question_wirte_screen.dart';
+import 'package:letsworkout/screen/diet/diet_food_detail_screen.dart';
 import 'package:letsworkout/screen/diet/diet_food_search_screen.dart';
 import 'package:letsworkout/screen/diet/food_write/diet_food_wirte_1_company.dart';
 import 'package:letsworkout/screen/diet/diet_write_screen.dart';
@@ -46,6 +47,7 @@ class Routes {
   // diet
   static const String dietWriteScreen = "/diet/write";
   static const String dietFoodSearchScreen = '/diet/food/search';
+  static const String dietFoodDetailScreen = "/diet/food/detail";
 
   // food write
   static const String dietFoodWrite1CompanyScreen =
@@ -166,6 +168,16 @@ class Routes {
             settings: const RouteSettings(name: dietFoodSearchScreen),
             builder: (BuildContext context) {
               return const DietFoodSearchScreen();
+            });
+      case dietFoodDetailScreen:
+        Map<String, dynamic> params =
+            settings.arguments as Map<String, dynamic>;
+        return MaterialPageRoute<SelectedFood?>(
+            settings: const RouteSettings(name: dietFoodDetailScreen),
+            builder: (BuildContext context) {
+              return DietFoodDetailScreen(
+                food: params['food'],
+              );
             });
 
       case dietFoodWrite1CompanyScreen:

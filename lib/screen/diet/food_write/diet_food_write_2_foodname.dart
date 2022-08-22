@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:letsworkout/bloc/app_bloc.dart';
@@ -43,7 +44,18 @@ class _DietFoodWrite2FoodNameState extends State<DietFoodWrite2FoodName> {
     }
 
     // 있으면 정보수정 및 추가 제안 페이지로 이동
-    else {}
+    else {
+      OkCancelResult result = await showOkCancelAlertDialog(
+        context: context,
+        message: '이미 등록된 음식입니다\n음식 정보로 이동하시겠어요?',
+        okLabel: '이동',
+        cancelLabel: '취소',
+      );
+
+      if (result == OkCancelResult.ok) {
+        // 이동
+      }
+    }
   }
 
   @override
